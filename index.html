@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-:root{--bg:#f0f2f5;--surface:#ffffff;--surface2:#f5f7fa;--border:#dde2ea;--accent:#d4920a;--accent2:#00a882;--accent3:#2b6fd4;--red:#e03530;--green:#16a34a;--text:#111827;--muted:#6b7280;--card:#ffffff;--sticky-top:118px;}
+:root{--bg:#f0f2f5;--surface:#ffffff;--surface2:#f5f7fa;--border:#dde2ea;--accent:#d4920a;--accent2:#00a882;--accent3:#2b6fd4;--red:#e03530;--green:#16a34a;--text:#111827;--muted:#6b7280;--card:#ffffff;--sticky-top:58px;}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html{
   scroll-behavior:smooth;
@@ -42,12 +42,6 @@ body{
   box-shadow:0 4px 24px rgba(0,0,0,.08);
   padding-top:env(safe-area-inset-top);
 }
-header{background:linear-gradient(135deg,#ffffff,#f0f2f5);border-bottom:1px solid var(--border);padding:16px max(40px,env(safe-area-inset-left)) 16px max(40px,env(safe-area-inset-right));display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(12px);gap:12px;flex-wrap:wrap;}
-header h1{font-size:1.2rem;font-weight:800;letter-spacing:-.03em;background:linear-gradient(90deg,var(--accent),#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.25;min-width:0;flex:1;}
-.header-right{display:flex;align-items:center;gap:14px;flex-shrink:0;}
-.live-badge{display:flex;align-items:center;gap:7px;font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted);}
-.live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .refresh-btn{padding:8px 14px;min-height:44px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:.75rem;font-weight:700;cursor:pointer;font-family:'Be Vietnam Pro',sans-serif;transition:all .2s;display:flex;align-items:center;gap:6px;touch-action:manipulation;}
 .refresh-btn:hover{border-color:var(--accent);color:var(--accent);}
 .spin{display:inline-block;animation:spin .7s linear infinite;}
@@ -247,9 +241,8 @@ td{padding:12px 15px;white-space:nowrap;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:#c5ccd8;border-radius:3px;}
 @media(max-width:768px){
-  :root{--sticky-top:112px;}
+  :root{--sticky-top:54px;}
   main{padding:14px max(10px,env(safe-area-inset-left)) 52px max(10px,env(safe-area-inset-right));width:100%;max-width:100%;}
-  header{padding:12px max(12px,env(safe-area-inset-left)) 12px max(12px,env(safe-area-inset-right));}
   nav{padding:0 max(10px,env(safe-area-inset-left)) 0 max(10px,env(safe-area-inset-right));}
   .nav-links a{padding:12px 14px;font-size:.8rem;}
   .section{margin-bottom:40px;}
@@ -286,11 +279,8 @@ td{padding:12px 15px;white-space:nowrap;}
   .bank-search-inp{font-size:16px;}
 }
 @media(max-width:560px){
-  :root{--sticky-top:128px;}
+  :root{--sticky-top:54px;}
   main{padding:12px max(8px,env(safe-area-inset-left)) 48px max(8px,env(safe-area-inset-right));}
-  header{padding:10px max(10px,env(safe-area-inset-left)) 10px max(10px,env(safe-area-inset-right));flex-direction:column;align-items:stretch;}
-  header h1{font-size:1.02rem;}
-  .header-right{justify-content:space-between;width:100%;}
   .cl-row{display:flex;flex-wrap:nowrap;align-items:center;padding:10px 8px;gap:6px;}
   .cl-l{flex:1;min-width:0;gap:8px;}
   .cl-logo{width:32px;height:32px;font-size:.65rem;}
@@ -327,15 +317,6 @@ td{padding:12px 15px;white-space:nowrap;}
 <body>
 
 <div class="site-top">
-<header>
-  <div class="header-right">
-    <div class="live-badge">
-      <div class="live-dot"></div>
-      <span id="clock">--:--:--</span>
-    </div>
-  </div>
-</header>
-
 <nav>
   <div class="nav-links">
     <a href="#crypto" class="active">🪙 Crypto</a>
@@ -482,10 +463,7 @@ td{padding:12px 15px;white-space:nowrap;}
 
 <script>
 // ──────────────────────────────────────
-// CLOCK
 // ──────────────────────────────────────
-function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('vi-VN');}
-setInterval(tick,1000);tick();
 
 // ──────────────────────────────────────
 // SEARCH TOGGLE
