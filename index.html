@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0a0d12">
+<meta name="theme-color" content="#f0f2f5">
 <title>Bảng Tin Tài Chính Việt Nam</title>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-:root{--bg:#0a0d12;--surface:#111620;--surface2:#171e2d;--border:#1e2a3d;--accent:#f0b429;--accent2:#00d4aa;--accent3:#4f8ef7;--red:#f25c54;--green:#22c55e;--text:#e8edf5;--muted:#7b8fa8;--card:#131923;--sticky-top:118px;}
+:root{--bg:#f0f2f5;--surface:#ffffff;--surface2:#f5f7fa;--border:#dde2ea;--accent:#d4920a;--accent2:#00a882;--accent3:#2b6fd4;--red:#e03530;--green:#16a34a;--text:#111827;--muted:#6b7280;--card:#ffffff;--sticky-top:118px;}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html{
   scroll-behavior:smooth;
@@ -39,10 +39,10 @@ body{
   width:100%;
   max-width:100%;
   background:var(--bg);
-  box-shadow:0 4px 24px rgba(0,0,0,.35);
+  box-shadow:0 4px 24px rgba(0,0,0,.08);
   padding-top:env(safe-area-inset-top);
 }
-header{background:linear-gradient(135deg,#0d1520,#0a0d12);border-bottom:1px solid var(--border);padding:16px max(40px,env(safe-area-inset-left)) 16px max(40px,env(safe-area-inset-right));display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(12px);gap:12px;flex-wrap:wrap;}
+header{background:linear-gradient(135deg,#ffffff,#f0f2f5);border-bottom:1px solid var(--border);padding:16px max(40px,env(safe-area-inset-left)) 16px max(40px,env(safe-area-inset-right));display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(12px);gap:12px;flex-wrap:wrap;}
 header h1{font-size:1.2rem;font-weight:800;letter-spacing:-.03em;background:linear-gradient(90deg,var(--accent),#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.25;min-width:0;flex:1;}
 .header-right{display:flex;align-items:center;gap:14px;flex-shrink:0;}
 .live-badge{display:flex;align-items:center;gap:7px;font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted);}
@@ -71,9 +71,9 @@ main{
 .section-header .section-icon{flex-shrink:0;}
 .section-header>div:nth-child(2){min-width:0;flex:1 1 200px;}
 .section-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
-.icon-crypto{background:linear-gradient(135deg,#1a2d4f,#0d1f3c);border:1px solid #2a4a7f;}
-.icon-bank{background:linear-gradient(135deg,#1a3040,#0d2030);border:1px solid #2a5a7f;}
-.icon-gold{background:linear-gradient(135deg,#3d2900,#2a1e00);border:1px solid #7a5200;}
+.icon-crypto{background:linear-gradient(135deg,#dbeafe,#eff6ff);border:1px solid #bfdbfe;}
+.icon-bank{background:linear-gradient(135deg,#d1faf2,#e6fff9);border:1px solid #a0f0e0;}
+.icon-gold{background:linear-gradient(135deg,#fef3c7,#fffbeb);border:1px solid #fcd34d;}
 .section-title{font-size:1.15rem;font-weight:800;letter-spacing:-.02em;}
 .section-subtitle{font-size:.78rem;color:var(--muted);margin-top:2px;}
 .update-time{margin-left:auto;font-family:'Space Mono',monospace;font-size:.68rem;color:var(--muted);background:var(--surface2);padding:6px 10px;border-radius:6px;border:1px solid var(--border);white-space:nowrap;flex-shrink:0;}
@@ -85,7 +85,7 @@ main{
 .crypto-search-wrap input:focus{border-color:var(--accent3);}
 .crypto-search-wrap input::placeholder{color:var(--muted);}
 .search-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;}
-.search-dd{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;z-index:300;max-height:340px;overflow-y:auto;display:none;box-shadow:0 12px 40px rgba(0,0,0,.5);}
+.search-dd{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;z-index:300;max-height:340px;overflow-y:auto;display:none;box-shadow:0 12px 40px rgba(0,0,0,.12);}
 .search-dd.open{display:block;}
 .sri{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border);}
 .sri:last-child{border-bottom:none;}
@@ -118,7 +118,7 @@ main{
 .search-box-drop .search-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;}
 .cs-tab{padding:7px 12px;min-height:36px;display:inline-flex;align-items:center;border-radius:8px;font-size:.78rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--muted);transition:all .2s;touch-action:manipulation;}
 .cs-tab.active{background:var(--accent);color:#000;border-color:var(--accent);}
-.cnt-badge{font-size:.65rem;background:rgba(0,0,0,.3);padding:1px 6px;border-radius:8px;margin-left:4px;}
+.cnt-badge{font-size:.65rem;background:rgba(0,0,0,.12);padding:1px 6px;border-radius:8px;margin-left:4px;}
 
 .sub-h{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
 .sub-h h3{font-size:.87rem;font-weight:800;}
@@ -130,7 +130,7 @@ main{
 .cl-row{display:flex;align-items:center;justify-content:space-between;padding:4px 20px;border-bottom:1px solid var(--border);transition:background .15s;gap:16px;flex-wrap:nowrap;}
 .cl-row:last-child{border-bottom:none;}
 .cl-row:hover{background:var(--surface2);}
-.cl-row.is-fav{background:rgba(240,180,41,.06);}
+.cl-row.is-fav{background:rgba(212,146,10,.06);}
 .cl-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1;}
 .cl-logo{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.75rem;font-family:'Space Mono',monospace;flex-shrink:0;}
 .cl-meta{min-width:0;}
@@ -147,9 +147,9 @@ main{
 .cl-row .spot-lbl{margin:0;font-size:.55rem;}
 .cc{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:16px;cursor:default;transition:all .2s;position:relative;overflow:hidden;}
 .cc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--top-line,linear-gradient(90deg,transparent,#4f8ef766,transparent));opacity:0;transition:opacity .2s;}
-.cc:hover{border-color:#2a3d5f;transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.35);}
+.cc:hover{border-color:#c5ccd8;transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.10);}
 .cc:hover::before{opacity:1;}
-.cc.is-fav{border-color:#f0b42940;}
+.cc.is-fav{border-color:#fbbf24;}
 .cc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .cc-logo{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.68rem;font-family:'Space Mono',monospace;}
 .cc-tr{display:flex;align-items:center;gap:6px;}
@@ -221,7 +221,7 @@ td{padding:12px 15px;white-space:nowrap;}
 .gst-tab{padding:6px 13px;border-radius:7px;font-size:.77rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--muted);transition:all .2s;}
 .gst-tab.active{background:var(--accent);color:#000;border-color:var(--accent);}
 .gc{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;transition:all .2s;}
-.gc:hover{border-color:#3d2900;transform:translateX(2px);}
+.gc:hover{border-color:#fcd34d;transform:translateX(2px);}
 .gc-type{font-size:.77rem;font-weight:700;}
 .gc-brand{font-size:.67rem;color:var(--muted);margin-top:2px;}
 .gc-unit{font-size:.62rem;color:var(--accent3);margin-top:3px;}
@@ -245,7 +245,7 @@ td{padding:12px 15px;white-space:nowrap;}
 .disclaimer{text-align:center;color:var(--muted);font-size:.7rem;margin-top:36px;padding-top:18px;border-top:1px solid var(--border);}
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
-::-webkit-scrollbar-thumb{background:#2a3d5f;border-radius:3px;}
+::-webkit-scrollbar-thumb{background:#c5ccd8;border-radius:3px;}
 @media(max-width:768px){
   :root{--sticky-top:112px;}
   main{padding:14px max(10px,env(safe-area-inset-left)) 52px max(10px,env(safe-area-inset-right));width:100%;max-width:100%;}
@@ -960,9 +960,9 @@ function updateChart(r,el){document.querySelectorAll('.range-btn').forEach(b=>b.
 (function(){
   const d=CDS['1m'];
   gChart=new Chart(document.getElementById('goldChart').getContext('2d'),{type:'line',data:{labels:d.labels,datasets:[
-    {label:'SJC (triệu đ/lượng)',data:d.sjc,borderColor:'#f0b429',backgroundColor:'rgba(240,180,41,.08)',fill:true,tension:.4,pointRadius:4,pointHitRadius:16,pointBackgroundColor:'#f0b429',borderWidth:2.5},
-    {label:'Thế giới quy đổi',data:d.world,borderColor:'#4f8ef7',backgroundColor:'rgba(79,142,247,.06)',fill:true,tension:.4,pointRadius:4,pointHitRadius:16,pointBackgroundColor:'#4f8ef7',borderWidth:2,borderDash:[6,3]}
-  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:'#7b8fa8',font:{family:'Be Vietnam Pro',size:12}}},tooltip:{backgroundColor:'#111620',borderColor:'#1e2a3d',borderWidth:1,titleColor:'#e8edf5',bodyColor:'#7b8fa8',callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y} tr.đ`}}},scales:{x:{ticks:{color:'#7b8fa8',font:{size:11}},grid:{color:'#1e2a3d'}},y:{ticks:{color:'#7b8fa8',font:{size:11},callback:v=>v+' tr'},grid:{color:'#1e2a3d'}}}}});
+    {label:'SJC (triệu đ/lượng)',data:d.sjc,borderColor:'#d4920a',backgroundColor:'rgba(212,146,10,.08)',fill:true,tension:.4,pointRadius:4,pointHitRadius:16,pointBackgroundColor:'#d4920a',borderWidth:2.5},
+    {label:'Thế giới quy đổi',data:d.world,borderColor:'#2b6fd4',backgroundColor:'rgba(43,111,212,.06)',fill:true,tension:.4,pointRadius:4,pointHitRadius:16,pointBackgroundColor:'#2b6fd4',borderWidth:2,borderDash:[6,3]}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:'#6b7280',font:{family:'Be Vietnam Pro',size:12}}},tooltip:{backgroundColor:'#ffffff',borderColor:'#dde2ea',borderWidth:1,titleColor:'#111827',bodyColor:'#6b7280',callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y} tr.đ`}}},scales:{x:{ticks:{color:'#6b7280',font:{size:11}},grid:{color:'#e5e7eb'}},y:{ticks:{color:'#6b7280',font:{size:11},callback:v=>v+' tr'},grid:{color:'#e5e7eb'}}}}});
 })();
 
 // NAV scroll highlight
