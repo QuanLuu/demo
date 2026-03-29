@@ -225,7 +225,8 @@ td{padding:12px 15px;white-space:nowrap;}
 .wg-lbl{font-size:.68rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
 .wg-val{font-family:'Space Mono',monospace;font-size:1.05rem;font-weight:700;margin-top:4px;}
 .wg-ch{font-size:.7rem;margin-top:4px;}
-.chart-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:18px;}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:18px;min-width:0;width:100%;}
+.chart-wrapper{position:relative;width:100%;height:230px;}
 .chart-hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
 .chart-title{font-size:.85rem;font-weight:700;}
 .chart-range{display:flex;gap:5px;}
@@ -252,7 +253,8 @@ td{padding:12px 15px;white-space:nowrap;}
   .market-overview{grid-template-columns:repeat(2,1fr);gap:8px;}
   .mo-card{padding:11px;}
   .mo-val{font-size:.92rem;}
-  .cs-tabs{gap:6px;}
+  .cs-tabs{gap:6px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;}
+  .cs-tab{white-space:nowrap;flex-shrink:0;}
   .movers-grid{grid-template-columns:1fr;}
   .crypto-grid{grid-template-columns:repeat(2,1fr);}
   .cl-row{padding:10px 12px;}
@@ -328,8 +330,8 @@ td{padding:12px 15px;white-space:nowrap;}
 <nav>
   <div class="nav-links">
     <a href="#crypto" class="active">🪙 Crypto</a>
-    <a href="#banks">🏦 Ngân Hàng</a>
     <a href="#gold">🥇 Vàng</a>
+    <a href="#banks">🏦 Ngân Hàng</a>
   </div>
   <button class="nav-refresh-btn" onclick="refreshAll()" id="refresh-btn" title="Cập nhật">
     <span id="refresh-ico">↻</span>
@@ -366,7 +368,7 @@ td{padding:12px 15px;white-space:nowrap;}
   <div class="cs-tabs">
     <div class="cs-tab active" onclick="switchTab('favorites',this)">⭐ Yêu thích <span class="cnt-badge" id="fav-cnt">0</span></div>
     <div class="cs-tab" onclick="switchTab('market',this)">📊 Thị trường</div>
-    <div class="cs-tab" onclick="switchTab('movers',this)">🚀 Top tăng / giảm</div>
+    <div class="cs-tab" onclick="switchTab('movers',this)">🚀 Top</div>
   </div>
 
   <!-- Panel Market -->
@@ -395,38 +397,6 @@ td{padding:12px 15px;white-space:nowrap;}
       </div>
     </div>
   </div>
-</section>
-
-<!-- ═══ BANKS ═══ -->
-<section class="section" id="banks">
-  <div class="section-header">
-    <div class="section-icon icon-bank">🏦</div>
-    <div>
-      <div class="section-title">Lãi Suất Ngân Hàng Việt Nam</div>
-      <div class="section-subtitle">Tiết kiệm & cho vay · Tháng 3/2026</div>
-    </div>
-  </div>
-  <div class="bank-controls">
-    <div class="bank-filter">
-      <div class="filter-btn active" onclick="filterBanks('all',this)">Tất cả</div>
-      <div class="filter-btn" onclick="filterBanks('state',this)">Quốc doanh</div>
-      <div class="filter-btn" onclick="filterBanks('private',this)">Tư nhân</div>
-      <div class="filter-btn" onclick="filterBanks('foreign',this)">Nước ngoài</div>
-    </div>
-    <input class="bank-search-inp" type="text" placeholder="🔍 Tìm ngân hàng..." oninput="searchBanks(this.value)">
-  </div>
-  <div class="bank-table-wrap">
-    <table>
-      <thead><tr>
-        <th onclick="sortTable(0)">Ngân hàng</th><th onclick="sortTable(1)">Loại</th>
-        <th onclick="sortTable(2)">TK 3 tháng</th><th onclick="sortTable(3)">TK 6 tháng</th>
-        <th onclick="sortTable(4)">TK 12 tháng</th><th onclick="sortTable(5)">TK 24 tháng</th>
-        <th onclick="sortTable(6)">Vay TD cá nhân</th><th onclick="sortTable(7)">Vay mua nhà</th>
-      </tr></thead>
-      <tbody id="bank-tbody"></tbody>
-    </table>
-  </div>
-  <p style="color:var(--muted);font-size:.7rem;margin-top:9px;">* %/năm · Tham khảo, gửi tại quầy, lĩnh lãi cuối kỳ · Nguồn: VnEconomy, TOPI, Webgia – tháng 3/2026</p>
 </section>
 
 <!-- ═══ GOLD ═══ -->
@@ -464,10 +434,44 @@ td{padding:12px 15px;white-space:nowrap;}
           <div class="range-btn" onclick="updateChart('6m',this)">6T</div>
         </div>
       </div>
-      <canvas id="goldChart" height="230"></canvas>
+      <div class="chart-wrapper">
+        <canvas id="goldChart"></canvas>
+      </div>
       <p style="color:var(--muted);font-size:.68rem;margin-top:10px;text-align:center;">Nguồn tổng hợp: SJC, Goonus, Tuổi Trẻ Online</p>
     </div>
   </div>
+</section>
+
+<!-- ═══ BANKS ═══ -->
+<section class="section" id="banks">
+  <div class="section-header">
+    <div class="section-icon icon-bank">🏦</div>
+    <div>
+      <div class="section-title">Lãi Suất Ngân Hàng Việt Nam</div>
+      <div class="section-subtitle">Tiết kiệm & cho vay · Tháng 3/2026</div>
+    </div>
+  </div>
+  <div class="bank-controls">
+    <div class="bank-filter">
+      <div class="filter-btn active" onclick="filterBanks('all',this)">Tất cả</div>
+      <div class="filter-btn" onclick="filterBanks('state',this)">Quốc doanh</div>
+      <div class="filter-btn" onclick="filterBanks('private',this)">Tư nhân</div>
+      <div class="filter-btn" onclick="filterBanks('foreign',this)">Nước ngoài</div>
+    </div>
+    <input class="bank-search-inp" type="text" placeholder="🔍 Tìm ngân hàng..." oninput="searchBanks(this.value)">
+  </div>
+  <div class="bank-table-wrap">
+    <table>
+      <thead><tr>
+        <th onclick="sortTable(0)">Ngân hàng</th>
+        <th onclick="sortTable(1)">TK 3 tháng</th><th onclick="sortTable(2)">TK 6 tháng</th>
+        <th onclick="sortTable(3)">TK 12 tháng</th><th onclick="sortTable(4)">TK 24 tháng</th>
+        <th onclick="sortTable(5)">Vay TD cá nhân</th><th onclick="sortTable(6)">Vay mua nhà</th>
+      </tr></thead>
+      <tbody id="bank-tbody"></tbody>
+    </table>
+  </div>
+  <p style="color:var(--muted);font-size:.7rem;margin-top:9px;">* %/năm · Tham khảo, gửi tại quầy, lĩnh lãi cuối kỳ · Nguồn: VnEconomy, TOPI, Webgia – tháng 3/2026</p>
 </section>
 
 <div class="disclaimer">Dữ liệu chỉ mang tính tham khảo · Crypto từ Binance API (live) · Lãi suất theo niêm yết 3/2026 · Giá vàng theo công bố chính thức</div>
@@ -856,10 +860,9 @@ function getRC(v,f){const all=BANKS.map(b=>b[f]);const pct=(v-Math.min(...all))/
 function getBar(v,f){const all=BANKS.map(b=>b[f]);const w=((v-Math.min(...all))/(Math.max(...all)-Math.min(...all)))*68;return `<span class="rbar" style="width:${Math.max(4,w)}px"></span>`;}
 function renderBankTable(){
   let data=BANKS.filter(b=>(bType==='all'||b.type===bType)&&(!bSearch||b.name.toLowerCase().includes(bSearch.toLowerCase())||b.full.toLowerCase().includes(bSearch.toLowerCase())));
-  if(bSortCol>=0){const keys=['name','type','s3','s6','s12','s24','loan','loanHome'];data.sort((a,b)=>{const av=a[keys[bSortCol]],bv=b[keys[bSortCol]];return typeof av==='number'?(av-bv)*bSortDir:av.localeCompare(bv)*bSortDir;});}
+  if(bSortCol>=0){const keys=['name','s3','s6','s12','s24','loan','loanHome'];data.sort((a,b)=>{const av=a[keys[bSortCol]],bv=b[keys[bSortCol]];return typeof av==='number'?(av-bv)*bSortDir:av.localeCompare(bv)*bSortDir;});}
   document.getElementById('bank-tbody').innerHTML=data.map(b=>`<tr>
     <td><div class="bnc"><div class="bav" style="background:${b.color}22;color:${b.color}">${b.id.slice(0,3).toUpperCase()}</div><div><div style="font-weight:700">${b.name}</div><div class="bnf">${b.full}</div></div></div></td>
-    <td>${getTL(b.type)}</td>
     <td class="rate-cell"><span class="${getRC(b.s3,'s3')}">${b.s3.toFixed(2)}%</span>${getBar(b.s3,'s3')}</td>
     <td class="rate-cell"><span class="${getRC(b.s6,'s6')}">${b.s6.toFixed(2)}%</span>${getBar(b.s6,'s6')}</td>
     <td class="rate-cell"><span class="${getRC(b.s12,'s12')}">${b.s12.toFixed(2)}%</span>${getBar(b.s12,'s12')}</td>
@@ -926,9 +929,9 @@ function updateChart(r,el){document.querySelectorAll('.range-btn').forEach(b=>b.
 (function(){
   const d=CDS['1m'];
   gChart=new Chart(document.getElementById('goldChart').getContext('2d'),{type:'line',data:{labels:d.labels,datasets:[
-    {label:'SJC (triệu đ/lượng)',data:d.sjc,borderColor:'#f0b429',backgroundColor:'rgba(240,180,41,.08)',fill:true,tension:.4,pointRadius:4,pointBackgroundColor:'#f0b429',borderWidth:2.5},
-    {label:'Thế giới quy đổi',data:d.world,borderColor:'#4f8ef7',backgroundColor:'rgba(79,142,247,.06)',fill:true,tension:.4,pointRadius:4,pointBackgroundColor:'#4f8ef7',borderWidth:2,borderDash:[6,3]}
-  ]},options:{responsive:true,plugins:{legend:{labels:{color:'#7b8fa8',font:{family:'Be Vietnam Pro',size:12}}},tooltip:{backgroundColor:'#111620',borderColor:'#1e2a3d',borderWidth:1,titleColor:'#e8edf5',bodyColor:'#7b8fa8',callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y} tr.đ`}}},scales:{x:{ticks:{color:'#7b8fa8',font:{size:11}},grid:{color:'#1e2a3d'}},y:{ticks:{color:'#7b8fa8',font:{size:11},callback:v=>v+' tr'},grid:{color:'#1e2a3d'}}}}});
+    {label:'SJC (triệu đ/lượng)',data:d.sjc,borderColor:'#f0b429',backgroundColor:'rgba(240,180,41,.08)',fill:true,tension:.4,pointRadius:4,pointHitRadius:16,pointBackgroundColor:'#f0b429',borderWidth:2.5},
+    {label:'Thế giới quy đổi',data:d.world,borderColor:'#4f8ef7',backgroundColor:'rgba(79,142,247,.06)',fill:true,tension:.4,pointRadius:4,pointHitRadius:16,pointBackgroundColor:'#4f8ef7',borderWidth:2,borderDash:[6,3]}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:'#7b8fa8',font:{family:'Be Vietnam Pro',size:12}}},tooltip:{backgroundColor:'#111620',borderColor:'#1e2a3d',borderWidth:1,titleColor:'#e8edf5',bodyColor:'#7b8fa8',callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y} tr.đ`}}},scales:{x:{ticks:{color:'#7b8fa8',font:{size:11}},grid:{color:'#1e2a3d'}},y:{ticks:{color:'#7b8fa8',font:{size:11},callback:v=>v+' tr'},grid:{color:'#1e2a3d'}}}}});
 })();
 
 // NAV scroll highlight
