@@ -67,7 +67,7 @@ main{
 .section{margin-bottom:56px;opacity:0;transform:translateY(20px);animation:fadeUp .5s forwards;}
 .section:nth-child(1){animation-delay:.1s}.section:nth-child(2){animation-delay:.25s}.section:nth-child(3){animation-delay:.4s}
 @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
-.section-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.section-header{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
 .section-header .section-icon{flex-shrink:0;}
 .section-header>div:nth-child(2){min-width:0;flex:1 1 200px;}
 .section-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
@@ -106,8 +106,17 @@ main{
 .mo-val{font-family:'Space Mono',monospace;font-size:1rem;font-weight:700;margin-top:5px;}
 .mo-sub{font-size:.7rem;color:var(--muted);margin-top:3px;}
 
-.cs-tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
-.cs-tab{padding:9px 14px;min-height:44px;display:inline-flex;align-items:center;border-radius:8px;font-size:.78rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--muted);transition:all .2s;touch-action:manipulation;}
+.cs-tabs-row{display:flex;flex-direction:column;align-items:flex-start;gap:0;margin-bottom:18px;}
+.cs-tabs{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;}
+.search-toggle-btn{background:var(--surface2);border:1px solid var(--border);border-radius:8px;width:36px;height:36px;font-size:1rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;min-height:36px;}
+.search-toggle-btn:hover,.search-toggle-btn.on{border-color:var(--accent3);}
+.search-box-drop{display:none;width:100%;margin-top:10px;}
+.search-box-drop.open{display:block;}
+.search-box-drop .crypto-search-wrap{position:relative;width:100%;max-width:420px;}
+.search-box-drop .crypto-search-wrap input{width:100%;padding:11px 14px 11px 38px;border-radius:10px;border:1px solid var(--accent3);background:var(--surface2);color:var(--text);font-size:.9rem;font-family:'Be Vietnam Pro',sans-serif;outline:none;}
+.search-box-drop .crypto-search-wrap input::placeholder{color:var(--muted);}
+.search-box-drop .search-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;}
+.cs-tab{padding:7px 12px;min-height:36px;display:inline-flex;align-items:center;border-radius:8px;font-size:.78rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--muted);transition:all .2s;touch-action:manipulation;}
 .cs-tab.active{background:var(--accent);color:#000;border-color:var(--accent);}
 .cnt-badge{font-size:.65rem;background:rgba(0,0,0,.3);padding:1px 6px;border-radius:8px;margin-left:4px;}
 
@@ -118,22 +127,22 @@ main{
 
 .crypto-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(198px,1fr));gap:12px;margin-bottom:24px;}
 .crypto-list{background:var(--card);border:1px solid var(--border);border-radius:13px;overflow:hidden;margin-bottom:24px;}
-.cl-row{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 16px 20px;border-bottom:1px solid var(--border);transition:background .15s;gap:16px;flex-wrap:nowrap;}
+.cl-row{display:flex;align-items:center;justify-content:space-between;padding:4px 20px;border-bottom:1px solid var(--border);transition:background .15s;gap:16px;flex-wrap:nowrap;}
 .cl-row:last-child{border-bottom:none;}
 .cl-row:hover{background:var(--surface2);}
 .cl-row.is-fav{background:rgba(240,180,41,.06);}
 .cl-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1;}
-.cl-logo{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;font-family:'Space Mono',monospace;flex-shrink:0;}
+.cl-logo{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.75rem;font-family:'Space Mono',monospace;flex-shrink:0;}
 .cl-meta{min-width:0;}
 .cl-symline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.cl-sym{font-weight:800;font-size:1.15rem;letter-spacing:-.02em;}
-.cl-pair{font-size:.85rem;color:var(--muted);font-weight:600;}
-.cl-name{font-size:.9rem;color:var(--muted);margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.4;word-break:break-word;}
+.cl-sym{font-weight:800;font-size:1rem;letter-spacing:-.02em;}
+.cl-pair{font-size:.78rem;color:var(--muted);font-weight:600;}
+.cl-name{display:none;}
 .cl-mid{text-align:right;flex-shrink:0;}
-.cl-price{font-family:'Space Mono',monospace;font-size:1.25rem;font-weight:700;}
-.cl-vnd{font-size:.85rem;color:var(--muted);font-family:'Space Mono',monospace;margin-top:4px;}
+.cl-price{font-family:'Space Mono',monospace;font-size:1rem;font-weight:700;}
+.cl-vnd{display:none;}
 .cl-r{display:flex;align-items:center;gap:14px;flex-shrink:0;}
-.cl-ch{font-size:1rem;font-weight:700;padding:6px 14px;border-radius:8px;font-family:'Space Mono',monospace;}
+.cl-ch{font-size:.82rem;font-weight:700;padding:4px 10px;border-radius:8px;font-family:'Space Mono',monospace;}
 .cl-row .alpha-badge{margin:0;font-size:.55rem;padding:2px 6px;vertical-align:middle;}
 .cl-row .spot-lbl{margin:0;font-size:.55rem;}
 .cc{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:16px;cursor:default;transition:all .2s;position:relative;overflow:hidden;}
@@ -253,8 +262,9 @@ td{padding:12px 15px;white-space:nowrap;}
   .market-overview{grid-template-columns:repeat(2,1fr);gap:8px;}
   .mo-card{padding:11px;}
   .mo-val{font-size:.92rem;}
-  .cs-tabs{gap:6px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;}
+  .cs-tabs{gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
   .cs-tab{white-space:nowrap;flex-shrink:0;}
+  .search-box-drop .crypto-search-wrap{max-width:100%;}
   .movers-grid{grid-template-columns:1fr;}
   .crypto-grid{grid-template-columns:repeat(2,1fr);}
   .cl-row{padding:10px 12px;}
@@ -347,28 +357,29 @@ td{padding:12px 15px;white-space:nowrap;}
     <div class="section-icon icon-crypto">🪙</div>
     <div>
       <div class="section-title">Thị Trường Crypto</div>
-      <div class="section-subtitle">Dữ liệu thực từ Binance API · Tự động cập nhật mỗi 30 giây</div>
+      <div class="section-subtitle"></div>
     </div>
-  </div>
-
-  <!-- Search -->
-  <div class="crypto-search-row">
-    <div class="crypto-search-wrap">
-      <span class="search-ico">🔍</span>
-      <input type="text" id="crypto-search" placeholder="Tìm token Spot &amp; Binance Alpha (BTC, PRL, tên dự án...)" oninput="onSearch(this.value)" autocomplete="off" spellcheck="false">
-      <div class="search-dd" id="search-dd"></div>
-    </div>
-    <small style="color:var(--muted);font-size:.74rem;">☆ Nhấn ngôi sao để thêm/xóa yêu thích · Lưu tự động</small>
   </div>
 
   <!-- Market overview -->
   <!-- Đã ẩn/xóa (Removed per request) -->
 
-  <!-- Tabs -->
-  <div class="cs-tabs">
-    <div class="cs-tab active" onclick="switchTab('favorites',this)">⭐ Yêu thích <span class="cnt-badge" id="fav-cnt">0</span></div>
-    <div class="cs-tab" onclick="switchTab('market',this)">📊 Thị trường</div>
-    <div class="cs-tab" onclick="switchTab('movers',this)">🚀 Top</div>
+  <!-- Tabs + Search cùng hàng -->
+  <div class="cs-tabs-row" id="search-wrap">
+    <div class="cs-tabs">
+      <div class="cs-tab active" onclick="switchTab('favorites',this)">⭐ <span class="cnt-badge" id="fav-cnt">0</span></div>
+      <div class="cs-tab" onclick="switchTab('market',this)">📊 Thị trường</div>
+      <div class="cs-tab" onclick="switchTab('movers',this)">🚀 Top</div>
+      <button class="search-toggle-btn" id="search-toggle" onclick="toggleSearch()" title="Tìm kiếm">🔍</button>
+    </div>
+    <!-- Search dropdown bên dưới -->
+    <div class="search-box-drop" id="search-box-drop">
+      <div class="crypto-search-wrap">
+        <span class="search-ico">🔍</span>
+        <input type="text" id="crypto-search" placeholder="Tìm token Spot &amp; Binance Alpha (BTC, PRL, tên dự án...)" oninput="onSearch(this.value)" autocomplete="off" spellcheck="false">
+        <div class="search-dd" id="search-dd"></div>
+      </div>
+    </div>
   </div>
 
   <!-- Panel Market -->
@@ -483,6 +494,33 @@ td{padding:12px 15px;white-space:nowrap;}
 // ──────────────────────────────────────
 function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('vi-VN');}
 setInterval(tick,1000);tick();
+
+// ──────────────────────────────────────
+// SEARCH TOGGLE
+// ──────────────────────────────────────
+function toggleSearch(){
+  const box=document.getElementById('search-box-drop');
+  const btn=document.getElementById('search-toggle');
+  const inp=document.getElementById('crypto-search');
+  const isOpen=box.classList.toggle('open');
+  btn.classList.toggle('on',isOpen);
+  if(isOpen){inp.focus();}
+  else{inp.value='';onSearch('');document.getElementById('search-dd').classList.remove('open');}
+}
+// Click ngoài thì đóng search
+document.addEventListener('click',function(e){
+  const wrap=document.getElementById('search-wrap');
+  if(wrap&&!wrap.contains(e.target)){
+    const box=document.getElementById('search-box-drop');
+    const inp=document.getElementById('crypto-search');
+    if(box.classList.contains('open')){
+      box.classList.remove('open');
+      document.getElementById('search-toggle').classList.remove('on');
+      inp.value='';onSearch('');
+      document.getElementById('search-dd').classList.remove('open');
+    }
+  }
+});
 
 // ──────────────────────────────────────
 // FAVORITES (localStorage)
@@ -653,7 +691,7 @@ function sortTokensByCh(arr){
 }
 function listRowHTML(t){
   const p=gP(t.sym),ch=gC(t.sym),up=ch>=0,fav=FAV.has(t.sym);
-  const tag=t.type==='alpha'?'<span class="alpha-badge">✦ ALPHA</span>':'<span class="spot-lbl">▸ SPOT</span>';
+  const tag=t.type==='alpha'?'<span class="alpha-badge">✦ ALPHA</span>':'';
   return `<div class="cl-row${fav?' is-fav':''}">
     <div class="cl-l">
       <div class="cl-logo" style="background:${t.bg};color:${t.c}">${t.sym.slice(0,4)}</div>
