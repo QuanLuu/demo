@@ -15,7 +15,7 @@ html{
   scroll-padding-top:var(--sticky-top);
   width:100%;
   max-width:100%;
-  overflow-x:hidden;
+  overflow-x:clip;
   min-height:100%;
   min-height:-webkit-fill-available;
 }
@@ -26,7 +26,7 @@ body{
   line-height:1.6;
   width:100%;
   max-width:100%;
-  overflow-x:hidden;
+  overflow-x:clip;
   min-height:100vh;
   min-height:100dvh;
   min-height:-webkit-fill-available;
@@ -52,9 +52,12 @@ header h1{font-size:1.2rem;font-weight:800;letter-spacing:-.03em;background:line
 .refresh-btn:hover{border-color:var(--accent);color:var(--accent);}
 .spin{display:inline-block;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 max(40px,env(safe-area-inset-left)) 0 max(40px,env(safe-area-inset-right));display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;}
-nav a{padding:14px 18px;min-height:48px;display:inline-flex;align-items:center;color:var(--muted);text-decoration:none;font-size:.84rem;font-weight:600;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;touch-action:manipulation;}
-nav a:hover,nav a.active{color:var(--accent);border-bottom-color:var(--accent);}
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 max(40px,env(safe-area-inset-left)) 0 max(40px,env(safe-area-inset-right));display:flex;align-items:center;justify-content:space-between;width:100%;}
+.nav-links{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.nav-links a{padding:14px 18px;min-height:48px;display:inline-flex;align-items:center;color:var(--muted);text-decoration:none;font-size:.84rem;font-weight:600;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;touch-action:manipulation;}
+.nav-links a:hover,.nav-links a.active{color:var(--accent);border-bottom-color:var(--accent);}
+.nav-refresh-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:1.1rem;padding:6px;border-radius:8px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;min-width:36px;min-height:36px;}
+.nav-refresh-btn:hover{color:var(--accent);border-color:var(--accent);}
 main{
   max-width:1440px;
   width:100%;
@@ -115,22 +118,22 @@ main{
 
 .crypto-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(198px,1fr));gap:12px;margin-bottom:24px;}
 .crypto-list{background:var(--card);border:1px solid var(--border);border-radius:13px;overflow:hidden;margin-bottom:24px;}
-.cl-row{display:flex;align-items:center;justify-content:space-between;padding:11px 14px 11px 16px;border-bottom:1px solid var(--border);transition:background .15s;gap:10px;flex-wrap:nowrap;}
+.cl-row{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 16px 20px;border-bottom:1px solid var(--border);transition:background .15s;gap:16px;flex-wrap:nowrap;}
 .cl-row:last-child{border-bottom:none;}
 .cl-row:hover{background:var(--surface2);}
 .cl-row.is-fav{background:rgba(240,180,41,.06);}
-.cl-l{display:flex;align-items:center;gap:12px;min-width:0;flex:1;}
-.cl-logo{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.68rem;font-family:'Space Mono',monospace;flex-shrink:0;}
+.cl-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1;}
+.cl-logo{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;font-family:'Space Mono',monospace;flex-shrink:0;}
 .cl-meta{min-width:0;}
-.cl-symline{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.cl-sym{font-weight:800;font-size:.88rem;letter-spacing:-.02em;}
-.cl-pair{font-size:.72rem;color:var(--muted);font-weight:600;}
-.cl-name{font-size:.72rem;color:var(--muted);margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.35;word-break:break-word;}
+.cl-symline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.cl-sym{font-weight:800;font-size:1.15rem;letter-spacing:-.02em;}
+.cl-pair{font-size:.85rem;color:var(--muted);font-weight:600;}
+.cl-name{font-size:.9rem;color:var(--muted);margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.4;word-break:break-word;}
 .cl-mid{text-align:right;flex-shrink:0;}
-.cl-price{font-family:'Space Mono',monospace;font-size:.92rem;font-weight:700;}
-.cl-vnd{font-size:.68rem;color:var(--muted);font-family:'Space Mono',monospace;margin-top:2px;}
-.cl-r{display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.cl-ch{font-size:.78rem;font-weight:700;padding:4px 10px;border-radius:6px;font-family:'Space Mono',monospace;}
+.cl-price{font-family:'Space Mono',monospace;font-size:1.25rem;font-weight:700;}
+.cl-vnd{font-size:.85rem;color:var(--muted);font-family:'Space Mono',monospace;margin-top:4px;}
+.cl-r{display:flex;align-items:center;gap:14px;flex-shrink:0;}
+.cl-ch{font-size:1rem;font-weight:700;padding:6px 14px;border-radius:8px;font-family:'Space Mono',monospace;}
 .cl-row .alpha-badge{margin:0;font-size:.55rem;padding:2px 6px;vertical-align:middle;}
 .cl-row .spot-lbl{margin:0;font-size:.55rem;}
 .cc{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:16px;cursor:default;transition:all .2s;position:relative;overflow:hidden;}
@@ -180,10 +183,10 @@ main{
 .bank-search-inp{margin-left:auto;padding:10px 13px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:16px;font-family:'Be Vietnam Pro',sans-serif;outline:none;width:200px;max-width:100%;transition:border-color .2s;}
 .bank-search-inp:focus{border-color:var(--accent2);}
 .bank-search-inp::placeholder{color:var(--muted);}
-.bank-table-wrap{overflow-x:auto;border-radius:13px;border:1px solid var(--border);-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;}
+.bank-table-wrap{overflow-x:auto;overflow-y:auto;max-height:65vh;border-radius:13px;border:1px solid var(--border);-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;}
 table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:720px;}
-thead{background:var(--surface2);}
-th{padding:13px 15px;text-align:left;font-weight:700;color:var(--muted);font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;cursor:pointer;user-select:none;}
+thead{background:var(--surface2);position:sticky;top:0;z-index:10;box-shadow:0 1px 0 var(--border);}
+th{padding:13px 15px;background:var(--surface2);text-align:left;font-weight:700;color:var(--muted);font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;cursor:pointer;user-select:none;}
 th:hover{color:var(--text);}
 th.sort-asc::after{content:' ↑';color:var(--accent);}
 th.sort-desc::after{content:' ↓';color:var(--accent);}
@@ -217,7 +220,7 @@ td{padding:12px 15px;white-space:nowrap;}
 .gc-sell{font-family:'Space Mono',monospace;font-size:1rem;font-weight:700;color:var(--accent);}
 .gc-ch{font-size:.7rem;margin-top:2px;}
 .wgr{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:18px;}
-@media(max-width:600px){.wgr{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.wgr{grid-template-columns:repeat(3,1fr);gap:6px;}}
 .wgc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px;text-align:center;}
 .wg-lbl{font-size:.68rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
 .wg-val{font-family:'Space Mono',monospace;font-size:1.05rem;font-weight:700;margin-top:4px;}
@@ -238,7 +241,7 @@ td{padding:12px 15px;white-space:nowrap;}
   main{padding:14px max(10px,env(safe-area-inset-left)) 52px max(10px,env(safe-area-inset-right));width:100%;max-width:100%;}
   header{padding:12px max(12px,env(safe-area-inset-left)) 12px max(12px,env(safe-area-inset-right));}
   nav{padding:0 max(10px,env(safe-area-inset-left)) 0 max(10px,env(safe-area-inset-right));}
-  nav a{padding:12px 14px;font-size:.8rem;}
+  .nav-links a{padding:12px 14px;font-size:.8rem;}
   .section{margin-bottom:40px;}
   .section-title{font-size:1.05rem;}
   .section-subtitle{font-size:.74rem;line-height:1.45;}
@@ -257,8 +260,12 @@ td{padding:12px 15px;white-space:nowrap;}
   .cl-price{font-size:.86rem;}
   .cl-ch{font-size:.74rem;padding:3px 8px;}
   .bank-controls{flex-direction:column;align-items:stretch;}
+  .bank-control{flex-direction:column;align-items:stretch;}
   .bank-filter{width:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;-webkit-overflow-scrolling:touch;gap:8px;}
   .bank-search-inp{margin-left:0;width:100%;}
+  .bank-table-wrap{max-height:75vh;}
+  th{padding:10px 12px;font-size:.68rem;}
+  td{padding:10px 12px;}
   .chart-title{font-size:.8rem;}
   .chart-card{padding:14px;}
   .sri{padding:12px;align-items:flex-start;gap:8px;}
@@ -272,41 +279,30 @@ td{padding:12px 15px;white-space:nowrap;}
   header{padding:10px max(10px,env(safe-area-inset-left)) 10px max(10px,env(safe-area-inset-right));flex-direction:column;align-items:stretch;}
   header h1{font-size:1.02rem;}
   .header-right{justify-content:space-between;width:100%;}
-  .cl-row{
-    display:grid;
-    grid-template-columns:1fr auto;
-    grid-template-rows:auto auto;
-    align-items:start;
-    gap:6px 8px;
-    padding:12px;
-  }
-  .cl-l{grid-column:1;grid-row:1;min-width:0;}
-  .cl-r{grid-column:2;grid-row:1;align-self:start;flex-direction:column;gap:6px;}
-  .cl-mid{
-    grid-column:1/-1;
-    grid-row:2;
-    text-align:left;
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:space-between;
-    align-items:baseline;
-    gap:8px 16px;
-    padding-top:8px;
-    border-top:1px solid var(--border);
-    width:100%;
-  }
-  .cl-vnd{width:100%;}
+  .cl-row{display:flex;flex-wrap:nowrap;align-items:center;padding:10px 8px;gap:6px;}
+  .cl-l{flex:1;min-width:0;gap:8px;}
+  .cl-logo{width:32px;height:32px;font-size:.65rem;}
+  .cl-sym{font-size:.95rem;}
+  .cl-mid{text-align:right;border:none;padding:0;width:auto;display:block;}
+  .cl-r{flex-direction:row;align-self:center;margin-left:auto;}
+  .cl-vnd{width:auto;}
+  .cl-ch{font-size:.75rem;padding:4px 8px;}
+  .cl-price{font-size:.9rem;}
   .mv-name{max-width:42vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .mover-row{padding:10px 12px;gap:8px;}
   .mv-r{flex-shrink:0;}
-  .wgr{grid-template-columns:1fr;gap:8px;}
-  .wgc{padding:11px;}
+  .wgc{padding:8px 4px;}
+  .wg-lbl{font-size:.5rem;letter-spacing:0;}
+  .wg-val{font-size:.85rem;}
+  .wg-ch{font-size:.6rem;}
   .gst{gap:6px;}
   .gst-tab{padding:8px 11px;min-height:40px;font-size:.74rem;}
   .sub-h{flex-wrap:wrap;}
   .sub-tag{font-size:.62rem;max-width:100%;}
-  .gc{flex-direction:column;align-items:stretch;gap:12px;}
-  .gc > div:last-child{text-align:right;width:100%;}
+  .gc{padding:10px;gap:8px;}
+  .gc-type{font-size:.7rem;}
+  .gc-brand,.gc-buy,.gc-ch{font-size:.62rem;}
+  .gc-sell{font-size:.85rem;}
   .range-btn{padding:6px 10px;min-height:36px;}
 }
 @media(max-width:380px){
@@ -322,9 +318,6 @@ td{padding:12px 15px;white-space:nowrap;}
 <header>
   <h1>📊 Bảng Tin Tài Chính Việt Nam</h1>
   <div class="header-right">
-    <button class="refresh-btn" onclick="refreshAll()" id="refresh-btn">
-      <span id="refresh-ico">↻</span> Cập nhật
-    </button>
     <div class="live-badge">
       <div class="live-dot"></div>
       <span id="clock">--:--:--</span>
@@ -333,9 +326,14 @@ td{padding:12px 15px;white-space:nowrap;}
 </header>
 
 <nav>
-  <a href="#crypto" class="active">🪙 Crypto</a>
-  <a href="#banks">🏦 Ngân Hàng</a>
-  <a href="#gold">🥇 Vàng</a>
+  <div class="nav-links">
+    <a href="#crypto" class="active">🪙 Crypto</a>
+    <a href="#banks">🏦 Ngân Hàng</a>
+    <a href="#gold">🥇 Vàng</a>
+  </div>
+  <button class="nav-refresh-btn" onclick="refreshAll()" id="refresh-btn" title="Cập nhật">
+    <span id="refresh-ico">↻</span>
+  </button>
 </nav>
 </div>
 
@@ -349,7 +347,6 @@ td{padding:12px 15px;white-space:nowrap;}
       <div class="section-title">Thị Trường Crypto</div>
       <div class="section-subtitle">Dữ liệu thực từ Binance API · Tự động cập nhật mỗi 30 giây</div>
     </div>
-    <div class="update-time" id="crypto-time">Đang tải...</div>
   </div>
 
   <!-- Search -->
@@ -363,12 +360,7 @@ td{padding:12px 15px;white-space:nowrap;}
   </div>
 
   <!-- Market overview -->
-  <div class="market-overview">
-    <div class="mo-card"><div class="mo-label">Vốn hóa TT</div><div class="mo-val" id="mo-mcap">—</div><div class="mo-sub">Toàn thị trường</div></div>
-    <div class="mo-card"><div class="mo-label">Khối lượng 24h</div><div class="mo-val" id="mo-vol">—</div><div class="mo-sub">Trên Binance</div></div>
-    <div class="mo-card"><div class="mo-label">BTC Dominance</div><div class="mo-val" id="mo-btc">—</div><div class="mo-sub">Tỷ lệ thống trị</div></div>
-    <div class="mo-card"><div class="mo-label">Fear &amp; Greed</div><div class="mo-val" id="mo-fear">—</div><div class="mo-sub" id="mo-fear-lbl">Chỉ số tâm lý</div></div>
-  </div>
+  <!-- Đã ẩn/xóa (Removed per request) -->
 
   <!-- Tabs -->
   <div class="cs-tabs">
@@ -413,7 +405,6 @@ td{padding:12px 15px;white-space:nowrap;}
       <div class="section-title">Lãi Suất Ngân Hàng Việt Nam</div>
       <div class="section-subtitle">Tiết kiệm & cho vay · Tháng 3/2026</div>
     </div>
-    <div class="update-time">Tháng 3/2026</div>
   </div>
   <div class="bank-controls">
     <div class="bank-filter">
@@ -446,7 +437,6 @@ td{padding:12px 15px;white-space:nowrap;}
       <div class="section-title">Giá Vàng Hôm Nay</div>
       <div class="section-subtitle">SJC · PNJ · DOJI · BTMC · Thế giới · 28/03/2026</div>
     </div>
-    <div class="update-time">28/03/2026</div>
   </div>
   <div class="wgr">
     <div class="wgc"><div class="wg-lbl">Vàng Thế Giới</div><div class="wg-val" style="color:var(--accent)">$4,537</div><div class="wg-ch" style="color:var(--red)">▼ -0.7% /oz</div></div>
@@ -737,29 +727,7 @@ function renderMovers(){
 // MARKET STATS
 // ──────────────────────────────────────
 async function fetchStats(){
-  try{
-    const r=await fetch('https://api.coingecko.com/api/v3/global');
-    const d=(await r.json()).data;
-    document.getElementById('mo-mcap').textContent='$'+(d.total_market_cap.usd/1e12).toFixed(2)+'T';
-    document.getElementById('mo-vol').textContent='$'+(d.total_volume.usd/1e9).toFixed(0)+'B';
-    document.getElementById('mo-btc').textContent=d.market_cap_percentage.btc.toFixed(1)+'%';
-  }catch{
-    document.getElementById('mo-mcap').textContent='~$2.8T';
-    document.getElementById('mo-vol').textContent='~$95B';
-    document.getElementById('mo-btc').textContent='~54%';
-  }
-  try{
-    const r=await fetch('https://api.alternative.me/fng/');
-    const d=(await r.json()).data[0];
-    const el=document.getElementById('mo-fear');
-    el.textContent=d.value;
-    document.getElementById('mo-fear-lbl').textContent=d.value_classification;
-    el.style.color=d.value>60?'var(--green)':d.value<40?'var(--red)':'var(--accent)';
-  }catch{
-    document.getElementById('mo-fear').textContent='65';
-    document.getElementById('mo-fear-lbl').textContent='Greed';
-    document.getElementById('mo-fear').style.color='var(--green)';
-  }
+  // Không fetch nữa vì đã xóa panel Data
 }
 
 // ──────────────────────────────────────
@@ -847,11 +815,10 @@ async function refreshAll(){
   await Promise.all([fetchTickers(),fetchAlphaBinance()]);
   await fetchStats();
   renderAll();
-  document.getElementById('crypto-time').textContent='Cập nhật: '+new Date().toLocaleTimeString('vi-VN');
   ico.classList.remove('spin');busy=false;
 }
 setInterval(refreshAll,30000);
-(async()=>{await Promise.all([fetchTickers(),fetchAlphaBinance()]);await fetchStats();renderAll();document.getElementById('crypto-time').textContent='Cập nhật: '+new Date().toLocaleTimeString('vi-VN');})();
+(async()=>{await Promise.all([fetchTickers(),fetchAlphaBinance()]);await fetchStats();renderAll();})();
 
 // ──────────────────────────────────────
 // BANKS
@@ -965,7 +932,7 @@ function updateChart(r,el){document.querySelectorAll('.range-btn').forEach(b=>b.
 })();
 
 // NAV scroll highlight
-const secs=document.querySelectorAll('.section');const navA=document.querySelectorAll('nav a');
+const secs=document.querySelectorAll('.section');const navA=document.querySelectorAll('.nav-links a');
 window.addEventListener('scroll',()=>{let c='';secs.forEach(s=>{if(scrollY>=s.offsetTop-120)c=s.id;});navA.forEach(a=>{a.classList.remove('active');if(a.getAttribute('href')==='#'+c)a.classList.add('active');});},{passive:true});
 </script>
 </body>
