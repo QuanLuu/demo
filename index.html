@@ -58,8 +58,8 @@ main{
   margin:0 auto;
   padding:28px max(40px,env(safe-area-inset-left)) 60px max(40px,env(safe-area-inset-right));
 }
-.section{margin-bottom:56px;opacity:0;transform:translateY(20px);animation:fadeUp .5s forwards;}
-.section:nth-child(1){animation-delay:.1s}.section:nth-child(2){animation-delay:.25s}.section:nth-child(3){animation-delay:.4s}
+.section{display:none;margin-bottom:56px;}
+.section.active-view{display:block;opacity:0;transform:translateY(20px);animation:fadeUp .5s forwards;}
 @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
 .section-header{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
 .section-header .section-icon{flex-shrink:0;}
@@ -319,9 +319,9 @@ td{padding:12px 15px;white-space:nowrap;}
 <div class="site-top">
 <nav>
   <div class="nav-links">
-    <a href="#crypto" class="active">🪙 Crypto</a>
-    <a href="#gold">🥇 Vàng</a>
-    <a href="#banks">🏦 Ngân Hàng</a>
+    <a href="#crypto" class="active" data-section="crypto" aria-current="page">🪙 Crypto</a>
+    <a href="#gold" data-section="gold">🥇 Vàng</a>
+    <a href="#banks" data-section="banks">🏦 Ngân Hàng</a>
   </div>
   <button class="nav-refresh-btn" onclick="refreshAll()" id="refresh-btn" title="Cập nhật">
     <span id="refresh-ico">↻</span>
@@ -332,7 +332,7 @@ td{padding:12px 15px;white-space:nowrap;}
 <main>
 
 <!-- ═══ CRYPTO ═══ -->
-<section class="section" id="crypto">
+<section class="section active-view" id="crypto">
 
   <!-- Market overview -->
   <!-- Đã ẩn/xóa (Removed per request) -->
@@ -468,6 +468,18 @@ td{padding:12px 15px;white-space:nowrap;}
 // ──────────────────────────────────────
 // SEARCH TOGGLE
 // ──────────────────────────────────────
+function closeCryptoSearch(){
+  const box=document.getElementById('search-box-drop');
+  const btn=document.getElementById('search-toggle');
+  const inp=document.getElementById('crypto-search');
+  const dd=document.getElementById('search-dd');
+  if(!box||!btn||!inp||!dd)return;
+  box.classList.remove('open');
+  btn.classList.remove('on');
+  inp.value='';
+  onSearch('');
+  dd.classList.remove('open');
+}
 function toggleSearch(){
   const box=document.getElementById('search-box-drop');
   const btn=document.getElementById('search-toggle');
@@ -475,20 +487,13 @@ function toggleSearch(){
   const isOpen=box.classList.toggle('open');
   btn.classList.toggle('on',isOpen);
   if(isOpen){inp.focus();}
-  else{inp.value='';onSearch('');document.getElementById('search-dd').classList.remove('open');}
+  else{closeCryptoSearch();}
 }
 // Click ngoài thì đóng search
 document.addEventListener('click',function(e){
   const wrap=document.getElementById('search-wrap');
   if(wrap&&!wrap.contains(e.target)){
-    const box=document.getElementById('search-box-drop');
-    const inp=document.getElementById('crypto-search');
-    if(box.classList.contains('open')){
-      box.classList.remove('open');
-      document.getElementById('search-toggle').classList.remove('on');
-      inp.value='';onSearch('');
-      document.getElementById('search-dd').classList.remove('open');
-    }
+    closeCryptoSearch();
   }
 });
 
@@ -942,9 +947,55 @@ function updateChart(r,el){document.querySelectorAll('.range-btn').forEach(b=>b.
   ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:'#6b7280',font:{family:'Be Vietnam Pro',size:12}}},tooltip:{backgroundColor:'#ffffff',borderColor:'#dde2ea',borderWidth:1,titleColor:'#111827',bodyColor:'#6b7280',callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y} tr.đ`}}},scales:{x:{ticks:{color:'#6b7280',font:{size:11}},grid:{color:'#e5e7eb'}},y:{ticks:{color:'#6b7280',font:{size:11},callback:v=>v+' tr'},grid:{color:'#e5e7eb'}}}}});
 })();
 
-// NAV scroll highlight
-const secs=document.querySelectorAll('.section');const navA=document.querySelectorAll('.nav-links a');
-window.addEventListener('scroll',()=>{let c='';secs.forEach(s=>{if(scrollY>=s.offsetTop-120)c=s.id;});navA.forEach(a=>{a.classList.remove('active');if(a.getAttribute('href')==='#'+c)a.classList.add('active');});},{passive:true});
+// SECTION SWITCHING
+const SECTION_IDS=['crypto','gold','banks'];
+const SECTION_LINKS=[...document.querySelectorAll('.nav-links a')];
+let CURRENT_SECTION='crypto';
+
+function resizeGoldChart(){
+  if(!gChart)return;
+  requestAnimationFrame(()=>{
+    gChart.resize();
+    gChart.update('none');
+  });
+}
+
+function switchSection(sectionId,{updateHash=true,scrollTop=true}={}){
+  const nextSection=SECTION_IDS.includes(sectionId)?sectionId:'crypto';
+  if(nextSection!=='crypto')closeCryptoSearch();
+  CURRENT_SECTION=nextSection;
+  document.querySelectorAll('.section').forEach(section=>{
+    section.classList.toggle('active-view',section.id===nextSection);
+  });
+  SECTION_LINKS.forEach(link=>{
+    const isActive=link.dataset.section===nextSection;
+    link.classList.toggle('active',isActive);
+    if(isActive)link.setAttribute('aria-current','page');
+    else link.removeAttribute('aria-current');
+  });
+  if(updateHash){
+    history.replaceState(null,'',`#${nextSection}`);
+  }
+  if(scrollTop){
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  if(nextSection==='gold'){
+    resizeGoldChart();
+  }
+}
+
+SECTION_LINKS.forEach(link=>{
+  link.addEventListener('click',e=>{
+    e.preventDefault();
+    switchSection(link.dataset.section);
+  });
+});
+
+window.addEventListener('hashchange',()=>{
+  switchSection(location.hash.replace('#',''),{updateHash:false,scrollTop:false});
+});
+
+switchSection(location.hash.replace('#','')||CURRENT_SECTION,{updateHash:Boolean(location.hash),scrollTop:false});
 </script>
 </body>
 </html>
