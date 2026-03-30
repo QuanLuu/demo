@@ -236,6 +236,29 @@ td{padding:12px 15px;white-space:nowrap;}
 .range-btn{padding:4px 9px;border-radius:5px;font-size:.7rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--muted);transition:all .2s;}
 .range-btn.active{background:var(--accent);color:#000;border-color:var(--accent);}
 
+/* ── NEWS + JOBS ── */
+.feed-list{display:grid;gap:14px;}
+.jobs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;}
+.feed-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;transition:all .2s;}
+.feed-card:hover{border-color:#c5ccd8;transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.08);}
+.feed-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;}
+.feed-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:999px;font-size:.66rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+.feed-badge.news{background:rgba(244,63,94,.08);color:#be123c;border-color:rgba(244,63,94,.18);}
+.feed-badge.jobs{background:rgba(14,165,233,.10);color:#0369a1;border-color:rgba(14,165,233,.18);}
+.feed-title{font-size:1rem;font-weight:800;line-height:1.4;letter-spacing:-.02em;}
+.feed-title a{color:var(--text);text-decoration:none;}
+.feed-title a:hover{color:var(--accent3);}
+.feed-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;color:var(--muted);font-size:.72rem;}
+.feed-meta span{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);}
+.feed-desc{font-size:.8rem;color:var(--muted);margin-top:10px;line-height:1.65;}
+.feed-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.feed-tag{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:rgba(43,111,212,.08);color:var(--accent3);font-size:.68rem;font-weight:700;border:1px solid rgba(43,111,212,.14);}
+.feed-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.feed-link{display:inline-flex;align-items:center;gap:6px;color:var(--accent3);font-size:.78rem;font-weight:700;text-decoration:none;}
+.feed-link:hover{text-decoration:underline;}
+.feed-empty{background:var(--card);border:1px dashed var(--border);border-radius:14px;padding:36px 18px;text-align:center;color:var(--muted);}
+.feed-empty strong{display:block;color:var(--text);font-size:.9rem;margin-bottom:8px;}
+
 .disclaimer{text-align:center;color:var(--muted);font-size:.7rem;margin-top:36px;padding-top:18px;border-top:1px solid var(--border);}
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
@@ -320,8 +343,10 @@ td{padding:12px 15px;white-space:nowrap;}
 <nav>
   <div class="nav-links">
     <a href="#crypto" class="active" data-section="crypto" aria-current="page">🪙 Crypto</a>
-    <a href="#gold" data-section="gold">🥇 Vàng</a>
-    <a href="#banks" data-section="banks">🏦 Ngân Hàng</a>
+    <a href="#gold" data-section="gold">🥇 Gold</a>
+    <a href="#bank" data-section="bank">🏦 Bank</a>
+    <a href="#news" data-section="news">📰 News</a>
+    <a href="#jobs" data-section="jobs">💼 Jobs</a>
   </div>
   <button class="nav-refresh-btn" onclick="refreshAll()" id="refresh-btn" title="Cập nhật">
     <span id="refresh-ico">↻</span>
@@ -388,7 +413,7 @@ td{padding:12px 15px;white-space:nowrap;}
   <div class="section-header">
     <div class="section-icon icon-gold">🥇</div>
     <div>
-      <div class="section-title">Giá Vàng Hôm Nay</div>
+      <div class="section-title">Gold</div>
       <div class="section-subtitle">SJC · PNJ · DOJI · BTMC · Thế giới · 28/03/2026</div>
     </div>
   </div>
@@ -427,11 +452,11 @@ td{padding:12px 15px;white-space:nowrap;}
 </section>
 
 <!-- ═══ BANKS ═══ -->
-<section class="section" id="banks">
+<section class="section" id="bank">
   <div class="section-header">
     <div class="section-icon icon-bank">🏦</div>
     <div>
-      <div class="section-title">Lãi Suất Ngân Hàng Việt Nam</div>
+      <div class="section-title">Bank</div>
       <div class="section-subtitle">Tiết kiệm & cho vay · Tháng 3/2026</div>
     </div>
   </div>
@@ -458,7 +483,27 @@ td{padding:12px 15px;white-space:nowrap;}
   <p style="color:var(--muted);font-size:.7rem;margin-top:9px;">* %/năm · Tham khảo, gửi tại quầy, lĩnh lãi cuối kỳ · Nguồn: VnEconomy, TOPI, Webgia – tháng 3/2026</p>
 </section>
 
-<div class="disclaimer">Dữ liệu chỉ mang tính tham khảo · Crypto từ Binance API (live) · Lãi suất theo niêm yết 3/2026 · Giá vàng theo công bố chính thức</div>
+<!-- ═══ NEWS ═══ -->
+<section class="section" id="news">
+  <div id="news-body" class="feed-list">
+    <div class="feed-empty">
+      <strong>News chưa được tải</strong>
+      Mở section này để lấy danh sách tin công nghệ và lập trình mới nhất.
+    </div>
+  </div>
+</section>
+
+<!-- ═══ JOBS ═══ -->
+<section class="section" id="jobs">
+  <div id="jobs-body" class="jobs-grid">
+    <div class="feed-empty">
+      <strong>Jobs chưa được tải</strong>
+      Mở section này để lấy danh sách job phù hợp từ nguồn remote công khai.
+    </div>
+  </div>
+</section>
+
+<div class="disclaimer">Dữ liệu chỉ mang tính tham khảo · Crypto từ Binance API (live) · News ưu tiên VnExpress Công nghệ rồi mới fallback quốc tế · Jobs ưu tiên LinkedIn và VietnamWorks, fallback Remotive khi nguồn công khai không đọc được · Lãi suất theo niêm yết 3/2026 · Giá vàng theo công bố chính thức</div>
 </main>
 
 <script>
@@ -747,6 +792,62 @@ async function fetchStats(){
   // Không fetch nữa vì đã xóa panel Data
 }
 
+function escapeHTML(value=''){
+  return String(value).replace(/[&<>"']/g,char=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  })[char]);
+}
+
+function stripHTML(value=''){
+  const div=document.createElement('div');
+  div.innerHTML=String(value);
+  return (div.textContent||div.innerText||'').replace(/\s+/g,' ').trim();
+}
+
+function truncateText(value,max=180){
+  const text=String(value||'').trim();
+  if(text.length<=max)return text;
+  const cut=text.slice(0,max);
+  const stop=cut.lastIndexOf(' ');
+  return `${(stop>80?cut.slice(0,stop):cut).trim()}…`;
+}
+
+function formatStamp(ts){
+  return new Date(ts).toLocaleString('vi-VN',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+}
+
+function formatRelativeTime(value){
+  const target=typeof value==='number'?value*1000:new Date(value).getTime();
+  if(!Number.isFinite(target))return '';
+  const diff=Math.max(0,Date.now()-target);
+  const mins=Math.round(diff/60000);
+  if(mins<1)return 'vừa xong';
+  if(mins<60)return `${mins} phút trước`;
+  const hours=Math.round(mins/60);
+  if(hours<24)return `${hours} giờ trước`;
+  const days=Math.round(hours/24);
+  return `${days} ngày trước`;
+}
+
+function getHostLabel(url){
+  try{return new URL(url).hostname.replace(/^www\./,'');}
+  catch{return 'external';}
+}
+
+async function fetchTextWithProxy(url){
+  const direct=await fetch(url,{cache:'no-store'}).catch(()=>null);
+  if(direct&&direct.ok){
+    return await direct.text();
+  }
+  const proxied=await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,{cache:'no-store'});
+  if(!proxied.ok)throw new Error('proxy_fetch_failed');
+  return await proxied.text();
+}
+
 // ──────────────────────────────────────
 // SEARCH
 // ──────────────────────────────────────
@@ -824,18 +925,13 @@ function switchTab(tab,el){
 // ──────────────────────────────────────
 // REFRESH ALL
 // ──────────────────────────────────────
-let busy=false;
-async function refreshAll(){
-  if(busy)return;busy=true;
-  const ico=document.getElementById('refresh-ico');
-  ico.classList.add('spin');
+let CRYPTO_LOADED=false;
+async function refreshCryptoData(){
   await Promise.all([fetchTickers(),fetchAlphaBinance()]);
   await fetchStats();
   renderAll();
-  ico.classList.remove('spin');busy=false;
+  CRYPTO_LOADED=true;
 }
-setInterval(refreshAll,30000);
-(async()=>{await Promise.all([fetchTickers(),fetchAlphaBinance()]);await fetchStats();renderAll();})();
 
 // ──────────────────────────────────────
 // BANKS
@@ -947,10 +1043,425 @@ function updateChart(r,el){document.querySelectorAll('.range-btn').forEach(b=>b.
   ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:'#6b7280',font:{family:'Be Vietnam Pro',size:12}}},tooltip:{backgroundColor:'#ffffff',borderColor:'#dde2ea',borderWidth:1,titleColor:'#111827',bodyColor:'#6b7280',callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y} tr.đ`}}},scales:{x:{ticks:{color:'#6b7280',font:{size:11}},grid:{color:'#e5e7eb'}},y:{ticks:{color:'#6b7280',font:{size:11},callback:v=>v+' tr'},grid:{color:'#e5e7eb'}}}}});
 })();
 
+// ──────────────────────────────────────
+// NEWS
+// ──────────────────────────────────────
+const NEWS_STATE={items:[],loading:false,loaded:false,lastLoadedAt:0,error:''};
+const NEWS_CACHE_MS=15*60*1000;
+const VNEXPRESS_TECH_RSS='https://vnexpress.net/rss/khoa-hoc-cong-nghe.rss';
+const NEWS_TECH_TERMS=[
+  /ai|artificial intelligence|machine learning/i,
+  /programming|developer|software|coding|code/i,
+  /javascript|typescript|python|rust|go|java|c\+\+|swift|kotlin/i,
+  /database|sql|postgres|mysql|sqlite|mongodb/i,
+  /open source|github|gitlab/i,
+  /api|cloud|docker|kubernetes|devops|linux|security|compiler/i
+];
+const NEWS_DOMAIN_HINTS=['github.com','arstechnica.com','techcrunch.com','theverge.com','wired.com','stackoverflow.blog','blog.google','developer.mozilla.org','microsoft.com','openai.com'];
+
+function looksLikeTechNews(item){
+  const host=getHostLabel(item.url);
+  const haystack=`${item.title} ${host}`;
+  return NEWS_DOMAIN_HINTS.some(domain=>host.includes(domain))||NEWS_TECH_TERMS.some(rule=>rule.test(haystack));
+}
+
+function renderNews(){
+  const body=document.getElementById('news-body');
+  if(NEWS_STATE.loading&&!NEWS_STATE.items.length){
+    body.innerHTML=`<div class="feed-empty"><strong>Đang tải News</strong>Đang ưu tiên lấy tin công nghệ Việt Nam trước, sau đó mới fallback sang nguồn quốc tế.</div>`;
+    return;
+  }
+  if(!NEWS_STATE.items.length){
+    body.innerHTML=`<div class="feed-empty"><strong>${NEWS_STATE.error?'Không tải được News':'Chưa có tin phù hợp'}</strong>${NEWS_STATE.error?'Thử chọn lại section này hoặc bấm refresh khi đang mở News.':'Hiện chưa có headline nào để hiển thị.'}</div>`;
+    return;
+  }
+  body.innerHTML=NEWS_STATE.items.map(item=>`<article class="feed-card">
+    <div class="feed-top">
+      <span class="feed-badge news">${escapeHTML(item.sourceLabel||'Tech / Code')}</span>
+      <span class="feed-badge">${escapeHTML(item.domain)}</span>
+    </div>
+    <div class="feed-title"><a href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(item.title)}</a></div>
+    <div class="feed-meta">
+      ${item.score!==undefined?`<span>▲ ${item.score}</span>`:''}
+      ${item.comments!==undefined?`<span>💬 ${item.comments}</span>`:''}
+      ${item.author?`<span>👤 ${escapeHTML(item.author)}</span>`:''}
+      <span>⏱ ${escapeHTML(item.relativeTime)}</span>
+    </div>
+    ${item.excerpt?`<div class="feed-desc">${escapeHTML(item.excerpt)}</div>`:''}
+    <div class="feed-footer">
+      <a class="feed-link" href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer">Mở bài viết ↗</a>
+      <span class="feed-link" style="color:var(--muted);text-decoration:none;">Nguồn: ${escapeHTML(item.sourceLabel||item.domain)}</span>
+    </div>
+  </article>`).join('');
+}
+
+async function fetchVietnamTechNews(limit=8){
+  const xmlText=await fetchTextWithProxy(VNEXPRESS_TECH_RSS);
+  const xmlDoc=new DOMParser().parseFromString(xmlText,'text/xml');
+  const items=[...xmlDoc.querySelectorAll('item')].slice(0,limit);
+  return items.map(item=>{
+    const title=item.querySelector('title')?.textContent?.trim()||'';
+    const url=item.querySelector('link')?.textContent?.trim()||'https://vnexpress.net';
+    const excerpt=truncateText(stripHTML(item.querySelector('description')?.textContent||''),180);
+    const pubDate=item.querySelector('pubDate')?.textContent?.trim()||'';
+    return{
+      title,
+      url,
+      domain:'vnexpress.net',
+      sourceLabel:'VnExpress Công nghệ',
+      relativeTime:formatRelativeTime(pubDate),
+      excerpt
+    };
+  }).filter(item=>item.title&&item.url);
+}
+
+async function fetchHackerNewsFeed(limit=12){
+  const idsResponse=await fetch('https://hacker-news.firebaseio.com/v0/topstories.json',{cache:'no-store'});
+  if(!idsResponse.ok)throw new Error('news_index_failed');
+  const ids=(await idsResponse.json()).slice(0,40);
+  const stories=await Promise.all(ids.map(async id=>{
+    try{
+      const res=await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`,{cache:'no-store'});
+      if(!res.ok)return null;
+      return await res.json();
+    }catch{
+      return null;
+    }
+  }));
+  const cleanStories=stories.filter(item=>item&&item.type==='story'&&item.title&&item.url&&!item.dead&&!item.deleted&&!/^(Ask|Show|Tell|Launch)\s+HN/i.test(item.title));
+  const techStories=cleanStories.filter(looksLikeTechNews);
+  const picked=(techStories.length>=8?techStories:cleanStories).slice(0,limit);
+  return picked.map(item=>({
+      id:item.id,
+      title:item.title,
+      url:item.url,
+      domain:getHostLabel(item.url),
+      sourceLabel:'Hacker News',
+      score:item.score||0,
+      comments:item.descendants||0,
+      author:item.by||'HN',
+      relativeTime:formatRelativeTime(item.time)
+    }));
+}
+
+async function fetchNewsFeed(){
+  const vnNews=await fetchVietnamTechNews().catch(()=>[]);
+  const fallbackLimit=Math.max(0,12-vnNews.length);
+  const hnNews=fallbackLimit?await fetchHackerNewsFeed(fallbackLimit).catch(()=>[]):[];
+  return [...vnNews,...hnNews].slice(0,12);
+}
+
+async function loadNews({force=false}={}){
+  if(NEWS_STATE.loading)return;
+  const isFresh=NEWS_STATE.lastLoadedAt&&(Date.now()-NEWS_STATE.lastLoadedAt<NEWS_CACHE_MS);
+  if(!force&&NEWS_STATE.loaded&&isFresh){renderNews();return;}
+  NEWS_STATE.loading=true;
+  NEWS_STATE.error='';
+  renderNews();
+  try{
+    NEWS_STATE.items=await fetchNewsFeed();
+    NEWS_STATE.loaded=true;
+    NEWS_STATE.lastLoadedAt=Date.now();
+  }catch{
+    NEWS_STATE.error='Không thể tải dữ liệu News.';
+  }finally{
+    NEWS_STATE.loading=false;
+    renderNews();
+  }
+}
+
+// ──────────────────────────────────────
+// JOBS
+// ──────────────────────────────────────
+const JOB_STATE={items:[],loading:false,loaded:false,lastLoadedAt:0,error:''};
+const JOB_CACHE_MS=6*60*60*1000;
+const JOB_KEYWORDS=[
+  {label:'Data',regex:/\bdata\b/i,weight:2},
+  {label:'Database',regex:/\bdatabase\b/i,weight:3},
+  {label:'SQL Server',regex:/sql\s*server/i,weight:5},
+  {label:'MS SQL',regex:/ms\s*sql/i,weight:4},
+  {label:'MSSQL',regex:/mssql/i,weight:4},
+  {label:'SSIS',regex:/\bssis\b/i,weight:5},
+  {label:'ETL',regex:/\betl\b/i,weight:2},
+  {label:'T-SQL',regex:/t-?sql/i,weight:3},
+  {label:'Data Warehouse',regex:/data\s+warehouse|data\s+warehousing|\bdwh\b/i,weight:3},
+  {label:'BI',regex:/\bbi\b|business intelligence/i,weight:2}
+];
+const JOB_SOURCE_CONFIG=[
+  {
+    sourceLabel:'LinkedIn',
+    description:'Kết quả việc làm công khai trên LinkedIn cho thị trường Việt Nam.',
+    searchUrl:'https://vn.linkedin.com/jobs/search/?keywords=sql%20server%20ssis%20data&location=Vietnam',
+    sourceLink:'https://vn.linkedin.com/jobs/search/?keywords=sql%20server%20ssis%20data&location=Vietnam',
+    hrefTest:url=>/linkedin\.com\/jobs\/view\//i.test(url)
+  },
+  {
+    sourceLabel:'VietnamWorks',
+    description:'Tìm kiếm việc làm tại VietnamWorks theo nhóm kỹ năng SQL, SSIS, data và database.',
+    searchUrl:'https://www.vietnamworks.com/viec-lam?keyword=sql%20server%20ssis%20data',
+    sourceLink:'https://www.vietnamworks.com/viec-lam?keyword=sql%20server%20ssis%20data',
+    hrefTest:url=>/vietnamworks\.com/i.test(url)&&!/\/viec-lam(\?|$)/i.test(url)
+  }
+];
+
+function scoreJob(job){
+  const haystack=[
+    job.title,
+    job.category,
+    job.job_type||job.jobType,
+    job.candidate_required_location||job.location,
+    job.sourceLabel,
+    stripHTML(job.description||'')
+  ].join(' ');
+  const tags=[];
+  let score=0;
+  JOB_KEYWORDS.forEach(rule=>{
+    if(rule.regex.test(haystack)){
+      score+=rule.weight;
+      tags.push(rule.label);
+    }
+  });
+  return{score,tags:[...new Set(tags)]};
+}
+
+function normalizeUrl(href,baseUrl){
+  try{return new URL(href,baseUrl).href;}
+  catch{return '';}
+}
+
+function parseTextLines(text=''){
+  return [...new Set(String(text).split('\n').map(line=>line.trim()).filter(Boolean))];
+}
+
+function collectJsonLdJobPostings(doc){
+  const items=[];
+  const visit=node=>{
+    if(!node||typeof node!=='object')return;
+    if(Array.isArray(node)){node.forEach(visit);return;}
+    const type=Array.isArray(node['@type'])?node['@type'][0]:node['@type'];
+    if(type==='JobPosting'){
+      items.push(node);
+    }
+    Object.values(node).forEach(visit);
+  };
+  doc.querySelectorAll('script[type="application/ld+json"]').forEach(script=>{
+    try{
+      visit(JSON.parse(script.textContent));
+    }catch{}
+  });
+  return items;
+}
+
+function parseStructuredJobs(doc,source){
+  return collectJsonLdJobPostings(doc).map(item=>{
+    const company=item.hiringOrganization?.name||source.sourceLabel;
+    const location=[
+      item.jobLocation?.address?.addressLocality,
+      item.jobLocation?.address?.addressRegion,
+      item.jobLocation?.address?.addressCountry
+    ].filter(Boolean).join(', ')||'Vietnam';
+    const salary=item.baseSalary?.value?.value?String(item.baseSalary.value.value):'';
+    return{
+      title:item.title||'Untitled role',
+      company,
+      location,
+      category:item.employmentType||'Vietnam market',
+      jobType:item.employmentType||'job board',
+      salary,
+      url:normalizeUrl(item.url||item['@id']||item.mainEntityOfPage?.['@id']||source.sourceLink,source.sourceLink),
+      published:item.datePosted||'',
+      relativeTime:item.datePosted?formatRelativeTime(item.datePosted):'',
+      description:truncateText(stripHTML(item.description||''),190),
+      sourceLabel:source.sourceLabel,
+      tags:[source.sourceLabel]
+    };
+  });
+}
+
+function parseAnchorJobs(doc,source){
+  const seen=new Set();
+  const jobs=[];
+  [...doc.querySelectorAll('a[href]')].forEach(anchor=>{
+    const url=normalizeUrl(anchor.getAttribute('href')||'',source.sourceLink);
+    if(!url||seen.has(url)||!source.hrefTest(url))return;
+    const container=anchor.closest('li,article,section,div');
+    const lines=parseTextLines(container?.innerText||anchor.innerText||'');
+    const title=(anchor.textContent||lines[0]||'').trim();
+    if(!title||title.length<5)return;
+    const location=lines.find(line=>/(Vietnam|Việt Nam|Hà Nội|Hanoi|Ho Chi Minh|Đà Nẵng|Da Nang|Cần Thơ|Can Tho|Remote|Hybrid|On-site)/i.test(line))||'Vietnam';
+    const relativeTime=lines.find(line=>/\b(\d+\s*(phút|giờ|ngày|tuần|tháng|năm)|today|yesterday|week|month|hour|day|mới)\b/i.test(line))||'';
+    const company=lines.find(line=>line!==title&&line!==location&&line!==relativeTime&&line.length<80)||source.sourceLabel;
+    const description=truncateText(lines.filter(line=>![title,company,location,relativeTime].includes(line)).join(' · '),180);
+    jobs.push({
+      title,
+      company,
+      location,
+      category:'Vietnam market',
+      jobType:'job board',
+      salary:'',
+      url,
+      published:'',
+      relativeTime,
+      description,
+      sourceLabel:source.sourceLabel,
+      tags:[source.sourceLabel]
+    });
+    seen.add(url);
+  });
+  return jobs;
+}
+
+async function fetchPreferredSourceJobs(source){
+  const html=await fetchTextWithProxy(source.searchUrl);
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  const structured=parseStructuredJobs(doc,source);
+  const anchored=structured.length?[]:parseAnchorJobs(doc,source);
+  const merged=[...structured,...anchored].map(job=>{
+    const {score,tags}=scoreJob(job);
+    return{
+      ...job,
+      score,
+      tags:[...new Set([...job.tags,...tags])].slice(0,5),
+      relativeTime:job.relativeTime||formatRelativeTime(job.published)
+    };
+  }).filter(job=>job.score>0);
+  const deduped=[];
+  const seen=new Set();
+  merged.forEach(job=>{
+    if(!job.url||seen.has(job.url))return;
+    seen.add(job.url);
+    deduped.push(job);
+  });
+  return deduped.slice(0,10);
+}
+
+function renderJobs(){
+  const body=document.getElementById('jobs-body');
+  if(JOB_STATE.loading&&!JOB_STATE.items.length){
+    body.innerHTML=`<div class="feed-empty"><strong>Đang tải Jobs</strong>Đang ưu tiên lấy dữ liệu từ LinkedIn và VietnamWorks trước.</div>`;
+    return;
+  }
+  if(!JOB_STATE.items.length){
+    body.innerHTML=`<div class="feed-empty"><strong>${JOB_STATE.error?'Không tải được Jobs':'Chưa tìm thấy job phù hợp'}</strong>${JOB_STATE.error?'LinkedIn và VietnamWorks không có public API client-side ổn định, nên hiện chỉ có thể thử đọc listing công khai hoặc mở nguồn trực tiếp.':'Nguồn hiện tại chưa trả về job khớp với nhóm kỹ năng bạn yêu cầu.'}</div>`;
+    return;
+  }
+  body.innerHTML=JOB_STATE.items.map(job=>`<article class="feed-card">
+    <div class="feed-top">
+      <span class="feed-badge jobs">${escapeHTML(job.company)}</span>
+      <span class="feed-badge">${escapeHTML(job.location)}</span>
+    </div>
+    <div class="feed-title"><a href="${escapeHTML(job.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(job.title)}</a></div>
+    <div class="feed-meta">
+      <span>🧭 ${escapeHTML(job.category)}</span>
+      <span>🧪 ${escapeHTML(job.jobType)}</span>
+      <span>🕒 ${escapeHTML(job.relativeTime)}</span>
+      ${job.salary?`<span>💰 ${escapeHTML(job.salary)}</span>`:''}
+    </div>
+    <div class="feed-desc">${escapeHTML(job.description)}</div>
+    <div class="feed-tags">${job.tags.map(tag=>`<span class="feed-tag">${escapeHTML(tag)}</span>`).join('')}</div>
+    <div class="feed-footer">
+      <a class="feed-link" href="${escapeHTML(job.url)}" target="_blank" rel="noopener noreferrer">Mở job ↗</a>
+      <span class="feed-link" style="color:var(--muted);text-decoration:none;">Nguồn: ${escapeHTML(job.sourceLabel)}</span>
+    </div>
+  </article>`).join('');
+}
+
+async function fetchRemotiveJobs(){
+  const response=await fetch('https://remotive.com/api/remote-jobs?limit=120',{cache:'no-store'});
+  if(!response.ok)throw new Error('jobs_feed_failed');
+  const payload=await response.json();
+  const jobs=Array.isArray(payload.jobs)?payload.jobs:[];
+  return jobs
+    .map(job=>{
+      const {score,tags}=scoreJob(job);
+      return{
+        score,
+        tags,
+        title:job.title||'Untitled role',
+        company:job.company_name||'Unknown company',
+        location:job.candidate_required_location||'Remote',
+        category:job.category||'General',
+        jobType:(job.job_type||'remote').replace(/_/g,' '),
+        salary:job.salary||'',
+        url:job.url||'https://remotive.com/',
+        published:job.publication_date,
+        description:truncateText(stripHTML(job.description||''),190),
+        sourceLabel:'Remotive'
+      };
+    })
+    .filter(job=>job.score>0)
+    .sort((a,b)=>b.score-a.score||new Date(b.published)-new Date(a.published))
+    .slice(0,18)
+    .map(job=>({
+      ...job,
+      relativeTime:formatRelativeTime(job.published),
+      tags:[...new Set([job.category,...job.tags])].slice(0,5)
+    }));
+}
+
+async function fetchJobsFeed(){
+  const preferred=(await Promise.all(JOB_SOURCE_CONFIG.map(source=>fetchPreferredSourceJobs(source).catch(()=>[])))).flat();
+  if(preferred.length){
+    return preferred
+      .sort((a,b)=>b.score-a.score||a.sourceLabel.localeCompare(b.sourceLabel))
+      .slice(0,18);
+  }
+  return await fetchRemotiveJobs();
+}
+
+async function loadJobs({force=false}={}){
+  if(JOB_STATE.loading)return;
+  const isFresh=JOB_STATE.lastLoadedAt&&(Date.now()-JOB_STATE.lastLoadedAt<JOB_CACHE_MS);
+  if(!force&&JOB_STATE.loaded&&isFresh){renderJobs();return;}
+  JOB_STATE.loading=true;
+  JOB_STATE.error='';
+  renderJobs();
+  try{
+    JOB_STATE.items=await fetchJobsFeed();
+    JOB_STATE.loaded=true;
+    JOB_STATE.lastLoadedAt=Date.now();
+  }catch{
+    JOB_STATE.error='Không thể tải dữ liệu Jobs.';
+  }finally{
+    JOB_STATE.loading=false;
+    renderJobs();
+  }
+}
+
+// REFRESH CURRENT SECTION
+let busy=false;
+async function refreshAll(){
+  if(busy)return;
+  busy=true;
+  const ico=document.getElementById('refresh-ico');
+  ico.classList.add('spin');
+  try{
+    if(CURRENT_SECTION==='crypto'){
+      await refreshCryptoData();
+    }else if(CURRENT_SECTION==='news'){
+      await loadNews({force:true});
+    }else if(CURRENT_SECTION==='jobs'){
+      await loadJobs({force:true});
+    }else if(CURRENT_SECTION==='gold'){
+      resizeGoldChart();
+    }else if(CURRENT_SECTION==='bank'){
+      renderBankTable();
+    }
+  }finally{
+    ico.classList.remove('spin');
+    busy=false;
+  }
+}
+
 // SECTION SWITCHING
-const SECTION_IDS=['crypto','gold','banks'];
+const SECTION_IDS=['crypto','gold','bank','news','jobs'];
 const SECTION_LINKS=[...document.querySelectorAll('.nav-links a')];
 let CURRENT_SECTION='crypto';
+
+function normalizeSectionId(sectionId){
+  if(sectionId==='banks')return 'bank';
+  return SECTION_IDS.includes(sectionId)?sectionId:'crypto';
+}
 
 function resizeGoldChart(){
   if(!gChart)return;
@@ -961,7 +1472,7 @@ function resizeGoldChart(){
 }
 
 function switchSection(sectionId,{updateHash=true,scrollTop=true}={}){
-  const nextSection=SECTION_IDS.includes(sectionId)?sectionId:'crypto';
+  const nextSection=normalizeSectionId(sectionId);
   if(nextSection!=='crypto')closeCryptoSearch();
   CURRENT_SECTION=nextSection;
   document.querySelectorAll('.section').forEach(section=>{
@@ -982,6 +1493,15 @@ function switchSection(sectionId,{updateHash=true,scrollTop=true}={}){
   if(nextSection==='gold'){
     resizeGoldChart();
   }
+  if(nextSection==='crypto'&&!CRYPTO_LOADED){
+    refreshCryptoData();
+  }
+  if(nextSection==='news'){
+    loadNews();
+  }
+  if(nextSection==='jobs'){
+    loadJobs();
+  }
 }
 
 SECTION_LINKS.forEach(link=>{
@@ -995,7 +1515,19 @@ window.addEventListener('hashchange',()=>{
   switchSection(location.hash.replace('#',''),{updateHash:false,scrollTop:false});
 });
 
-switchSection(location.hash.replace('#','')||CURRENT_SECTION,{updateHash:Boolean(location.hash),scrollTop:false});
+setInterval(()=>{
+  if(CURRENT_SECTION==='crypto'){
+    refreshCryptoData();
+  }
+},30000);
+
+(async()=>{
+  const initialSection=normalizeSectionId(location.hash.replace('#','')||CURRENT_SECTION);
+  if(initialSection==='crypto'){
+    await refreshCryptoData();
+  }
+  switchSection(initialSection,{updateHash:Boolean(location.hash),scrollTop:false});
+})();
 </script>
 </body>
 </html>
