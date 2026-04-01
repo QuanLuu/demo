@@ -68,6 +68,7 @@ main{
 .icon-crypto{background:linear-gradient(135deg,#dbeafe,#eff6ff);border:1px solid #bfdbfe;}
 .icon-bank{background:linear-gradient(135deg,#d1faf2,#e6fff9);border:1px solid #a0f0e0;}
 .icon-gold{background:linear-gradient(135deg,#fef3c7,#fffbeb);border:1px solid #fcd34d;}
+.icon-calendar{background:linear-gradient(135deg,#ede9fe,#f5f3ff);border:1px solid #c4b5fd;}
 .section-title{font-size:1.15rem;font-weight:800;letter-spacing:-.02em;}
 .section-subtitle{font-size:.78rem;color:var(--muted);margin-top:2px;}
 .update-time{margin-left:auto;font-family:'Space Mono',monospace;font-size:.68rem;color:var(--muted);background:var(--surface2);padding:6px 10px;border-radius:6px;border:1px solid var(--border);white-space:nowrap;flex-shrink:0;}
@@ -236,6 +237,24 @@ td{padding:12px 15px;white-space:nowrap;}
 .range-btn{padding:4px 9px;border-radius:5px;font-size:.7rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--muted);transition:all .2s;}
 .range-btn.active{background:var(--accent);color:#000;border-color:var(--accent);}
 
+/* ── CALENDAR ── */
+.calendar-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;}
+@media(max-width:900px){.calendar-grid{grid-template-columns:1fr;}}
+.calendar-hero{background:linear-gradient(135deg,#ffffff 0%,#f6f5ff 100%);border:1px solid var(--border);border-radius:18px;padding:22px;position:relative;overflow:hidden;min-height:248px;}
+.calendar-hero::after{content:'';position:absolute;top:-42px;right:-42px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(43,111,212,.10),transparent 68%);}
+.calendar-label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;position:relative;z-index:1;}
+.calendar-date-line{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-top:10px;position:relative;z-index:1;}
+.calendar-day{font-size:3.4rem;font-weight:800;line-height:1;letter-spacing:-.05em;}
+.calendar-solar{font-size:1rem;font-weight:700;}
+.calendar-weekday{font-size:.82rem;color:var(--muted);margin-top:2px;}
+.calendar-lunar{margin-top:18px;font-size:1.08rem;font-weight:700;color:var(--accent3);position:relative;z-index:1;}
+.calendar-note{margin-top:8px;font-size:.8rem;color:var(--muted);position:relative;z-index:1;}
+.calendar-side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+.cal-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;}
+.cal-label{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700;}
+.cal-value{font-size:1rem;font-weight:800;margin-top:6px;line-height:1.35;}
+.cal-sub{font-size:.72rem;color:var(--muted);margin-top:4px;}
+
 /* ── NEWS + JOBS ── */
 .feed-list{display:grid;gap:14px;}
 .jobs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;}
@@ -334,6 +353,7 @@ td{padding:12px 15px;white-space:nowrap;}
   .mo-card{padding:9px;}
   .mo-label{font-size:.62rem;}
   .cs-tab{padding:8px 10px;font-size:.72rem;}
+  .calendar-day{font-size:2.7rem;}
 }
 </style>
 </head>
@@ -345,8 +365,7 @@ td{padding:12px 15px;white-space:nowrap;}
     <a href="#crypto" class="active" data-section="crypto" aria-current="page">🪙 Crypto</a>
     <a href="#gold" data-section="gold">🥇 Gold</a>
     <a href="#bank" data-section="bank">🏦 Bank</a>
-    <a href="#news" data-section="news">📰 News</a>
-    <a href="#jobs" data-section="jobs">💼 Jobs</a>
+    <a href="#calendar" data-section="calendar">📆 Lịch âm dương</a>
   </div>
   <button class="nav-refresh-btn" onclick="refreshAll()" id="refresh-btn" title="Cập nhật">
     <span id="refresh-ico">↻</span>
@@ -414,28 +433,19 @@ td{padding:12px 15px;white-space:nowrap;}
     <div class="section-icon icon-gold">🥇</div>
     <div>
       <div class="section-title">Gold</div>
-      <div class="section-subtitle">SJC · PNJ · DOJI · BTMC · Thế giới · 28/03/2026</div>
+      <div class="section-subtitle">Dữ liệu live từ Dantri · SJC · PNJ · DOJI · BTMC · BTMH · Thế giới</div>
     </div>
+    <div class="update-time" id="gold-updated">Đang tải...</div>
   </div>
-  <div class="wgr">
-    <div class="wgc"><div class="wg-lbl">Vàng Thế Giới</div><div class="wg-val" style="color:var(--accent)">$4,537</div><div class="wg-ch" style="color:var(--red)">▼ -0.7% /oz</div></div>
-    <div class="wgc"><div class="wg-lbl">SJC (bán ra)</div><div class="wg-val" style="color:var(--accent)">171.6M</div><div class="wg-ch" style="color:var(--green)">▲ +0.5% /lượng</div></div>
-    <div class="wgc"><div class="wg-lbl">Chênh lệch</div><div class="wg-val" style="color:var(--red)">~30M</div><div class="wg-ch" style="color:var(--muted)">trong nước vs TG</div></div>
-  </div>
+  <div class="wgr" id="gold-summary"></div>
   <div class="gold-layout">
     <div>
-      <div class="gst">
-        <div class="gst-tab active" onclick="showGold('sjc',this)">SJC</div>
-        <div class="gst-tab" onclick="showGold('pnj',this)">PNJ</div>
-        <div class="gst-tab" onclick="showGold('doji',this)">DOJI</div>
-        <div class="gst-tab" onclick="showGold('btmc',this)">BTMC</div>
-        <div class="gst-tab" onclick="showGold('world',this)">Thế giới</div>
-      </div>
+      <div class="gst" id="gold-tabs"></div>
       <div id="gold-prices"></div>
     </div>
     <div class="chart-card">
       <div class="chart-hdr">
-        <div class="chart-title">📈 Biểu đồ Giá Vàng SJC (triệu đ/lượng)</div>
+        <div class="chart-title" id="gold-chart-title">📈 Biểu đồ giá vàng</div>
         <div class="chart-range">
           <div class="range-btn" onclick="updateChart('7d',this)">7N</div>
           <div class="range-btn active" onclick="updateChart('1m',this)">1T</div>
@@ -446,7 +456,7 @@ td{padding:12px 15px;white-space:nowrap;}
       <div class="chart-wrapper">
         <canvas id="goldChart"></canvas>
       </div>
-      <p style="color:var(--muted);font-size:.68rem;margin-top:10px;text-align:center;">Nguồn tổng hợp: SJC, Goonus, Tuổi Trẻ Online</p>
+      <p id="gold-source-note" style="color:var(--muted);font-size:.68rem;margin-top:10px;text-align:center;">Nguồn: <a href="https://dantri.com.vn/gia-vang.htm" target="_blank" rel="noopener noreferrer">Dantri</a></p>
     </div>
   </div>
 </section>
@@ -483,27 +493,22 @@ td{padding:12px 15px;white-space:nowrap;}
   <p style="color:var(--muted);font-size:.7rem;margin-top:9px;">* %/năm · Tham khảo, gửi tại quầy, lĩnh lãi cuối kỳ · Nguồn: VnEconomy, TOPI, Webgia – tháng 3/2026</p>
 </section>
 
-<!-- ═══ NEWS ═══ -->
-<section class="section" id="news">
-  <div id="news-body" class="feed-list">
-    <div class="feed-empty">
-      <strong>News chưa được tải</strong>
-      Mở section này để lấy danh sách tin công nghệ và lập trình mới nhất.
+<!-- ═══ CALENDAR ═══ -->
+<section class="section" id="calendar">
+  <div class="section-header">
+    <div class="section-icon icon-calendar">📆</div>
+    <div>
+      <div class="section-title">Lịch âm dương</div>
+      <div class="section-subtitle">Hiển thị theo múi giờ Việt Nam (GMT+7)</div>
     </div>
+  </div>
+  <div class="calendar-grid">
+    <div class="calendar-hero" id="calendar-main"></div>
+    <div class="calendar-side" id="calendar-side"></div>
   </div>
 </section>
 
-<!-- ═══ JOBS ═══ -->
-<section class="section" id="jobs">
-  <div id="jobs-body" class="jobs-grid">
-    <div class="feed-empty">
-      <strong>Jobs chưa được tải</strong>
-      Mở section này để lấy danh sách job phù hợp từ nguồn remote công khai.
-    </div>
-  </div>
-</section>
-
-<div class="disclaimer">Dữ liệu chỉ mang tính tham khảo · Crypto từ Binance API (live) · News ưu tiên VnExpress Công nghệ rồi mới fallback quốc tế · Jobs ưu tiên LinkedIn và VietnamWorks, fallback Remotive khi nguồn công khai không đọc được · Lãi suất theo niêm yết 3/2026 · Giá vàng theo công bố chính thức</div>
+<div class="disclaimer">Dữ liệu chỉ mang tính tham khảo · Crypto từ Binance API (live) · Giá vàng lấy từ Dantri · Lãi suất theo niêm yết 3/2026 · Lịch âm tính theo múi giờ Việt Nam (GMT+7)</div>
 </main>
 
 <script>
@@ -848,6 +853,11 @@ async function fetchTextWithProxy(url){
   return await proxied.text();
 }
 
+async function fetchJsonWithProxy(url){
+  const text=await fetchTextWithProxy(url);
+  return JSON.parse(text);
+}
+
 // ──────────────────────────────────────
 // SEARCH
 // ──────────────────────────────────────
@@ -988,60 +998,457 @@ renderBankTable();
 // ──────────────────────────────────────
 // GOLD
 // ──────────────────────────────────────
-const GOLD={
-  sjc:[
-    {type:'Vàng miếng SJC',brand:'Công ty SJC',buy:'168,600',sell:'171,600',ch:'+500',up:true},
-    {type:'Vàng nhẫn SJC 9999',brand:'Công ty SJC',buy:'168,300',sell:'171,300',ch:'+500',up:true},
-    {type:'Vàng nhẫn SJC (theo chỉ)',brand:'SJC',buy:'13,025',sell:'13,255',ch:'+38',up:true},
-  ],
-  pnj:[
-    {type:'Vàng miếng SJC',brand:'PNJ – TP.HCM',buy:'168,600',sell:'171,600',ch:'+500',up:true},
-    {type:'Vàng nhẫn trơn 9999',brand:'PNJ – TP.HCM',buy:'163,000',sell:'166,000',ch:'-200',up:false},
-    {type:'Vàng trang sức 18K',brand:'PNJ',buy:'56,800',sell:'62,100',ch:'+100',up:true},
-    {type:'Vàng trang sức 14K',brand:'PNJ',buy:'44,200',sell:'48,300',ch:'+80',up:true},
-  ],
-  doji:[
-    {type:'Vàng miếng SJC',brand:'DOJI – Hà Nội',buy:'168,600',sell:'171,600',ch:'+500',up:true},
-    {type:'Vàng nhẫn Hưng Thịnh Vượng 9999',brand:'DOJI – Hà Nội',buy:'163,200',sell:'166,200',ch:'-200',up:false},
-    {type:'Vàng trang sức 24K',brand:'DOJI',buy:'163,200',sell:'167,000',ch:'+200',up:true},
-  ],
-  btmc:[
-    {type:'Vàng miếng SJC',brand:'Bảo Tín Minh Châu – HN',buy:'168,600',sell:'175,000',ch:'+500',up:true},
-    {type:'Vàng nhẫn trơn BTMC',brand:'Bảo Tín Minh Châu',buy:'163,000',sell:'166,000',ch:'-100',up:false},
-    {type:'Vàng Kim Gia Bảo 24K',brand:'Bảo Tín Mạnh Hải',buy:'163,000',sell:'166,000',ch:'+300',up:true},
-  ],
-  world:[
-    {type:'Vàng giao ngay (Spot)',brand:'XAU/USD – London',buy:'4,520',sell:'4,537',ch:'-45',up:false,unit:'USD/oz'},
-    {type:'Vàng tương lai (Futures)',brand:'COMEX – Mỹ',buy:'4,530',sell:'4,548',ch:'-42',up:false,unit:'USD/oz'},
-    {type:'Quy đổi VNĐ/lượng',brand:'Tỷ giá USD/VNĐ: 25,920',buy:'138,200,000',sell:'140,500,000',ch:'-1,100,000',up:false,unit:'VNĐ/lượng'},
-    {type:'Trung bình 7 ngày',brand:'WGC – World Gold Council',buy:'—',sell:'4,495',ch:'-180',up:false,unit:'USD/oz'},
-  ],
+const GOLD_API_URL='https://gadgets.dantri.com.vn/api/pricing/gold';
+const GOLD_CACHE_MS=5*60*1000;
+const GOLD_TAB_ORDER=['sjc','pnj','doji','btmc','btmh','kitco'];
+const GOLD_LABELS={
+  sjc:'SJC',
+  pnj:'PNJ',
+  doji:'DOJI',
+  btmc:'BTMC',
+  btmh:'BTMH',
+  kitco:'Thế giới'
 };
+const GOLD_STATE={items:[],map:{},loading:false,loaded:false,lastLoadedAt:0,error:''};
 let curGold='sjc';
-function showGold(s,el){curGold=s;document.querySelectorAll('.gst-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderGold();}
+let goldRange='1m';
+let gChart=null;
+
+function isWorldGold(sourceKey){return sourceKey==='kitco';}
+function getGoldLabel(sourceKey){return GOLD_LABELS[sourceKey]||String(sourceKey||'').toUpperCase();}
+function getGoldTone(value){
+  if(!Number.isFinite(value)||value===0)return 'var(--muted)';
+  return value>0?'var(--green)':'var(--red)';
+}
+function formatCompactMillions(value){
+  if(!Number.isFinite(value))return '—';
+  return `${(value/1e6).toFixed(2)}M`;
+}
+function formatUsd(value){
+  if(!Number.isFinite(value))return '—';
+  return `$${Number(value).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+}
+function formatGoldPrice(value,sourceKey){
+  if(!Number.isFinite(value))return '—';
+  return isWorldGold(sourceKey)?formatUsd(value):formatCompactMillions(value);
+}
+function formatGoldChange(value,sourceKey){
+  if(!Number.isFinite(value)||value===0)return '0';
+  const sign=value>0?'+':'-';
+  const abs=Math.abs(value);
+  return isWorldGold(sourceKey)
+    ? `${sign}${abs.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`
+    : `${sign}${formatCompactMillions(abs)}`;
+}
+function formatGoldAxisValue(value,sourceKey){
+  if(!Number.isFinite(value))return '';
+  return isWorldGold(sourceKey)
+    ? `$${Number(value).toLocaleString('en-US',{maximumFractionDigits:0})}`
+    : `${Number(value).toFixed(0)}M`;
+}
+function formatGoldChartValue(value,sourceKey){
+  if(!Number.isFinite(value))return '—';
+  return isWorldGold(sourceKey)
+    ? `$${Number(value).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}/oz`
+    : `${Number(value).toFixed(2)}M`;
+}
+function getGoldRows(sourceKey){
+  const source=GOLD_STATE.map[sourceKey];
+  if(!source?.last)return [];
+  const last=source.last;
+  if(isWorldGold(sourceKey)){
+    return [{
+      type:'Vàng giao ngay',
+      location:'Kitco',
+      buyPrice:last.buyPrice,
+      sellPrice:last.sellPrice,
+      buyPriceChange:last.buyPriceChange,
+      sellPriceChange:last.sellPriceChange
+    }];
+  }
+  if(Array.isArray(last.prices)&&last.prices.length){
+    return last.prices;
+  }
+  return [{
+    type:getGoldLabel(sourceKey),
+    location:getGoldLabel(sourceKey),
+    buyPrice:last.buyPrice,
+    sellPrice:last.sellPrice,
+    buyPriceChange:last.buyPriceChange,
+    sellPriceChange:last.sellPriceChange
+  }];
+}
+function getGoldRangeLimit(range){
+  return ({'7d':7,'1m':30,'3m':90,'6m':180}[range]||30);
+}
+function getGoldUpdatedAt(){
+  return GOLD_STATE.items.reduce((latest,item)=>{
+    const ts=new Date(item?.last?.updatedAt||0).getTime();
+    return ts>latest?ts:latest;
+  },0);
+}
+function syncGoldRangeButtons(){
+  const labels={'7d':'7N','1m':'1T','3m':'3T','6m':'6T'};
+  document.querySelectorAll('.range-btn').forEach(btn=>{
+    btn.classList.toggle('active',btn.textContent.trim()===labels[goldRange]);
+  });
+}
+function renderGoldEmpty(message){
+  document.getElementById('gold-summary').innerHTML=`
+    <div class="wgc"><div class="wg-lbl">Nguồn</div><div class="wg-val" style="color:var(--accent)">Dantri</div><div class="wg-ch">API live từ trang giá vàng</div></div>
+    <div class="wgc"><div class="wg-lbl">Trạng thái</div><div class="wg-val" style="color:var(--muted)">Chờ dữ liệu</div><div class="wg-ch">${escapeHTML(message)}</div></div>
+    <div class="wgc"><div class="wg-lbl">Refresh</div><div class="wg-val" style="color:var(--accent3)">↻</div><div class="wg-ch">Bấm cập nhật để tải lại</div></div>
+  `;
+  document.getElementById('gold-tabs').innerHTML='';
+  document.getElementById('gold-prices').innerHTML=`<div class="feed-empty"><strong>Gold chưa sẵn sàng</strong>${escapeHTML(message)}</div>`;
+  document.getElementById('gold-updated').textContent=GOLD_STATE.loading?'Đang tải...':'Chưa có dữ liệu';
+  document.getElementById('gold-chart-title').textContent='📈 Biểu đồ giá vàng';
+  ensureGoldChart();
+  gChart.data.labels=[];
+  gChart.data.datasets[0].label='Mua vào';
+  gChart.data.datasets[0].data=[];
+  gChart.data.datasets[1].label='Bán ra';
+  gChart.data.datasets[1].data=[];
+  gChart.update();
+}
+function renderGoldTabs(){
+  const available=GOLD_TAB_ORDER.filter(key=>GOLD_STATE.map[key]);
+  document.getElementById('gold-tabs').innerHTML=available.map(key=>`<div class="gst-tab ${key===curGold?'active':''}" onclick="showGold('${key}')">${getGoldLabel(key)}</div>`).join('');
+}
+function renderGoldSummary(){
+  const world=GOLD_STATE.map.kitco?.last;
+  const sjc=GOLD_STATE.map.sjc?.last;
+  const worldChange=Number(world?.sellPriceChange);
+  const sjcChange=Number(sjc?.sellPriceChange);
+  const band=Number.isFinite(sjc?.highestBuyPrice)&&Number.isFinite(sjc?.lowestBuyPrice)
+    ? sjc.highestBuyPrice-sjc.lowestBuyPrice
+    : NaN;
+  const cards=[
+    {
+      label:'Thế giới',
+      value:formatGoldPrice(Number(world?.sellPrice), 'kitco'),
+      note:Number.isFinite(worldChange)?`${worldChange>=0?'▲':'▼'} ${formatGoldChange(worldChange, 'kitco')} USD/oz`:'Chưa có dữ liệu',
+      color:Number.isFinite(worldChange)?getGoldTone(worldChange):'var(--muted)'
+    },
+    {
+      label:'SJC (bán ra)',
+      value:formatGoldPrice(Number(sjc?.sellPrice), 'sjc'),
+      note:Number.isFinite(sjcChange)?`${sjcChange>=0?'▲':'▼'} ${formatGoldChange(sjcChange, 'sjc')} hôm nay`:'Chưa có dữ liệu',
+      color:Number.isFinite(sjcChange)?getGoldTone(sjcChange):'var(--muted)'
+    },
+    {
+      label:'Biên độ SJC',
+      value:Number.isFinite(band)?formatGoldPrice(band, 'sjc'):'—',
+      note:'Cao nhất - thấp nhất mua vào',
+      color:'var(--accent3)'
+    }
+  ];
+  document.getElementById('gold-summary').innerHTML=cards.map(card=>`<div class="wgc"><div class="wg-lbl">${card.label}</div><div class="wg-val" style="color:var(--accent)">${card.value}</div><div class="wg-ch" style="color:${card.color}">${card.note}</div></div>`).join('');
+}
+function renderGoldList(){
+  const rows=getGoldRows(curGold);
+  if(!rows.length){
+    document.getElementById('gold-prices').innerHTML='<div class="feed-empty"><strong>Chưa có dữ liệu chi tiết</strong>Dantri chưa trả về bảng giá cho nguồn này.</div>';
+    return;
+  }
+  document.getElementById('gold-prices').innerHTML=rows.map(row=>{
+    const buyPrice=Number(row.buyPrice);
+    const sellPrice=Number(row.sellPrice);
+    const buyChange=Number(row.buyPriceChange||0);
+    const sellChange=Number(row.sellPriceChange||0);
+    const delta=Math.abs(sellChange)>=Math.abs(buyChange)?sellChange:buyChange;
+    const brand=[row.location,getGoldLabel(curGold)].filter(Boolean).join(' · ');
+    return `<div class="gc">
+      <div>
+        <div class="gc-type">${escapeHTML(row.type||getGoldLabel(curGold))}</div>
+        <div class="gc-brand">${escapeHTML(brand)}</div>
+        <div class="gc-unit">${isWorldGold(curGold)?'USD/oz':'VNĐ/lượng'}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="gc-buy">Mua: ${formatGoldPrice(buyPrice,curGold)}</div>
+        <div class="gc-sell">${formatGoldPrice(sellPrice,curGold)}</div>
+        <div class="gc-ch" style="color:${getGoldTone(delta)}">${delta>0?'▲':delta<0?'▼':'•'} Mua ${formatGoldChange(buyChange,curGold)} · Bán ${formatGoldChange(sellChange,curGold)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  const updatedAt=getGoldUpdatedAt();
+  document.getElementById('gold-updated').textContent=updatedAt?`Cập nhật: ${formatStamp(updatedAt)}`:'Chưa có dữ liệu';
+}
+function buildGoldSeries(sourceKey,range){
+  const source=GOLD_STATE.map[sourceKey];
+  const buyEntries=Array.isArray(source?.chart?.buyPrice)?source.chart.buyPrice:[];
+  const sellEntries=Array.isArray(source?.chart?.sellPrice)?source.chart.sellPrice:[];
+  const timestamps=[...new Set([...buyEntries.map(([ts])=>Number(ts)),...sellEntries.map(([ts])=>Number(ts))])].sort((a,b)=>a-b);
+  const picked=timestamps.slice(-getGoldRangeLimit(range));
+  const buyMap=new Map(buyEntries.map(([ts,value])=>[Number(ts),Number(value)]));
+  const sellMap=new Map(sellEntries.map(([ts,value])=>[Number(ts),Number(value)]));
+  return{
+    labels:picked.map(ts=>new Date(ts).toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit'})),
+    buy:picked.map(ts=>{
+      const value=buyMap.get(ts);
+      if(!Number.isFinite(value))return null;
+      return isWorldGold(sourceKey)?Number(value.toFixed(2)):Number((value/1e6).toFixed(2));
+    }),
+    sell:picked.map(ts=>{
+      const value=sellMap.get(ts);
+      if(!Number.isFinite(value))return null;
+      return isWorldGold(sourceKey)?Number(value.toFixed(2)):Number((value/1e6).toFixed(2));
+    })
+  };
+}
+function ensureGoldChart(){
+  if(gChart)return;
+  gChart=new Chart(document.getElementById('goldChart').getContext('2d'),{
+    type:'line',
+    data:{
+      labels:[],
+      datasets:[
+        {label:'Mua vào',data:[],borderColor:'#d4920a',backgroundColor:'rgba(212,146,10,.08)',fill:true,tension:.35,pointRadius:4,pointHitRadius:16,pointBackgroundColor:'#d4920a',borderWidth:2.5},
+        {label:'Bán ra',data:[],borderColor:'#2b6fd4',backgroundColor:'rgba(43,111,212,.06)',fill:true,tension:.35,pointRadius:4,pointHitRadius:16,pointBackgroundColor:'#2b6fd4',borderWidth:2}
+      ]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{labels:{color:'#6b7280',font:{family:'Be Vietnam Pro',size:12}}},
+        tooltip:{
+          backgroundColor:'#ffffff',
+          borderColor:'#dde2ea',
+          borderWidth:1,
+          titleColor:'#111827',
+          bodyColor:'#6b7280',
+          callbacks:{
+            label:ctx=>` ${ctx.dataset.label}: ${formatGoldChartValue(Number(ctx.parsed.y),curGold)}`
+          }
+        }
+      },
+      scales:{
+        x:{ticks:{color:'#6b7280',font:{size:11}},grid:{color:'#e5e7eb'}},
+        y:{ticks:{color:'#6b7280',font:{size:11},callback:value=>formatGoldAxisValue(Number(value),curGold)},grid:{color:'#e5e7eb'}}
+      }
+    }
+  });
+}
+function renderGoldChart(){
+  ensureGoldChart();
+  const series=buildGoldSeries(curGold,goldRange);
+  document.getElementById('gold-chart-title').textContent=`📈 ${getGoldLabel(curGold)} · ${isWorldGold(curGold)?'USD/oz':'triệu đ/lượng'}`;
+  gChart.data.labels=series.labels;
+  gChart.data.datasets[0].label=isWorldGold(curGold)?'Buy':'Mua vào';
+  gChart.data.datasets[0].data=series.buy;
+  gChart.data.datasets[1].label=isWorldGold(curGold)?'Sell':'Bán ra';
+  gChart.data.datasets[1].data=series.sell;
+  gChart.update();
+}
 function renderGold(){
-  const isW=curGold==='world';
-  document.getElementById('gold-prices').innerHTML=GOLD[curGold].map(d=>`<div class="gc">
-    <div><div class="gc-type">${d.type}</div><div class="gc-brand">${d.brand}</div>${d.unit?`<div class="gc-unit">${d.unit}</div>`:''}</div>
-    <div style="text-align:right">
-      <div class="gc-buy">Mua: ${d.buy}</div>
-      <div class="gc-sell">${d.sell}${isW?'':' tr.đ'}</div>
-      <div class="gc-ch" style="color:${d.up?'var(--green)':'var(--red)'}">${d.up?'▲':'▼'} ${d.ch}${isW?'':'.000 đ'} hôm nay</div>
-    </div>
-  </div>`).join('');
+  const available=GOLD_TAB_ORDER.filter(key=>GOLD_STATE.map[key]);
+  if(!available.length){
+    renderGoldEmpty(GOLD_STATE.loading?'Đang tải dữ liệu giá vàng từ Dantri...':(GOLD_STATE.error||'Chưa có dữ liệu giá vàng.'));
+    return;
+  }
+  if(!available.includes(curGold)){
+    curGold=available[0];
+  }
+  renderGoldTabs();
+  renderGoldSummary();
+  renderGoldList();
+  syncGoldRangeButtons();
+  renderGoldChart();
+}
+function showGold(sourceKey){
+  curGold=sourceKey;
+  renderGold();
+}
+function updateChart(range){
+  goldRange=range;
+  syncGoldRangeButtons();
+  renderGoldChart();
+}
+async function loadGold({force=false}={}){
+  if(GOLD_STATE.loading)return;
+  const isFresh=GOLD_STATE.lastLoadedAt&&(Date.now()-GOLD_STATE.lastLoadedAt<GOLD_CACHE_MS);
+  if(!force&&GOLD_STATE.loaded&&isFresh){
+    renderGold();
+    return;
+  }
+  GOLD_STATE.loading=true;
+  GOLD_STATE.error='';
+  renderGold();
+  try{
+    const payload=await fetchJsonWithProxy(GOLD_API_URL);
+    const items=(Array.isArray(payload)?payload:[]).filter(item=>item&&item.source&&GOLD_LABELS[item.source]);
+    GOLD_STATE.items=items;
+    GOLD_STATE.map=Object.fromEntries(items.map(item=>[item.source,item]));
+    GOLD_STATE.loaded=true;
+    GOLD_STATE.lastLoadedAt=Date.now();
+  }catch{
+    GOLD_STATE.error='Không thể tải dữ liệu giá vàng từ Dantri.';
+  }finally{
+    GOLD_STATE.loading=false;
+    renderGold();
+  }
 }
 renderGold();
 
-const CDS={'7d':{labels:['21/3','22/3','23/3','24/3','25/3','26/3','27/3','28/3'],sjc:[178,178.5,166,162.8,172,173.5,169,171.6],world:[143,142,138,137.5,145,143,141,140.5]},'1m':{labels:['1/3','5/3','10/3','15/3','20/3','25/3','28/3'],sjc:[190,185,182,178,175,173,171.6],world:[158,155,150,147,143,141,140.5]},'3m':{labels:['Jan','Feb','Mar'],sjc:[195,188,171.6],world:[162,155,140.5]},'6m':{labels:['Oct','Nov','Dec','Jan','Feb','Mar'],sjc:[165,172,188,195,188,171.6],world:[135,140,150,162,155,140.5]}};
-let gChart=null;
-function updateChart(r,el){document.querySelectorAll('.range-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');const d=CDS[r];if(gChart){gChart.data.labels=d.labels;gChart.data.datasets[0].data=d.sjc;gChart.data.datasets[1].data=d.world;gChart.update();}}
-(function(){
-  const d=CDS['1m'];
-  gChart=new Chart(document.getElementById('goldChart').getContext('2d'),{type:'line',data:{labels:d.labels,datasets:[
-    {label:'SJC (triệu đ/lượng)',data:d.sjc,borderColor:'#d4920a',backgroundColor:'rgba(212,146,10,.08)',fill:true,tension:.4,pointRadius:4,pointHitRadius:16,pointBackgroundColor:'#d4920a',borderWidth:2.5},
-    {label:'Thế giới quy đổi',data:d.world,borderColor:'#2b6fd4',backgroundColor:'rgba(43,111,212,.06)',fill:true,tension:.4,pointRadius:4,pointHitRadius:16,pointBackgroundColor:'#2b6fd4',borderWidth:2,borderDash:[6,3]}
-  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:'#6b7280',font:{family:'Be Vietnam Pro',size:12}}},tooltip:{backgroundColor:'#ffffff',borderColor:'#dde2ea',borderWidth:1,titleColor:'#111827',bodyColor:'#6b7280',callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y} tr.đ`}}},scales:{x:{ticks:{color:'#6b7280',font:{size:11}},grid:{color:'#e5e7eb'}},y:{ticks:{color:'#6b7280',font:{size:11},callback:v=>v+' tr'},grid:{color:'#e5e7eb'}}}}});
-})();
+// ──────────────────────────────────────
+// CALENDAR
+// ──────────────────────────────────────
+const CAN=['Giáp','Ất','Bính','Đinh','Mậu','Kỷ','Canh','Tân','Nhâm','Quý'];
+const CHI=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
+
+function INT(value){return Math.floor(value);}
+function capitalizeFirst(text){return text?text.charAt(0).toUpperCase()+text.slice(1):'';}
+function getVietnamNow(){return new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Ho_Chi_Minh'}));}
+function jdFromDate(dd,mm,yy){
+  const a=INT((14-mm)/12);
+  const y=yy+4800-a;
+  const m=mm+12*a-3;
+  let jd=dd+INT((153*m+2)/5)+365*y+INT(y/4)-INT(y/100)+INT(y/400)-32045;
+  if(jd<2299161){
+    jd=dd+INT((153*m+2)/5)+365*y+INT(y/4)-32083;
+  }
+  return jd;
+}
+function NewMoon(k){
+  const T=k/1236.85;
+  const T2=T*T;
+  const T3=T2*T;
+  const dr=Math.PI/180;
+  let Jd1=2415020.75933+29.53058868*k+0.0001178*T2-0.000000155*T3;
+  Jd1+=0.00033*Math.sin((166.56+132.87*T-0.009173*T2)*dr);
+  const M=359.2242+29.10535608*k-0.0000333*T2-0.00000347*T3;
+  const Mpr=306.0253+385.81691806*k+0.0107306*T2+0.00001236*T3;
+  const F=21.2964+390.67050646*k-0.0016528*T2-0.00000239*T3;
+  let C1=(0.1734-0.000393*T)*Math.sin(M*dr)+0.0021*Math.sin(2*dr*M);
+  C1-=0.4068*Math.sin(Mpr*dr)+0.0161*Math.sin(2*dr*Mpr);
+  C1-=0.0004*Math.sin(3*dr*Mpr);
+  C1+=0.0104*Math.sin(2*dr*F)-0.0051*Math.sin(dr*(M+Mpr));
+  C1-=0.0074*Math.sin(dr*(M-Mpr))+0.0004*Math.sin(dr*(2*F+M));
+  C1-=0.0004*Math.sin(dr*(2*F-M))-0.0006*Math.sin(dr*(2*F+Mpr));
+  C1+=0.001*Math.sin(dr*(2*F-Mpr))+0.0005*Math.sin(dr*(2*Mpr+M));
+  const deltat=T<-11?0.001+0.000839*T+0.0002261*T2-0.00000845*T3-0.000000081*T*T3:-0.000278+0.000265*T+0.000262*T2;
+  return Jd1+C1-deltat;
+}
+function SunLongitude(jdn){
+  const T=(jdn-2451545.0)/36525;
+  const T2=T*T;
+  const dr=Math.PI/180;
+  const M=357.52910+35999.05030*T-0.0001559*T2-0.00000048*T*T2;
+  const L0=280.46645+36000.76983*T+0.0003032*T2;
+  let DL=(1.914600-0.004817*T-0.000014*T2)*Math.sin(dr*M);
+  DL+=(0.019993-0.000101*T)*Math.sin(dr*2*M)+0.000290*Math.sin(dr*3*M);
+  let L=L0+DL;
+  L*=dr;
+  L-=Math.PI*2*INT(L/(Math.PI*2));
+  return L;
+}
+function getSunLongitude(dayNumber,timeZone){
+  return INT(SunLongitude(dayNumber-0.5-timeZone/24)/Math.PI*6);
+}
+function getNewMoonDay(k,timeZone){
+  return INT(NewMoon(k)+0.5+timeZone/24);
+}
+function getLunarMonth11(yy,timeZone){
+  const off=jdFromDate(31,12,yy)-2415021;
+  const k=INT(off/29.530588853);
+  let nm=getNewMoonDay(k,timeZone);
+  const sunLong=getSunLongitude(nm,timeZone);
+  if(sunLong>=9){
+    nm=getNewMoonDay(k-1,timeZone);
+  }
+  return nm;
+}
+function getLeapMonthOffset(a11,timeZone){
+  const k=INT(0.5+(a11-2415021.076998695)/29.530588853);
+  let last=0;
+  let i=1;
+  let arc=getSunLongitude(getNewMoonDay(k+i,timeZone),timeZone);
+  do{
+    last=arc;
+    i+=1;
+    arc=getSunLongitude(getNewMoonDay(k+i,timeZone),timeZone);
+  }while(arc!==last&&i<14);
+  return i-1;
+}
+function convertSolar2Lunar(dd,mm,yy,timeZone){
+  const dayNumber=jdFromDate(dd,mm,yy);
+  const k=INT((dayNumber-2415021.076998695)/29.530588853);
+  let monthStart=getNewMoonDay(k+1,timeZone);
+  if(monthStart>dayNumber){
+    monthStart=getNewMoonDay(k,timeZone);
+  }
+  let a11=getLunarMonth11(yy,timeZone);
+  let b11=a11;
+  let lunarYear;
+  if(a11>=monthStart){
+    lunarYear=yy;
+    a11=getLunarMonth11(yy-1,timeZone);
+  }else{
+    lunarYear=yy+1;
+    b11=getLunarMonth11(yy+1,timeZone);
+  }
+  const lunarDay=dayNumber-monthStart+1;
+  const diff=INT((monthStart-a11)/29);
+  let lunarLeap=0;
+  let lunarMonth=diff+11;
+  if(b11-a11>365){
+    const leapMonthDiff=getLeapMonthOffset(a11,timeZone);
+    if(diff>=leapMonthDiff){
+      lunarMonth=diff+10;
+      if(diff===leapMonthDiff){
+        lunarLeap=1;
+      }
+    }
+  }
+  if(lunarMonth>12){
+    lunarMonth-=12;
+  }
+  if(lunarMonth>=11&&diff<4){
+    lunarYear-=1;
+  }
+  return [lunarDay,lunarMonth,lunarYear,lunarLeap];
+}
+function getYearCanChi(year){return `${CAN[(year+6)%10]} ${CHI[(year+8)%12]}`;}
+function getMonthCanChi(month,year){return `${CAN[(year*12+month+3)%10]} ${CHI[(month+1)%12]}`;}
+function getDayCanChi(dd,mm,yy){
+  const jd=jdFromDate(dd,mm,yy);
+  return `${CAN[(jd+9)%10]} ${CHI[(jd+1)%12]}`;
+}
+function renderCalendar(){
+  const now=getVietnamNow();
+  const dd=now.getDate();
+  const mm=now.getMonth()+1;
+  const yy=now.getFullYear();
+  const [lunarDay,lunarMonth,lunarYear,lunarLeap]=convertSolar2Lunar(dd,mm,yy,7);
+  const weekday=capitalizeFirst(now.toLocaleDateString('vi-VN',{weekday:'long'}));
+  const solarDate=now.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric'});
+  const timeText=now.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+  const lunarText=`${String(lunarDay).padStart(2,'0')}/${String(lunarMonth).padStart(2,'0')}/${lunarYear}${lunarLeap?' nhuận':''}`;
+  const monthCanChi=getMonthCanChi(lunarMonth,lunarYear);
+  document.getElementById('calendar-main').innerHTML=`
+    <div class="calendar-label">Hôm nay</div>
+    <div class="calendar-date-line">
+      <div class="calendar-day">${String(dd).padStart(2,'0')}</div>
+      <div>
+        <div class="calendar-solar">Tháng ${String(mm).padStart(2,'0')} / ${yy}</div>
+        <div class="calendar-weekday">${weekday} · ${timeText}</div>
+      </div>
+    </div>
+    <div class="calendar-lunar">Âm lịch: ${lunarText}</div>
+    <div class="calendar-note">Ngày ${getDayCanChi(dd,mm,yy)} · Tháng ${monthCanChi}${lunarLeap?' (nhuận)':''} · Năm ${getYearCanChi(lunarYear)}</div>
+  `;
+  const cards=[
+    {label:'Dương lịch',value:solarDate,sub:'Múi giờ Việt Nam (GMT+7)'},
+    {label:'Âm lịch',value:lunarText,sub:'Quy đổi theo lịch âm Việt Nam'},
+    {label:'Can chi ngày',value:getDayCanChi(dd,mm,yy),sub:weekday},
+    {label:'Can chi năm',value:getYearCanChi(lunarYear),sub:`Tháng ${monthCanChi}${lunarLeap?' nhuận':''}`}
+  ];
+  document.getElementById('calendar-side').innerHTML=cards.map(card=>`<div class="cal-card"><div class="cal-label">${card.label}</div><div class="cal-value">${card.value}</div><div class="cal-sub">${card.sub}</div></div>`).join('');
+}
+renderCalendar();
+setInterval(renderCalendar,1000);
 
 // ──────────────────────────────────────
 // NEWS
@@ -1438,14 +1845,13 @@ async function refreshAll(){
   try{
     if(CURRENT_SECTION==='crypto'){
       await refreshCryptoData();
-    }else if(CURRENT_SECTION==='news'){
-      await loadNews({force:true});
-    }else if(CURRENT_SECTION==='jobs'){
-      await loadJobs({force:true});
     }else if(CURRENT_SECTION==='gold'){
+      await loadGold({force:true});
       resizeGoldChart();
     }else if(CURRENT_SECTION==='bank'){
       renderBankTable();
+    }else if(CURRENT_SECTION==='calendar'){
+      renderCalendar();
     }
   }finally{
     ico.classList.remove('spin');
@@ -1454,7 +1860,7 @@ async function refreshAll(){
 }
 
 // SECTION SWITCHING
-const SECTION_IDS=['crypto','gold','bank','news','jobs'];
+const SECTION_IDS=['crypto','gold','bank','calendar'];
 const SECTION_LINKS=[...document.querySelectorAll('.nav-links a')];
 let CURRENT_SECTION='crypto';
 
@@ -1491,16 +1897,14 @@ function switchSection(sectionId,{updateHash=true,scrollTop=true}={}){
     window.scrollTo({top:0,behavior:'smooth'});
   }
   if(nextSection==='gold'){
+    loadGold();
     resizeGoldChart();
   }
   if(nextSection==='crypto'&&!CRYPTO_LOADED){
     refreshCryptoData();
   }
-  if(nextSection==='news'){
-    loadNews();
-  }
-  if(nextSection==='jobs'){
-    loadJobs();
+  if(nextSection==='calendar'){
+    renderCalendar();
   }
 }
 
@@ -1523,6 +1927,8 @@ setInterval(()=>{
 
 (async()=>{
   const initialSection=normalizeSectionId(location.hash.replace('#','')||CURRENT_SECTION);
+  loadGold();
+  renderCalendar();
   if(initialSection==='crypto'){
     await refreshCryptoData();
   }
