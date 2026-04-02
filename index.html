@@ -251,9 +251,48 @@ td{padding:12px 15px;white-space:nowrap;}
 .calendar-note{margin-top:8px;font-size:.8rem;color:var(--muted);position:relative;z-index:1;}
 .calendar-side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
 .cal-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;}
+.cal-card.full-width{grid-column:1/-1;}
 .cal-label{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700;}
 .cal-value{font-size:1rem;font-weight:800;margin-top:6px;line-height:1.35;}
 .cal-sub{font-size:.72rem;color:var(--muted);margin-top:4px;}
+.cal-hours-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+.cal-hour-item{display:flex;align-items:center;gap:6px;font-size:.78rem;padding:5px 8px;border-radius:8px;}
+.cal-hour-item.good{background:rgba(22,163,74,.08);color:var(--green);}
+.cal-hour-item.bad{background:rgba(224,53,48,.08);color:var(--red);}
+.cal-hour-icon{font-size:.9rem;}
+.cal-day-verdict{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-size:.85rem;font-weight:700;margin-top:6px;}
+.cal-day-verdict.good-day{background:rgba(22,163,74,.1);color:var(--green);border:1px solid rgba(22,163,74,.2);}
+.cal-day-verdict.bad-day{background:rgba(224,53,48,.1);color:var(--red);border:1px solid rgba(224,53,48,.2);}
+.cal-day-verdict.neutral-day{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+.cal-tasks{margin-top:8px;}
+.cal-task-row{display:flex;align-items:center;gap:6px;font-size:.75rem;padding:3px 0;color:var(--text);}
+.cal-task-good{color:var(--green);}
+.cal-task-bad{color:var(--red);}
+.month-cal{margin-top:18px;}
+.month-cal-title{font-size:.85rem;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.month-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.month-cal-hdr{text-align:center;font-size:.65rem;font-weight:700;color:var(--muted);padding:6px 0;text-transform:uppercase;}
+.month-cal-cell{text-align:center;padding:8px 4px;border-radius:10px;border:1px solid var(--border);background:var(--card);cursor:default;transition:all .15s;min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
+.month-cal-cell:hover{border-color:#c5ccd8;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.06);}
+.month-cal-cell.empty{border:none;background:transparent;}
+.month-cal-cell.today{border-color:var(--accent3);background:rgba(43,111,212,.06);box-shadow:0 0 0 2px rgba(43,111,212,.15);}
+.month-cal-cell.good-cell{background:rgba(22,163,74,.05);border-color:rgba(22,163,74,.2);}
+.month-cal-cell.bad-cell{background:rgba(224,53,48,.05);border-color:rgba(224,53,48,.2);}
+.month-cal-cell .mc-day{font-size:.82rem;font-weight:700;line-height:1;}
+.month-cal-cell .mc-lunar{font-size:.58rem;color:var(--muted);line-height:1;}
+.month-cal-cell .mc-dot{font-size:.6rem;line-height:1;}
+.month-cal-cell.today .mc-day{color:var(--accent3);}
+.month-cal-legend{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;}
+.month-cal-legend span{display:flex;align-items:center;gap:5px;font-size:.68rem;color:var(--muted);}
+.mc-legend-dot{width:10px;height:10px;border-radius:4px;border:1px solid;}
+.mc-legend-dot.good{background:rgba(22,163,74,.15);border-color:rgba(22,163,74,.3);}
+.mc-legend-dot.bad{background:rgba(224,53,48,.15);border-color:rgba(224,53,48,.3);}
+.mc-legend-dot.neutral{background:var(--surface2);border-color:var(--border);}
+@media(max-width:560px){
+  .month-cal-cell{padding:6px 2px;min-height:44px;}
+  .month-cal-cell .mc-day{font-size:.72rem;}
+  .month-cal-cell .mc-lunar{font-size:.5rem;}
+}
 
 /* ── NEWS + JOBS ── */
 .feed-list{display:grid;gap:14px;}
@@ -365,7 +404,7 @@ td{padding:12px 15px;white-space:nowrap;}
     <a href="#crypto" class="active" data-section="crypto" aria-current="page">🪙 Crypto</a>
     <a href="#gold" data-section="gold">🥇 Gold</a>
     <a href="#bank" data-section="bank">🏦 Bank</a>
-    <a href="#calendar" data-section="calendar">📆 Lịch âm dương</a>
+    <a href="#calendar" data-section="calendar">☯</a>
   </div>
   <button class="nav-refresh-btn" onclick="refreshAll()" id="refresh-btn" title="Cập nhật">
     <span id="refresh-ico">↻</span>
@@ -429,14 +468,6 @@ td{padding:12px 15px;white-space:nowrap;}
 
 <!-- ═══ GOLD ═══ -->
 <section class="section" id="gold">
-  <div class="section-header">
-    <div class="section-icon icon-gold">🥇</div>
-    <div>
-      <div class="section-title">Gold</div>
-      <div class="section-subtitle">Dữ liệu live từ Dantri · SJC · PNJ · DOJI · BTMC · BTMH · Thế giới</div>
-    </div>
-    <div class="update-time" id="gold-updated">Đang tải...</div>
-  </div>
   <div class="wgr" id="gold-summary"></div>
   <div class="gold-layout">
     <div>
@@ -495,17 +526,11 @@ td{padding:12px 15px;white-space:nowrap;}
 
 <!-- ═══ CALENDAR ═══ -->
 <section class="section" id="calendar">
-  <div class="section-header">
-    <div class="section-icon icon-calendar">📆</div>
-    <div>
-      <div class="section-title">Lịch âm dương</div>
-      <div class="section-subtitle">Hiển thị theo múi giờ Việt Nam (GMT+7)</div>
-    </div>
-  </div>
   <div class="calendar-grid">
     <div class="calendar-hero" id="calendar-main"></div>
     <div class="calendar-side" id="calendar-side"></div>
   </div>
+  <div id="calendar-month"></div>
 </section>
 
 <div class="disclaimer">Dữ liệu chỉ mang tính tham khảo · Crypto từ Binance API (live) · Giá vàng lấy từ Dantri · Lãi suất theo niêm yết 3/2026 · Lịch âm tính theo múi giờ Việt Nam (GMT+7)</div>
@@ -1101,7 +1126,7 @@ function renderGoldEmpty(message){
   `;
   document.getElementById('gold-tabs').innerHTML='';
   document.getElementById('gold-prices').innerHTML=`<div class="feed-empty"><strong>Gold chưa sẵn sàng</strong>${escapeHTML(message)}</div>`;
-  document.getElementById('gold-updated').textContent=GOLD_STATE.loading?'Đang tải...':'Chưa có dữ liệu';
+  // gold-updated element removed
   document.getElementById('gold-chart-title').textContent='📈 Biểu đồ giá vàng';
   ensureGoldChart();
   gChart.data.labels=[];
@@ -1171,8 +1196,7 @@ function renderGoldList(){
       </div>
     </div>`;
   }).join('');
-  const updatedAt=getGoldUpdatedAt();
-  document.getElementById('gold-updated').textContent=updatedAt?`Cập nhật: ${formatStamp(updatedAt)}`:'Chưa có dữ liệu';
+  // gold-updated element removed
 }
 function buildGoldSeries(sourceKey,range){
   const source=GOLD_STATE.map[sourceKey];
@@ -1416,6 +1440,122 @@ function getDayCanChi(dd,mm,yy){
   const jd=jdFromDate(dd,mm,yy);
   return `${CAN[(jd+9)%10]} ${CHI[(jd+1)%12]}`;
 }
+function getHourCanChi(hour,dd,mm,yy){
+  const jd=jdFromDate(dd,mm,yy);
+  const dayCan=(jd+9)%10;
+  const chiIdx=Math.floor((hour+1)/2)%12;
+  const canIdx=(dayCan*2+chiIdx)%10;
+  return `${CAN[canIdx]} ${CHI[chiIdx]}`;
+}
+function getGioDepGioXau(dd,mm,yy){
+  // Good hours (giờ đẹp) and bad hours (giờ xấu) based on the day's Chi
+  const jd=jdFromDate(dd,mm,yy);
+  const dayChi=(jd+1)%12;
+  // Hoàng đạo hours by day Chi (traditional Vietnamese calendar)
+  const hoangDao=[
+    [0,1,4,5,8,9],   // Tý
+    [2,3,6,7,10,11],  // Sửu
+    [0,1,4,5,8,9],   // Dần
+    [2,3,6,7,10,11],  // Mão
+    [0,1,4,5,8,9],   // Thìn
+    [2,3,6,7,10,11],  // Tỵ
+    [0,1,4,5,8,9],   // Ngọ
+    [2,3,6,7,10,11],  // Mùi
+    [0,1,4,5,8,9],   // Thân
+    [2,3,6,7,10,11],  // Dậu
+    [0,1,4,5,8,9],   // Tuất
+    [2,3,6,7,10,11]   // Hợi
+  ];
+  const goodSet=new Set(hoangDao[dayChi]);
+  const hourRanges=['23-01','01-03','03-05','05-07','07-09','09-11','11-13','13-15','15-17','17-19','19-21','21-23'];
+  const good=[];
+  const bad=[];
+  for(let i=0;i<12;i++){
+    const label=`${CHI[i]} (${hourRanges[i]})`;
+    if(goodSet.has(i))good.push(label);
+    else bad.push(label);
+  }
+  return {good,bad};
+}
+function getDayQuality(dd,mm,yy,lunarDay){
+  // Ngày tốt / ngày xấu based on traditional criteria
+  const jd=jdFromDate(dd,mm,yy);
+  const dayChi=(jd+1)%12;
+  const dayCan=(jd+9)%10;
+  // Traditional good activities and bad activities based on day Can Chi
+  const goodActivities=[];
+  const badActivities=[];
+  // Ngày Hoàng đạo vs Hắc đạo (simplified traditional rules)
+  // Days with Chi: Tý(0), Dần(2), Thìn(4), Ngọ(6), Thân(8), Tuất(10) tend to be better
+  const isHoangDao=[0,2,4,6,8,10].includes(dayChi);
+  // Traditional suitable/unsuitable activities by day Can
+  const canGoodMap={
+    0:['Khai trương','Xuất hành','Cưới hỏi'],
+    1:['Học hành','Cầu tài','Giao dịch'],
+    2:['Khởi công','Động thổ','Ký kết'],
+    3:['Cúng tế','Cầu phúc','An táng'],
+    4:['Mua bán','Giao dịch','Nhập trạch'],
+    5:['Xuất hành','Khai trương','Cầu tài'],
+    6:['Động thổ','Sửa nhà','Xây dựng'],
+    7:['Cưới hỏi','Cầu phúc','Giao dịch'],
+    8:['Ký kết','Mua bán','Xuất hành'],
+    9:['Học hành','Cầu tài','Cúng tế']
+  };
+  const canBadMap={
+    0:['Kiện tụng','An táng'],
+    1:['Phá thổ','Đào giếng'],
+    2:['Cưới hỏi','Xuất hành xa'],
+    3:['Khai trương','Mua bán lớn'],
+    4:['Kiện tụng','Phá thổ'],
+    5:['An táng','Đào giếng'],
+    6:['Cưới hỏi','Xuất hành xa'],
+    7:['Kiện tụng','Khai trương'],
+    8:['Phá thổ','An táng'],
+    9:['Kiện tụng','Mua bán lớn']
+  };
+  goodActivities.push(...(canGoodMap[dayCan]||[]));
+  badActivities.push(...(canBadMap[dayCan]||[]));
+  // Lunar day-based adjustments
+  const badLunarDays=[1,5,14,15,23,27,28,29,30];
+  const isLunarBadDay=badLunarDays.includes(lunarDay);
+  let dayType='neutral';
+  if(isHoangDao&&!isLunarBadDay)dayType='good';
+  else if(!isHoangDao&&isLunarBadDay)dayType='bad';
+  else if(isHoangDao&&isLunarBadDay)dayType='neutral';
+  else dayType='neutral';
+  const dayLabel=dayType==='good'?'Ngày tốt (Hoàng đạo)':dayType==='bad'?'Ngày không tốt (Hắc đạo)':'Ngày bình thường';
+  return {dayType,dayLabel,goodActivities,badActivities,isHoangDao};
+}
+function buildMonthCalendar(mm,yy,todayDay){
+  const daysInMonth=new Date(yy,mm,0).getDate();
+  const firstDow=new Date(yy,mm-1,1).getDay(); // 0=Sun
+  const headers=['CN','T2','T3','T4','T5','T6','T7'];
+  let html=`<div class="month-cal-title">📅 Ngày đẹp / xấu — Tháng ${String(mm).padStart(2,'0')}/${yy}</div>`;
+  html+='<div class="month-cal-grid">';
+  headers.forEach(h=>html+=`<div class="month-cal-hdr">${h}</div>`);
+  for(let i=0;i<firstDow;i++)html+='<div class="month-cal-cell empty"></div>';
+  for(let d=1;d<=daysInMonth;d++){
+    const [ld]=convertSolar2Lunar(d,mm,yy,7);
+    const q=getDayQuality(d,mm,yy,ld);
+    const isToday=d===todayDay;
+    const cls=isToday?'today':(q.dayType==='good'?'good-cell':q.dayType==='bad'?'bad-cell':'');
+    const dot=q.dayType==='good'?'🟢':q.dayType==='bad'?'🔴':'⚪';
+    const [lunarD,lunarM]=convertSolar2Lunar(d,mm,yy,7);
+    const lunarLabel=lunarD===1?`${lunarD}/${lunarM}`:String(lunarD);
+    html+=`<div class="month-cal-cell ${cls}" title="${d}/${mm} — ${q.dayLabel}">
+      <span class="mc-day">${d}</span>
+      <span class="mc-lunar">${lunarLabel}</span>
+      <span class="mc-dot">${dot}</span>
+    </div>`;
+  }
+  html+='</div>';
+  html+=`<div class="month-cal-legend">
+    <span><span class="mc-legend-dot good"></span>Ngày tốt (Hoàng đạo)</span>
+    <span><span class="mc-legend-dot bad"></span>Ngày xấu (Hắc đạo)</span>
+    <span><span class="mc-legend-dot neutral"></span>Bình thường</span>
+  </div>`;
+  return html;
+}
 function renderCalendar(){
   const now=getVietnamNow();
   const dd=now.getDate();
@@ -1427,6 +1567,8 @@ function renderCalendar(){
   const timeText=now.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
   const lunarText=`${String(lunarDay).padStart(2,'0')}/${String(lunarMonth).padStart(2,'0')}/${lunarYear}${lunarLeap?' nhuận':''}`;
   const monthCanChi=getMonthCanChi(lunarMonth,lunarYear);
+  const hours=getGioDepGioXau(dd,mm,yy);
+  const dayQ=getDayQuality(dd,mm,yy,lunarDay);
   document.getElementById('calendar-main').innerHTML=`
     <div class="calendar-label">Hôm nay</div>
     <div class="calendar-date-line">
@@ -1439,13 +1581,57 @@ function renderCalendar(){
     <div class="calendar-lunar">Âm lịch: ${lunarText}</div>
     <div class="calendar-note">Ngày ${getDayCanChi(dd,mm,yy)} · Tháng ${monthCanChi}${lunarLeap?' (nhuận)':''} · Năm ${getYearCanChi(lunarYear)}</div>
   `;
-  const cards=[
-    {label:'Dương lịch',value:solarDate,sub:'Múi giờ Việt Nam (GMT+7)'},
-    {label:'Âm lịch',value:lunarText,sub:'Quy đổi theo lịch âm Việt Nam'},
-    {label:'Can chi ngày',value:getDayCanChi(dd,mm,yy),sub:weekday},
-    {label:'Can chi năm',value:getYearCanChi(lunarYear),sub:`Tháng ${monthCanChi}${lunarLeap?' nhuận':''}`}
-  ];
-  document.getElementById('calendar-side').innerHTML=cards.map(card=>`<div class="cal-card"><div class="cal-label">${card.label}</div><div class="cal-value">${card.value}</div><div class="cal-sub">${card.sub}</div></div>`).join('');
+  const goodHoursHTML=hours.good.slice(0,6).map(h=>`<div class="cal-hour-item good"><span class="cal-hour-icon">✔</span>${h}</div>`).join('');
+  const badHoursHTML=hours.bad.slice(0,6).map(h=>`<div class="cal-hour-item bad"><span class="cal-hour-icon">✘</span>${h}</div>`).join('');
+  const goodTasksHTML=dayQ.goodActivities.map(a=>`<div class="cal-task-row cal-task-good">✔ ${a}</div>`).join('');
+  const badTasksHTML=dayQ.badActivities.map(a=>`<div class="cal-task-row cal-task-bad">✘ ${a}</div>`).join('');
+  const verdictClass=dayQ.dayType==='good'?'good-day':dayQ.dayType==='bad'?'bad-day':'neutral-day';
+  const verdictIcon=dayQ.dayType==='good'?'☀️':dayQ.dayType==='bad'?'⚠️':'☁️';
+  document.getElementById('calendar-side').innerHTML=`
+    <div class="cal-card">
+      <div class="cal-label">Dương lịch</div>
+      <div class="cal-value">${solarDate}</div>
+      <div class="cal-sub">Múi giờ Việt Nam (GMT+7)</div>
+    </div>
+    <div class="cal-card">
+      <div class="cal-label">Âm lịch</div>
+      <div class="cal-value">${lunarText}</div>
+      <div class="cal-sub">Quy đổi theo lịch âm Việt Nam</div>
+    </div>
+    <div class="cal-card">
+      <div class="cal-label">Can chi ngày</div>
+      <div class="cal-value">${getDayCanChi(dd,mm,yy)}</div>
+      <div class="cal-sub">${weekday}</div>
+    </div>
+    <div class="cal-card">
+      <div class="cal-label">Can chi năm</div>
+      <div class="cal-value">${getYearCanChi(lunarYear)}</div>
+      <div class="cal-sub">Tháng ${monthCanChi}${lunarLeap?' nhuận':''}</div>
+    </div>
+    <div class="cal-card full-width">
+      <div class="cal-label">Hôm nay — Ngày đẹp / Ngày xấu</div>
+      <div class="cal-day-verdict ${verdictClass}">${verdictIcon} ${dayQ.dayLabel}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;">
+        <div>
+          <div class="cal-sub" style="font-weight:700;color:var(--green);margin-bottom:4px;">✔ Nên làm</div>
+          <div class="cal-tasks">${goodTasksHTML}</div>
+        </div>
+        <div>
+          <div class="cal-sub" style="font-weight:700;color:var(--red);margin-bottom:4px;">✘ Không nên</div>
+          <div class="cal-tasks">${badTasksHTML}</div>
+        </div>
+      </div>
+    </div>
+    <div class="cal-card full-width">
+      <div class="cal-label">Giờ đẹp (Hoàng đạo)</div>
+      <div class="cal-hours-grid">${goodHoursHTML}</div>
+    </div>
+    <div class="cal-card full-width">
+      <div class="cal-label">Giờ xấu (Hắc đạo)</div>
+      <div class="cal-hours-grid">${badHoursHTML}</div>
+    </div>
+  `;
+  document.getElementById('calendar-month').innerHTML=buildMonthCalendar(mm,yy,dd);
 }
 renderCalendar();
 setInterval(renderCalendar,1000);
