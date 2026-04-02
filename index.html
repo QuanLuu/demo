@@ -1706,26 +1706,6 @@ function renderCalendar(){
   const verdictClass=dayQ.dayType==='good'?'good-day':dayQ.dayType==='bad'?'bad-day':'neutral-day';
   const verdictIcon=dayQ.dayType==='good'?'☀️':dayQ.dayType==='bad'?'⚠️':'☁️';
   document.getElementById('calendar-side').innerHTML=`
-    <div class="cal-card">
-      <div class="cal-label">Dương lịch</div>
-      <div class="cal-value">${solarDate}</div>
-      <div class="cal-sub">Múi giờ Việt Nam (GMT+7)</div>
-    </div>
-    <div class="cal-card">
-      <div class="cal-label">Âm lịch</div>
-      <div class="cal-value">${lunarText}</div>
-      <div class="cal-sub">Quy đổi theo lịch âm Việt Nam</div>
-    </div>
-    <div class="cal-card">
-      <div class="cal-label">Can chi ngày</div>
-      <div class="cal-value">${getDayCanChi(dd,mm,yy)}</div>
-      <div class="cal-sub">${weekday}</div>
-    </div>
-    <div class="cal-card">
-      <div class="cal-label">Can chi năm</div>
-      <div class="cal-value">${getYearCanChi(lunarYear)}</div>
-      <div class="cal-sub">Tháng ${monthCanChi}${lunarLeap?' nhuận':''}</div>
-    </div>
     <div class="cal-card full-width">
       <div class="cal-label">Hôm nay — Ngày đẹp / Ngày xấu</div>
       <div class="cal-day-verdict ${verdictClass}">${verdictIcon} ${dayQ.dayLabel}</div>
