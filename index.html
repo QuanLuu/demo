@@ -180,13 +180,14 @@ main{
 .fav-empty small{font-size:.74rem;opacity:.6;}
 
 /* ── BANKS ── */
-.bank-controls{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
-.bank-filter{display:flex;gap:6px;}
-.filter-btn{padding:9px 12px;min-height:40px;display:inline-flex;align-items:center;border-radius:8px;font-size:.76rem;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--muted);transition:all .2s;touch-action:manipulation;}
-.filter-btn.active{background:var(--accent2);color:#000;border-color:var(--accent2);}
-.bank-search-inp{margin-left:auto;padding:10px 13px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:16px;font-family:'Be Vietnam Pro',sans-serif;outline:none;width:200px;max-width:100%;transition:border-color .2s;}
-.bank-search-inp:focus{border-color:var(--accent2);}
-.bank-search-inp::placeholder{color:var(--muted);}
+.bank-controls{display:flex !important;flex-direction:row !important;flex-wrap:nowrap !important;align-items:center;justify-content:flex-start;gap:8px;margin-bottom:14px;box-sizing:border-box;width:100%;}
+.bank-filter-select{flex:0 0 auto;width:auto;max-width:calc(100% - 40px);padding:5px 8px;border-radius:6px;font-size:.75rem;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'Be Vietnam Pro',sans-serif;outline:none;appearance:auto;}
+.bank-search-wrap{flex:0 0 auto;position:relative;display:flex;align-items:center;}
+.bank-search-ico{font-size:1.1rem;color:var(--muted);cursor:pointer;padding:4px;display:inline-flex;align-items:center;justify-content:center;transition:color .2s;user-select:none;}
+.bank-search-ico:hover{color:var(--text);}
+.bank-search-inp{width:0;opacity:0;padding:4px 0;border-radius:6px;border:none;background:var(--surface2);color:var(--text);font-size:.8rem;font-family:'Be Vietnam Pro',sans-serif;outline:none;transition:all .3s ease;}
+.bank-search-wrap.active .bank-search-inp{width:140px;opacity:1;padding:4px 10px;margin-left:6px;border:1px solid var(--border);}
+.bank-search-wrap.active .bank-search-ico{color:var(--accent);}
 .bank-table-wrap{overflow-x:auto;overflow-y:auto;max-height:65vh;border-radius:13px;border:1px solid var(--border);-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;}
 table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:720px;}
 thead{background:var(--surface2);position:sticky;top:0;z-index:10;box-shadow:0 1px 0 var(--border);}
@@ -292,6 +293,26 @@ td{padding:12px 15px;white-space:nowrap;}
   .month-cal-cell{padding:6px 2px;min-height:44px;}
   .month-cal-cell .mc-day{font-size:.72rem;}
   .month-cal-cell .mc-lunar{font-size:.5rem;}
+}
+/* ── TOKEN DETAIL PANEL ── */
+.token-detail-panel{background:var(--surface2);border-top:1px dashed var(--border);padding:16px 20px;animation:fadeUp .3s forwards;}
+.td-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;}
+.td-section-title{font-size:.78rem;font-weight:700;margin-bottom:10px;color:var(--text);display:flex;align-items:center;gap:6px;}
+.td-chart-section iframe{border-radius:8px;background:var(--card);}
+.td-comments-list{max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;}
+.td-comment{display:block;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;text-decoration:none;color:var(--text);transition:all .15s;}
+.td-comment:hover{border-color:#c5ccd8;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.06);}
+.td-comment-title{font-size:.78rem;font-weight:700;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.td-comment-meta{display:flex;gap:8px;margin-top:5px;font-size:.64rem;color:var(--muted);flex-wrap:wrap;}
+.td-comment-meta span{display:inline-flex;align-items:center;gap:3px;}
+.td-loading{text-align:center;padding:24px;color:var(--muted);font-size:.82rem;}
+.td-loading .spin{display:inline-block;}
+.cl-row.expandable{cursor:pointer;}
+.cl-row.expandable:hover{background:var(--surface2);}
+.cl-row.expanded{background:rgba(43,111,212,.04);border-bottom-color:transparent;}
+@media(max-width:768px){
+  .td-grid{grid-template-columns:1fr;}
+  .td-comments-list{max-height:220px;}
 }
 
 /* ── NEWS + JOBS ── */
@@ -494,21 +515,17 @@ td{padding:12px 15px;white-space:nowrap;}
 
 <!-- ═══ BANKS ═══ -->
 <section class="section" id="bank">
-  <div class="section-header">
-    <div class="section-icon icon-bank">🏦</div>
-    <div>
-      <div class="section-title">Bank</div>
-      <div class="section-subtitle">Tiết kiệm & cho vay · Tháng 3/2026</div>
-    </div>
-  </div>
   <div class="bank-controls">
-    <div class="bank-filter">
-      <div class="filter-btn active" onclick="filterBanks('all',this)">Tất cả</div>
-      <div class="filter-btn" onclick="filterBanks('state',this)">Quốc doanh</div>
-      <div class="filter-btn" onclick="filterBanks('private',this)">Tư nhân</div>
-      <div class="filter-btn" onclick="filterBanks('foreign',this)">Nước ngoài</div>
+    <select class="bank-filter-select" onchange="filterBanks(this.value)">
+      <option value="all">Tất cả</option>
+      <option value="state">Quốc doanh</option>
+      <option value="private">Tư nhân</option>
+      <option value="foreign">Nước ngoài</option>
+    </select>
+    <div class="bank-search-wrap" id="bank-search-wrap">
+      <span class="bank-search-ico" onclick="toggleBankSearch()">🔍</span>
+      <input class="bank-search-inp" id="bank-search-inp" type="text" placeholder="Tìm kiếm..." oninput="searchBanks(this.value)" onblur="blurBankSearch()">
     </div>
-    <input class="bank-search-inp" type="text" placeholder="🔍 Tìm ngân hàng..." oninput="searchBanks(this.value)">
   </div>
   <div class="bank-table-wrap">
     <table>
@@ -771,18 +788,119 @@ function renderAll(){
   if(CURRENT_TAB==='movers')renderMovers();
 }
 
+let _expandedToken=null;
+function favRowHTML(t){
+  const p=gP(t.sym),ch=gC(t.sym),up=ch>=0,fav=FAV.has(t.sym);
+  const tag=t.type==='alpha'?'<span class="alpha-badge">✦ ALPHA</span>':'';
+  const isExp=_expandedToken===t.sym;
+  return `<div class="cl-row expandable${fav?' is-fav':''}${isExp?' expanded':''}" onclick="toggleTokenDetail('${t.sym}')">
+    <div class="cl-l">
+      <div class="cl-logo" style="background:${t.bg};color:${t.c}">${t.sym.slice(0,4)}</div>
+      <div class="cl-meta">
+        <div class="cl-symline"><span class="cl-sym">${t.sym}</span><span class="cl-pair">/USDT</span>${tag}</div>
+        <div class="cl-name">${t.name}</div>
+      </div>
+    </div>
+    <div class="cl-mid">
+      <div class="cl-price">${fP(p)}</div>
+      <div class="cl-vnd">${fVND(p)}</div>
+    </div>
+    <div class="cl-r">
+      <div class="cl-ch ${up?'up':'dn'}">${up?'+':''}${ch.toFixed(2)}%</div>
+      <button class="fav-btn${fav?' on':''}" onclick="toggleFav('${t.sym}',event)" title="${fav?'Bỏ yêu thích':'Thêm yêu thích'}">${fav?'⭐':'☆'}</button>
+    </div>
+  </div>${isExp?`<div class="token-detail-panel" id="detail-${t.sym}"><div class="td-loading"><span class="spin">↻</span> Đang tải chi tiết cho ${t.sym}...</div></div>`:''}`;
+}
+
 function renderFav(){
   const el=document.getElementById('fav-body');
   if(!FAV.size){
-    el.innerHTML=`<div class="fav-empty"><div class="em-ico">⭐</div><p>Chưa có token yêu thích</p><small>Dùng ô tìm kiếm hoặc ☆ trên danh sách để thêm — lưu tự động trên thiết bị</small></div>`;
+    _expandedToken=null;
+    el.innerHTML=`<div class="fav-empty"><div class="em-ico">⭐</div><p>Chưa có token yêu thích</p><small>Dùng ô tìm kiếm hoặc ☆ trên danh sách để thêm</small></div>`;
     return;
   }
   const tokens=sortTokensByCh([...FAV].map(sym=>{
     if(META[sym])return META[sym];
     return{sym,name:sym,c:'#4f8ef7',bg:'rgba(79,142,247,.16)',type:'spot'};
   }));
-  el.innerHTML=`<div class="sub-h"><h3>⭐ Token Yêu Thích</h3><div class="sub-line"></div><span class="sub-tag">${tokens.length} token · % 24h cao → thấp</span></div>
-    <div class="crypto-list">${tokens.map(listRowHTML).join('')}</div>`;
+  el.innerHTML=`<div class="sub-h"><h3>⭐ Token Yêu Thích</h3><div class="sub-line"></div><span class="sub-tag">${tokens.length} token · Bấm để xem chi tiết</span></div>
+    <div class="crypto-list">${tokens.map(favRowHTML).join('')}</div>`;
+  if(_expandedToken&&FAV.has(_expandedToken))loadTokenDetail(_expandedToken);
+}
+
+// TOKEN DETAIL PANEL JS
+function toggleTokenDetail(sym){
+  if(_expandedToken===sym){_expandedToken=null;}else{_expandedToken=sym;}
+  renderFav();
+}
+async function loadTokenDetail(sym){
+  const panel=document.getElementById(`detail-${sym}`);
+  if(!panel)return;
+  const news=await fetchTokenNews(sym);
+  if(_expandedToken!==sym)return;
+  renderTokenDetailPanel(panel,sym,news);
+}
+async function fetchTokenNews(sym){
+  try{
+    const r=await fetch(`https://min-api.cryptocompare.com/data/v2/news/?categories=${sym}`);
+    if(!r.ok)throw new Error();
+    const data=await r.json();
+    if(data&&data.Data){
+      return data.Data.slice(0,6).map(n=>({
+        title:n.title,
+        source:n.source_info?.name||n.source||'Crypto News',
+        url:n.url,
+        created:n.published_on
+      }));
+    }
+  }catch(e){}
+  return [];
+}
+function renderTokenDetailPanel(panel,sym,news){
+  let newsHTML='';
+  if(news.length){
+    newsHTML=news.map(n=>`<a href="${escapeHTML(n.url)}" target="_blank" rel="noopener" class="td-comment">
+      <div class="td-comment-title">${escapeHTML(n.title)}</div>
+      <div class="td-comment-meta">
+        <span>📰 ${escapeHTML(n.source)}</span>
+        <span>⏱ ${formatRelativeTime(n.created*1000)}</span>
+      </div>
+    </a>`).join('');
+  }else{
+    newsHTML=`<div style="text-align:center;padding:20px;color:var(--muted);font-size:.8rem"><div style="font-size:1.5rem;margin-bottom:8px">💬</div>Không tìm thấy tin tức gần đây cho ${sym}</div>`;
+  }
+  
+  panel.innerHTML=`<div class="td-grid">
+    <div class="td-chart-section">
+      <div class="td-section-title">📊 ${sym}/USDT · TradingView</div>
+      <div style="border-radius:10px;overflow:hidden;height:240px;border:1px solid var(--border);position:relative;background:var(--surface);">
+        <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE%3A${sym}USDT&interval=60&theme=dark&hidesidetoolbar=1&hide_legend=1&saveimage=0&toolbarbg=f1f3f6" width="100%" height="100%" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
+      </div>
+    </div>
+    <div class="td-comments-section">
+      <div class="td-section-title">📰 Tin tức thị trường</div>
+      <div class="td-comments-list">${newsHTML}</div>
+    </div>
+  </div>`;
+}
+
+// Bank helper logic
+function toggleBankSearch(){
+  const w=document.getElementById('bank-search-wrap');
+  const i=document.getElementById('bank-search-inp');
+  w.classList.toggle('active');
+  if(w.classList.contains('active')){
+    setTimeout(()=>i.focus(),50);
+  } else {
+    i.value='';
+    searchBanks('');
+  }
+}
+function blurBankSearch(){
+  const i=document.getElementById('bank-search-inp');
+  if(!i.value){
+    document.getElementById('bank-search-wrap').classList.remove('active');
+  }
 }
 
 function renderMovers(){
@@ -1015,7 +1133,7 @@ function renderBankTable(){
     <td class="loan-col">${b.loanHome.toFixed(1)}%</td>
   </tr>`).join('');
 }
-function filterBanks(t,el){bType=t;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderBankTable();}
+function filterBanks(t){bType=t;renderBankTable();}
 function searchBanks(v){bSearch=v;renderBankTable();}
 function sortTable(col){if(bSortCol===col)bSortDir*=-1;else{bSortCol=col;bSortDir=1;}document.querySelectorAll('th').forEach((th,i)=>{th.classList.remove('sort-asc','sort-desc');if(i===col)th.classList.add(bSortDir>0?'sort-asc':'sort-desc');});renderBankTable();}
 renderBankTable();
