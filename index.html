@@ -281,15 +281,22 @@ td{padding:12px 15px;white-space:nowrap;}
 .month-cal-cell.bad-cell{background:rgba(224,53,48,.05);border-color:rgba(224,53,48,.2);}
 .month-cal-cell.selected{border-color:var(--accent);background:rgba(212,146,10,.08);box-shadow:0 0 0 2px rgba(212,146,10,.2);}
 .month-cal-cell.selected .mc-day{color:var(--accent);}
-.selected-day-info{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-top:14px;animation:fadeUp .3s forwards;}
-.sdi-header{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap;}
-.sdi-date{font-size:2rem;font-weight:800;line-height:1;letter-spacing:-.04em;}
-.sdi-meta{flex:1;}
-.sdi-solar{font-size:.95rem;font-weight:700;}
-.sdi-lunar{font-size:.8rem;color:var(--accent3);margin-top:2px;font-weight:600;}
-.sdi-cachi{font-size:.72rem;color:var(--muted);margin-top:2px;}
-.sdi-body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
-@media(max-width:600px){.sdi-body{grid-template-columns:1fr 1fr;}}
+.selected-day-info{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:14px;animation:fadeUp .3s forwards;}
+.sdi-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
+.sdi-date{font-size:2rem;font-weight:800;line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.sdi-meta{flex:1;min-width:0;}
+.sdi-solar{font-size:.9rem;font-weight:700;}
+.sdi-lunar{font-size:.78rem;color:var(--accent3);margin-top:2px;font-weight:600;}
+.sdi-cachi{font-size:.7rem;color:var(--muted);margin-top:2px;}
+.sdi-body{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.sdi-hours-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+.sdi-hours-col .cal-label{margin-bottom:6px;}
+.sdi-hours-col .cal-hour-item{font-size:.72rem;padding:4px 8px;}
+@media(max-width:480px){
+  .sdi-body{grid-template-columns:1fr;}
+  .sdi-date{font-size:1.6rem;}
+  .cal-day-verdict{font-size:.78rem;padding:5px 10px;}
+}
 .month-cal-cell .mc-day{font-size:.82rem;font-weight:700;line-height:1;}
 .month-cal-cell .mc-lunar{font-size:.58rem;color:var(--muted);line-height:1;}
 .month-cal-cell .mc-dot{font-size:.6rem;line-height:1;}
@@ -859,39 +866,48 @@ async function loadTokenDetail(sym){
   renderTokenDetailPanel(panel,sym,news);
 }
 async function fetchTokenNews(sym){
-  // Try CryptoPanic RSS via proxy (no API key needed)
-  const sources=[
+  const feeds=[
     `https://cryptopanic.com/news/${sym.toLowerCase()}/rss/`,
     `https://cryptopanic.com/news/rss/?currencies=${sym}`,
   ];
-  for(const url of sources){
+  // rss2json.com: free public API, no key needed, no CORS issue
+  for(const feedUrl of feeds){
     try{
-      const proxy=`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-      const r=await fetch(proxy,{signal:AbortSignal.timeout(6000)});
+      const apiUrl=`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}&count=6`;
+      const r=await fetch(apiUrl,{signal:AbortSignal.timeout(7000)});
       if(!r.ok)continue;
-      const text=await r.text();
-      const doc=new DOMParser().parseFromString(text,'text/xml');
-      const items=[...doc.querySelectorAll('item')].slice(0,6);
-      if(!items.length)continue;
-      return items.map(item=>{
-        const title=item.querySelector('title')?.textContent||'';
-        const link=item.querySelector('link')?.textContent||item.querySelector('guid')?.textContent||'#';
-        const pubDate=item.querySelector('pubDate')?.textContent||'';
-        const source=item.querySelector('source')?.textContent||new URL(link.startsWith('http')?link:'https://cryptopanic.com').hostname||'CryptoPanic';
-        return{title:title.replace(/<!\[CDATA\[|\]\]>/g,'').trim(),source,url:link.trim(),created:pubDate?new Date(pubDate).getTime()/1000:Date.now()/1000};
-      }).filter(n=>n.title);
+      const json=await r.json();
+      if(json.status!=='ok'||!json.items?.length)continue;
+      return json.items.map(item=>({
+        title:(item.title||'').trim(),
+        source:json.feed?.title||new URL(item.link||feedUrl).hostname||'CryptoPanic',
+        url:item.link||'#',
+        created:item.pubDate?new Date(item.pubDate).getTime()/1000:Date.now()/1000
+      })).filter(n=>n.title);
     }catch{}
   }
-  // Fallback: CryptoCompare
+  // Fallback: CryptoCompare (may fail due to CORS but worth trying)
   try{
-    const r=await fetch(`https://min-api.cryptocompare.com/data/v2/news/?categories=${sym}&extraParams=vtcapp`,{signal:AbortSignal.timeout(6000)});
+    const r=await fetch(`https://min-api.cryptocompare.com/data/v2/news/?categories=${sym}`,{signal:AbortSignal.timeout(6000)});
     if(r.ok){
-      const data=await r.json();
-      if(data?.Data?.length)return data.Data.slice(0,6).map(n=>({title:n.title,source:n.source_info?.name||n.source||'Crypto News',url:n.url,created:n.published_on}));
+      const d=await r.json();
+      if(d?.Data?.length)return d.Data.slice(0,6).map(n=>({title:n.title,source:n.source_info?.name||'Crypto News',url:n.url,created:n.published_on}));
     }
   }catch{}
   return [];
 }
+// Wait for an element to appear in DOM, then call cb. Gives up after 2s.
+function waitForElement(id,cb,timeout=2000){
+  const el=document.getElementById(id);
+  if(el){cb();return;}
+  const start=Date.now();
+  const obs=new MutationObserver(()=>{
+    if(document.getElementById(id)){obs.disconnect();cb();}
+    else if(Date.now()-start>timeout){obs.disconnect();}
+  });
+  obs.observe(document.body,{childList:true,subtree:true});
+}
+
 function renderTokenDetailPanel(panel,sym,news){
   let newsHTML='';
   if(news.length){
@@ -936,8 +952,10 @@ function renderTokenDetailPanel(panel,sym,news){
     </div>
   </div>`;
 
-  // Wait for DOM to fully paint before drawing chart
-  requestAnimationFrame(()=>setTimeout(()=>loadTokenChart(sym,defaultInterval.interval,defaultInterval.limit,defaultInterval.label,null),50));
+  // Wait for canvas to be in DOM reliably via MutationObserver
+  requestAnimationFrame(()=>{
+    waitForElement(canvasId,()=>loadTokenChart(sym,defaultInterval.interval,defaultInterval.limit,defaultInterval.label,null));
+  });
 }
 
 const _tokenCharts={};
@@ -1826,25 +1844,29 @@ function buildMonthCalendar(mm,yy,todayDay){
         <div class="sdi-date" style="color:var(--accent)">${String(sd).padStart(2,'0')}</div>
         <div class="sdi-meta">
           <div class="sdi-solar">${sWeekday}, ${String(sd).padStart(2,'0')}/${String(mm).padStart(2,'0')}/${yy}</div>
-          <div class="sdi-lunar">Âm lịch: ${String(sLunarDay).padStart(2,'0')}/${String(sLunarMonth).padStart(2,'0')}/${sLunarYear}${sLunarLeap?' nhuận':''}</div>
+          <div class="sdi-lunar">Âm: ${String(sLunarDay).padStart(2,'0')}/${String(sLunarMonth).padStart(2,'0')}/${sLunarYear}${sLunarLeap?' nhuận':''}</div>
           <div class="sdi-cachi">Ngày ${sDayCanChi} · Tháng ${sMonthCC} · Năm ${sYearCC}</div>
         </div>
         <div class="cal-day-verdict ${verdictClass}">${verdictIcon} ${sDayQ.dayLabel}</div>
       </div>
       <div class="sdi-body">
-        <div class="cal-card">
-          <div class="cal-label">✔ Nên làm</div>
-          <div class="cal-tasks" style="margin-top:6px">${goodTasks||'<span style="font-size:.72rem;color:var(--muted)">Không có</span>'}</div>
+        <div class="cal-card" style="padding:12px">
+          <div class="cal-label" style="color:var(--green)">✔ Nên làm hôm nay</div>
+          <div class="cal-tasks" style="margin-top:8px">${goodTasks||'<span style="font-size:.72rem;color:var(--muted)">Không có</span>'}</div>
         </div>
-        <div class="cal-card">
-          <div class="cal-label">✘ Không nên</div>
-          <div class="cal-tasks" style="margin-top:6px">${badTasks||'<span style="font-size:.72rem;color:var(--muted)">Không có</span>'}</div>
+        <div class="cal-card" style="padding:12px">
+          <div class="cal-label" style="color:var(--red)">✘ Không nên làm</div>
+          <div class="cal-tasks" style="margin-top:8px">${badTasks||'<span style="font-size:.72rem;color:var(--muted)">Không có</span>'}</div>
         </div>
-        <div class="cal-card">
-          <div class="cal-label">Giờ đẹp</div>
-          <div class="cal-hours-grid" style="margin-top:6px">${goodHours}</div>
-          <div class="cal-label" style="margin-top:10px">Giờ xấu</div>
-          <div class="cal-hours-grid" style="margin-top:6px">${badHours}</div>
+      </div>
+      <div class="sdi-hours-row">
+        <div class="sdi-hours-col cal-card" style="padding:12px">
+          <div class="cal-label" style="color:var(--green);margin-bottom:6px">⏰ Giờ đẹp (Hoàng đạo)</div>
+          <div style="display:flex;flex-direction:column;gap:4px">${goodHours||'<span style="font-size:.72rem;color:var(--muted)">—</span>'}</div>
+        </div>
+        <div class="sdi-hours-col cal-card" style="padding:12px">
+          <div class="cal-label" style="color:var(--red);margin-bottom:6px">⏰ Giờ xấu (Hắc đạo)</div>
+          <div style="display:flex;flex-direction:column;gap:4px">${badHours||'<span style="font-size:.72rem;color:var(--muted)">—</span>'}</div>
         </div>
       </div>
     </div>`;
