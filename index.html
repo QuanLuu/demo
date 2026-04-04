@@ -273,12 +273,23 @@ td{padding:12px 15px;white-space:nowrap;}
 .month-cal-title{font-size:.85rem;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
 .month-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
 .month-cal-hdr{text-align:center;font-size:.65rem;font-weight:700;color:var(--muted);padding:6px 0;text-transform:uppercase;}
-.month-cal-cell{text-align:center;padding:8px 4px;border-radius:10px;border:1px solid var(--border);background:var(--card);cursor:default;transition:all .15s;min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
+.month-cal-cell{text-align:center;padding:8px 4px;border-radius:10px;border:1px solid var(--border);background:var(--card);cursor:pointer;transition:all .15s;min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
 .month-cal-cell:hover{border-color:#c5ccd8;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.06);}
-.month-cal-cell.empty{border:none;background:transparent;}
+.month-cal-cell.empty{border:none;background:transparent;cursor:default;}
 .month-cal-cell.today{border-color:var(--accent3);background:rgba(43,111,212,.06);box-shadow:0 0 0 2px rgba(43,111,212,.15);}
 .month-cal-cell.good-cell{background:rgba(22,163,74,.05);border-color:rgba(22,163,74,.2);}
 .month-cal-cell.bad-cell{background:rgba(224,53,48,.05);border-color:rgba(224,53,48,.2);}
+.month-cal-cell.selected{border-color:var(--accent);background:rgba(212,146,10,.08);box-shadow:0 0 0 2px rgba(212,146,10,.2);}
+.month-cal-cell.selected .mc-day{color:var(--accent);}
+.selected-day-info{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-top:14px;animation:fadeUp .3s forwards;}
+.sdi-header{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap;}
+.sdi-date{font-size:2rem;font-weight:800;line-height:1;letter-spacing:-.04em;}
+.sdi-meta{flex:1;}
+.sdi-solar{font-size:.95rem;font-weight:700;}
+.sdi-lunar{font-size:.8rem;color:var(--accent3);margin-top:2px;font-weight:600;}
+.sdi-cachi{font-size:.72rem;color:var(--muted);margin-top:2px;}
+.sdi-body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+@media(max-width:600px){.sdi-body{grid-template-columns:1fr 1fr;}}
 .month-cal-cell .mc-day{font-size:.82rem;font-weight:700;line-height:1;}
 .month-cal-cell .mc-lunar{font-size:.58rem;color:var(--muted);line-height:1;}
 .month-cal-cell .mc-dot{font-size:.6rem;line-height:1;}
@@ -298,7 +309,15 @@ td{padding:12px 15px;white-space:nowrap;}
 .token-detail-panel{background:var(--surface2);border-top:1px dashed var(--border);padding:16px 20px;animation:fadeUp .3s forwards;}
 .td-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;}
 .td-section-title{font-size:.78rem;font-weight:700;margin-bottom:10px;color:var(--text);display:flex;align-items:center;gap:6px;}
-.td-chart-section iframe{border-radius:8px;background:var(--card);}
+.td-chart-canvas-wrap{position:relative;width:100%;height:220px;background:var(--card);border-radius:10px;border:1px solid var(--border);overflow:hidden;}
+.td-chart-canvas-wrap canvas{width:100%!important;height:100%!important;}
+.td-chart-info{display:flex;gap:14px;margin-top:8px;flex-wrap:wrap;}
+.td-stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;flex:1;min-width:80px;}
+.td-stat-lbl{font-size:.62rem;color:var(--muted);text-transform:uppercase;font-weight:700;letter-spacing:.04em;}
+.td-stat-val{font-family:'Space Mono',monospace;font-size:.85rem;font-weight:700;margin-top:3px;}
+.td-interval-row{display:flex;gap:6px;margin-bottom:10px;}
+.td-interval-btn{padding:3px 8px;border-radius:5px;font-size:.68rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--muted);transition:all .15s;}
+.td-interval-btn.active{background:var(--accent3);color:#fff;border-color:var(--accent3);}
 .td-comments-list{max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;}
 .td-comment{display:block;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;text-decoration:none;color:var(--text);transition:all .15s;}
 .td-comment:hover{border-color:#c5ccd8;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.06);}
@@ -489,7 +508,6 @@ td{padding:12px 15px;white-space:nowrap;}
 
 <!-- ═══ GOLD ═══ -->
 <section class="section" id="gold">
-  <div class="wgr" id="gold-summary"></div>
   <div class="gold-layout">
     <div>
       <div class="gst" id="gold-tabs"></div>
@@ -841,19 +859,37 @@ async function loadTokenDetail(sym){
   renderTokenDetailPanel(panel,sym,news);
 }
 async function fetchTokenNews(sym){
+  // Try CryptoPanic RSS via proxy (no API key needed)
+  const sources=[
+    `https://cryptopanic.com/news/${sym.toLowerCase()}/rss/`,
+    `https://cryptopanic.com/news/rss/?currencies=${sym}`,
+  ];
+  for(const url of sources){
+    try{
+      const proxy=`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+      const r=await fetch(proxy,{signal:AbortSignal.timeout(6000)});
+      if(!r.ok)continue;
+      const text=await r.text();
+      const doc=new DOMParser().parseFromString(text,'text/xml');
+      const items=[...doc.querySelectorAll('item')].slice(0,6);
+      if(!items.length)continue;
+      return items.map(item=>{
+        const title=item.querySelector('title')?.textContent||'';
+        const link=item.querySelector('link')?.textContent||item.querySelector('guid')?.textContent||'#';
+        const pubDate=item.querySelector('pubDate')?.textContent||'';
+        const source=item.querySelector('source')?.textContent||new URL(link.startsWith('http')?link:'https://cryptopanic.com').hostname||'CryptoPanic';
+        return{title:title.replace(/<!\[CDATA\[|\]\]>/g,'').trim(),source,url:link.trim(),created:pubDate?new Date(pubDate).getTime()/1000:Date.now()/1000};
+      }).filter(n=>n.title);
+    }catch{}
+  }
+  // Fallback: CryptoCompare
   try{
-    const r=await fetch(`https://min-api.cryptocompare.com/data/v2/news/?categories=${sym}`);
-    if(!r.ok)throw new Error();
-    const data=await r.json();
-    if(data&&data.Data){
-      return data.Data.slice(0,6).map(n=>({
-        title:n.title,
-        source:n.source_info?.name||n.source||'Crypto News',
-        url:n.url,
-        created:n.published_on
-      }));
+    const r=await fetch(`https://min-api.cryptocompare.com/data/v2/news/?categories=${sym}&extraParams=vtcapp`,{signal:AbortSignal.timeout(6000)});
+    if(r.ok){
+      const data=await r.json();
+      if(data?.Data?.length)return data.Data.slice(0,6).map(n=>({title:n.title,source:n.source_info?.name||n.source||'Crypto News',url:n.url,created:n.published_on}));
     }
-  }catch(e){}
+  }catch{}
   return [];
 }
 function renderTokenDetailPanel(panel,sym,news){
@@ -867,14 +903,31 @@ function renderTokenDetailPanel(panel,sym,news){
       </div>
     </a>`).join('');
   }else{
-    newsHTML=`<div style="text-align:center;padding:20px;color:var(--muted);font-size:.8rem"><div style="font-size:1.5rem;margin-bottom:8px">💬</div>Không tìm thấy tin tức gần đây cho ${sym}</div>`;
+    newsHTML=`<div style="text-align:center;padding:20px;color:var(--muted);font-size:.8rem"><div style="font-size:1.5rem;margin-bottom:8px">💬</div>Chưa tìm thấy tin tức cho ${escapeHTML(sym)}</div>`;
   }
-  
+
+  const intervals=[
+    {label:'15m',interval:'15m',limit:96},
+    {label:'1H',interval:'1h',limit:72},
+    {label:'4H',interval:'4h',limit:84},
+    {label:'1D',interval:'1d',limit:60},
+  ];
+  const defaultInterval=intervals[1];
+  const canvasId=`td-canvas-${sym}`;
+  const statsId=`td-stats-${sym}`;
+  const intervalsId=`td-intervals-${sym}`;
+
   panel.innerHTML=`<div class="td-grid">
     <div class="td-chart-section">
-      <div class="td-section-title">📊 ${sym}/USDT · TradingView</div>
-      <div style="border-radius:10px;overflow:hidden;height:240px;border:1px solid var(--border);position:relative;background:var(--surface);">
-        <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE%3A${sym}USDT&interval=60&theme=dark&hidesidetoolbar=1&hide_legend=1&saveimage=0&toolbarbg=f1f3f6" width="100%" height="100%" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
+      <div class="td-section-title">📊 ${escapeHTML(sym)}/USDT · Binance Live</div>
+      <div class="td-interval-row" id="${intervalsId}">
+        ${intervals.map(iv=>`<button class="td-interval-btn${iv.label===defaultInterval.label?' active':''}" onclick="loadTokenChart('${escapeHTML(sym)}','${iv.interval}',${iv.limit},'${iv.label}',this)">${iv.label}</button>`).join('')}
+      </div>
+      <div class="td-chart-canvas-wrap" id="td-wrap-${escapeHTML(sym)}">
+        <canvas id="${canvasId}"></canvas>
+      </div>
+      <div class="td-chart-info" id="${statsId}">
+        <div class="td-loading" style="width:100%;padding:8px"><span class="spin">↻</span> Đang tải chart...</div>
       </div>
     </div>
     <div class="td-comments-section">
@@ -882,6 +935,116 @@ function renderTokenDetailPanel(panel,sym,news){
       <div class="td-comments-list">${newsHTML}</div>
     </div>
   </div>`;
+
+  // Wait for DOM to fully paint before drawing chart
+  requestAnimationFrame(()=>setTimeout(()=>loadTokenChart(sym,defaultInterval.interval,defaultInterval.limit,defaultInterval.label,null),50));
+}
+
+const _tokenCharts={};
+async function loadTokenChart(sym,interval,limit,label,btn){
+  if(btn){
+    const row=btn.closest('.td-interval-row');
+    if(row)row.querySelectorAll('.td-interval-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  const canvasId=`td-canvas-${sym}`;
+  const statsId=`td-stats-${sym}`;
+  const canvas=document.getElementById(canvasId);
+  const statsEl=document.getElementById(statsId);
+  if(!canvas)return;
+
+  // Destroy old chart instance
+  if(_tokenCharts[sym]){try{_tokenCharts[sym].destroy();}catch{}delete _tokenCharts[sym];}
+
+  if(statsEl)statsEl.innerHTML=`<div class="td-loading" style="width:100%;padding:8px"><span class="spin">↻</span> Đang tải dữ liệu ${escapeHTML(sym)}...</div>`;
+
+  let klines=[];
+  try{
+    const r=await fetch(`https://api.binance.com/api/v3/klines?symbol=${sym}USDT&interval=${interval}&limit=${limit}`,{signal:AbortSignal.timeout(8000)});
+    if(r.ok)klines=await r.json();
+  }catch{}
+
+  // Re-check canvas still in DOM (user may have closed panel)
+  const cv=document.getElementById(canvasId);
+  if(!klines.length||!cv){
+    if(statsEl)statsEl.innerHTML=`<div style="padding:10px;color:var(--red);font-size:.78rem">⚠ Không tải được dữ liệu. Thử lại sau.</div>`;
+    return;
+  }
+
+  const labels=klines.map(k=>{
+    const d=new Date(k[0]);
+    if(interval==='1d')return d.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit'});
+    return d.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+  });
+  const closes=klines.map(k=>parseFloat(k[4]));
+  const highs=klines.map(k=>parseFloat(k[2]));
+  const lows=klines.map(k=>parseFloat(k[3]));
+  const vols=klines.map(k=>parseFloat(k[5]));
+
+  const first=closes[0],last=closes[closes.length-1];
+  const pctChange=((last-first)/first)*100;
+  const isUp=pctChange>=0;
+  const lineColor=isUp?'#16a34a':'#e03530';
+  const fillColor=isUp?'rgba(22,163,74,.10)':'rgba(224,53,48,.10)';
+
+  try{
+    const ctx=cv.getContext('2d');
+    _tokenCharts[sym]=new Chart(ctx,{
+      type:'line',
+      data:{
+        labels,
+        datasets:[{
+          data:closes,
+          borderColor:lineColor,
+          backgroundColor:fillColor,
+          borderWidth:1.8,
+          fill:true,
+          tension:0.3,
+          pointRadius:0,
+          pointHoverRadius:4,
+        }]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        animation:{duration:400},
+        plugins:{
+          legend:{display:false},
+          tooltip:{
+            mode:'index',
+            intersect:false,
+            callbacks:{label:c=>' '+fP(c.parsed.y)}
+          }
+        },
+        scales:{
+          x:{
+            ticks:{maxTicksLimit:6,font:{size:9},color:'#6b7280',maxRotation:0},
+            grid:{color:'rgba(0,0,0,.04)'}
+          },
+          y:{
+            position:'right',
+            ticks:{font:{size:9},color:'#6b7280',callback:v=>fP(v)},
+            grid:{color:'rgba(0,0,0,.04)'}
+          }
+        }
+      }
+    });
+  }catch(e){
+    if(statsEl)statsEl.innerHTML=`<div style="padding:10px;color:var(--red);font-size:.78rem">⚠ Lỗi vẽ chart: ${e.message}</div>`;
+    return;
+  }
+
+  // Stats row
+  const high24=Math.max(...highs);
+  const low24=Math.min(...lows);
+  const vol24=vols.reduce((a,b)=>a+b,0);
+  if(statsEl)statsEl.innerHTML=`
+    <div class="td-stat"><div class="td-stat-lbl">Giá</div><div class="td-stat-val">${fP(last)}</div></div>
+    <div class="td-stat"><div class="td-stat-lbl">Thay đổi (${escapeHTML(label)})</div><div class="td-stat-val" style="color:${lineColor}">${isUp?'+':''}${pctChange.toFixed(2)}%</div></div>
+    <div class="td-stat"><div class="td-stat-lbl">Cao</div><div class="td-stat-val">${fP(high24)}</div></div>
+    <div class="td-stat"><div class="td-stat-lbl">Thấp</div><div class="td-stat-val">${fP(low24)}</div></div>
+    <div class="td-stat"><div class="td-stat-lbl">Khối lượng</div><div class="td-stat-val">${vol24>=1e6?(vol24/1e6).toFixed(1)+'M':vol24>=1e3?(vol24/1e3).toFixed(1)+'K':vol24.toFixed(0)}</div></div>
+  `;
 }
 
 // Bank helper logic
@@ -1237,14 +1400,8 @@ function syncGoldRangeButtons(){
   });
 }
 function renderGoldEmpty(message){
-  document.getElementById('gold-summary').innerHTML=`
-    <div class="wgc"><div class="wg-lbl">Nguồn</div><div class="wg-val" style="color:var(--accent)">Dantri</div><div class="wg-ch">API live từ trang giá vàng</div></div>
-    <div class="wgc"><div class="wg-lbl">Trạng thái</div><div class="wg-val" style="color:var(--muted)">Chờ dữ liệu</div><div class="wg-ch">${escapeHTML(message)}</div></div>
-    <div class="wgc"><div class="wg-lbl">Refresh</div><div class="wg-val" style="color:var(--accent3)">↻</div><div class="wg-ch">Bấm cập nhật để tải lại</div></div>
-  `;
   document.getElementById('gold-tabs').innerHTML='';
   document.getElementById('gold-prices').innerHTML=`<div class="feed-empty"><strong>Gold chưa sẵn sàng</strong>${escapeHTML(message)}</div>`;
-  // gold-updated element removed
   document.getElementById('gold-chart-title').textContent='📈 Biểu đồ giá vàng';
   ensureGoldChart();
   gChart.data.labels=[];
@@ -1259,34 +1416,7 @@ function renderGoldTabs(){
   document.getElementById('gold-tabs').innerHTML=available.map(key=>`<div class="gst-tab ${key===curGold?'active':''}" onclick="showGold('${key}')">${getGoldLabel(key)}</div>`).join('');
 }
 function renderGoldSummary(){
-  const world=GOLD_STATE.map.kitco?.last;
-  const sjc=GOLD_STATE.map.sjc?.last;
-  const worldChange=Number(world?.sellPriceChange);
-  const sjcChange=Number(sjc?.sellPriceChange);
-  const band=Number.isFinite(sjc?.highestBuyPrice)&&Number.isFinite(sjc?.lowestBuyPrice)
-    ? sjc.highestBuyPrice-sjc.lowestBuyPrice
-    : NaN;
-  const cards=[
-    {
-      label:'Thế giới',
-      value:formatGoldPrice(Number(world?.sellPrice), 'kitco'),
-      note:Number.isFinite(worldChange)?`${worldChange>=0?'▲':'▼'} ${formatGoldChange(worldChange, 'kitco')} USD/oz`:'Chưa có dữ liệu',
-      color:Number.isFinite(worldChange)?getGoldTone(worldChange):'var(--muted)'
-    },
-    {
-      label:'SJC (bán ra)',
-      value:formatGoldPrice(Number(sjc?.sellPrice), 'sjc'),
-      note:Number.isFinite(sjcChange)?`${sjcChange>=0?'▲':'▼'} ${formatGoldChange(sjcChange, 'sjc')} hôm nay`:'Chưa có dữ liệu',
-      color:Number.isFinite(sjcChange)?getGoldTone(sjcChange):'var(--muted)'
-    },
-    {
-      label:'Biên độ SJC',
-      value:Number.isFinite(band)?formatGoldPrice(band, 'sjc'):'—',
-      note:'Cao nhất - thấp nhất mua vào',
-      color:'var(--accent3)'
-    }
-  ];
-  document.getElementById('gold-summary').innerHTML=cards.map(card=>`<div class="wgc"><div class="wg-lbl">${card.label}</div><div class="wg-val" style="color:var(--accent)">${card.value}</div><div class="wg-ch" style="color:${card.color}">${card.note}</div></div>`).join('');
+  // Removed summary cards
 }
 function renderGoldList(){
   const rows=getGoldRows(curGold);
@@ -1644,6 +1774,7 @@ function getDayQuality(dd,mm,yy,lunarDay){
   const dayLabel=dayType==='good'?'Ngày tốt (Hoàng đạo)':dayType==='bad'?'Ngày không tốt (Hắc đạo)':'Ngày bình thường';
   return {dayType,dayLabel,goodActivities,badActivities,isHoangDao};
 }
+let _selectedCalDay=null;
 function buildMonthCalendar(mm,yy,todayDay){
   const daysInMonth=new Date(yy,mm,0).getDate();
   const firstDow=new Date(yy,mm-1,1).getDay(); // 0=Sun
@@ -1656,11 +1787,13 @@ function buildMonthCalendar(mm,yy,todayDay){
     const [ld]=convertSolar2Lunar(d,mm,yy,7);
     const q=getDayQuality(d,mm,yy,ld);
     const isToday=d===todayDay;
-    const cls=isToday?'today':(q.dayType==='good'?'good-cell':q.dayType==='bad'?'bad-cell':'');
+    const isSelected=d===_selectedCalDay;
+    let cls=isToday?'today':(q.dayType==='good'?'good-cell':q.dayType==='bad'?'bad-cell':'');
+    if(isSelected)cls+=' selected';
     const dot=q.dayType==='good'?'🟢':q.dayType==='bad'?'🔴':'⚪';
     const [lunarD,lunarM]=convertSolar2Lunar(d,mm,yy,7);
     const lunarLabel=lunarD===1?`${lunarD}/${lunarM}`:String(lunarD);
-    html+=`<div class="month-cal-cell ${cls}" title="${d}/${mm} — ${q.dayLabel}">
+    html+=`<div class="month-cal-cell ${cls}" onclick="selectCalDay(${d},${mm},${yy})" title="${d}/${mm} — ${q.dayLabel}">
       <span class="mc-day">${d}</span>
       <span class="mc-lunar">${lunarLabel}</span>
       <span class="mc-dot">${dot}</span>
@@ -1672,7 +1805,57 @@ function buildMonthCalendar(mm,yy,todayDay){
     <span><span class="mc-legend-dot bad"></span>Ngày xấu (Hắc đạo)</span>
     <span><span class="mc-legend-dot neutral"></span>Bình thường</span>
   </div>`;
+  // Selected day info block
+  if(_selectedCalDay){
+    const sd=_selectedCalDay;
+    const [sLunarDay,sLunarMonth,sLunarYear,sLunarLeap]=convertSolar2Lunar(sd,mm,yy,7);
+    const sDayQ=getDayQuality(sd,mm,yy,sLunarDay);
+    const sHours=getGioDepGioXau(sd,mm,yy);
+    const sWeekday=capitalizeFirst(new Date(yy,mm-1,sd).toLocaleDateString('vi-VN',{weekday:'long'}));
+    const sDayCanChi=getDayCanChi(sd,mm,yy);
+    const sMonthCC=getMonthCanChi(sLunarMonth,sLunarYear);
+    const sYearCC=getYearCanChi(sLunarYear);
+    const verdictClass=sDayQ.dayType==='good'?'good-day':sDayQ.dayType==='bad'?'bad-day':'neutral-day';
+    const verdictIcon=sDayQ.dayType==='good'?'☀️':sDayQ.dayType==='bad'?'⚠️':'☁️';
+    const goodHours=sHours.good.slice(0,6).map(h=>`<div class="cal-hour-item good"><span class="cal-hour-icon">✔</span>${h}</div>`).join('');
+    const badHours=sHours.bad.slice(0,6).map(h=>`<div class="cal-hour-item bad"><span class="cal-hour-icon">✘</span>${h}</div>`).join('');
+    const goodTasks=sDayQ.goodActivities.map(a=>`<div class="cal-task-row cal-task-good">✔ ${a}</div>`).join('');
+    const badTasks=sDayQ.badActivities.map(a=>`<div class="cal-task-row cal-task-bad">✘ ${a}</div>`).join('');
+    html+=`<div class="selected-day-info">
+      <div class="sdi-header">
+        <div class="sdi-date" style="color:var(--accent)">${String(sd).padStart(2,'0')}</div>
+        <div class="sdi-meta">
+          <div class="sdi-solar">${sWeekday}, ${String(sd).padStart(2,'0')}/${String(mm).padStart(2,'0')}/${yy}</div>
+          <div class="sdi-lunar">Âm lịch: ${String(sLunarDay).padStart(2,'0')}/${String(sLunarMonth).padStart(2,'0')}/${sLunarYear}${sLunarLeap?' nhuận':''}</div>
+          <div class="sdi-cachi">Ngày ${sDayCanChi} · Tháng ${sMonthCC} · Năm ${sYearCC}</div>
+        </div>
+        <div class="cal-day-verdict ${verdictClass}">${verdictIcon} ${sDayQ.dayLabel}</div>
+      </div>
+      <div class="sdi-body">
+        <div class="cal-card">
+          <div class="cal-label">✔ Nên làm</div>
+          <div class="cal-tasks" style="margin-top:6px">${goodTasks||'<span style="font-size:.72rem;color:var(--muted)">Không có</span>'}</div>
+        </div>
+        <div class="cal-card">
+          <div class="cal-label">✘ Không nên</div>
+          <div class="cal-tasks" style="margin-top:6px">${badTasks||'<span style="font-size:.72rem;color:var(--muted)">Không có</span>'}</div>
+        </div>
+        <div class="cal-card">
+          <div class="cal-label">Giờ đẹp</div>
+          <div class="cal-hours-grid" style="margin-top:6px">${goodHours}</div>
+          <div class="cal-label" style="margin-top:10px">Giờ xấu</div>
+          <div class="cal-hours-grid" style="margin-top:6px">${badHours}</div>
+        </div>
+      </div>
+    </div>`;
+  }
   return html;
+}
+function selectCalDay(d,mm,yy){
+  const now=getVietnamNow();
+  _selectedCalDay=(_selectedCalDay===d)?null:d;
+  // Redraw only month grid
+  document.getElementById('calendar-month').innerHTML=buildMonthCalendar(mm,yy,now.getDate());
 }
 function renderCalendar(){
   const now=getVietnamNow();
