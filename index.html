@@ -322,8 +322,8 @@ td{padding:12px 15px;white-space:nowrap;}
 .td-stat-val{font-family:'Space Mono',monospace;font-size:.82rem;font-weight:700;margin-top:2px;}
 .td-price-note{font-size:.7rem;color:var(--muted);margin-bottom:10px;}
 /* Candle table */
-.td-candle-table-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);background:var(--card);}
-.td-candle-table{width:100%;border-collapse:collapse;font-size:.75rem;}
+.td-candle-table-wrap{width:100%;overflow-x:auto;border-radius:10px;border:1px solid var(--border);background:var(--card);-webkit-overflow-scrolling:touch;}
+.td-candle-table{width:100%;min-width:620px;border-collapse:collapse;font-size:.75rem;}
 .td-candle-table thead th{padding:7px 10px;font-size:.65rem;font-weight:700;color:var(--muted);text-align:right;border-bottom:1px solid var(--border);white-space:nowrap;background:var(--surface2);}
 .td-candle-table thead th:first-child{text-align:left;}
 .td-candle-table tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
@@ -345,7 +345,12 @@ td{padding:12px 15px;white-space:nowrap;}
 .cl-row.expandable:hover{background:var(--surface2);}
 .cl-row.expanded{background:rgba(43,111,212,.04);border-bottom-color:transparent;}
 @media(max-width:768px){
-  .td-grid{grid-template-columns:1fr;}
+  .token-detail-panel{padding:12px 10px;}
+  .td-grid{grid-template-columns:1fr;gap:14px;}
+  .td-chart-section{min-width:0;}
+  .td-chart-info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;}
+  .td-stat{min-width:0;padding:7px 8px;}
+  .td-stat-val{font-size:.74rem;overflow:hidden;text-overflow:ellipsis;}
   .td-comments-list{max-height:200px;}
 }
 
@@ -479,8 +484,8 @@ td{padding:12px 15px;white-space:nowrap;}
   <div class="cs-tabs-row" id="search-wrap">
     <div class="cs-tabs">
       <div class="cs-tab active" onclick="switchTab('favorites',this)">⭐ <span class="cnt-badge" id="fav-cnt">0</span></div>
-      <div class="cs-tab" onclick="switchTab('market',this)">📊 Thị trường</div>
-      <div class="cs-tab" onclick="switchTab('movers',this)">🚀 Top</div>
+      
+      
       <button class="search-toggle-btn" id="search-toggle" onclick="toggleSearch()" title="Tìm kiếm">🔍</button>
     </div>
     <!-- Search dropdown bên dưới -->
@@ -492,32 +497,9 @@ td{padding:12px 15px;white-space:nowrap;}
       </div>
     </div>
   </div>
-
-  <!-- Panel Market -->
-  <div id="panel-market" style="display:none">
-    <div class="sub-h"><h3>🔥 Phổ biến & Vốn hóa lớn</h3><div class="sub-line"></div><span class="sub-tag">% 24h cao → thấp</span></div>
-    <div id="grid-popular"></div>
-    <div class="sub-h"><h3>✦ Alpha Tokens</h3><div class="sub-line"></div><span class="sub-tag">Binance Alpha · % 24h cao → thấp</span></div>
-    <div id="grid-alpha"></div>
-  </div>
-
   <!-- Panel Favorites -->
   <div id="panel-favorites">
     <div id="fav-body"></div>
-  </div>
-
-  <!-- Panel Top Movers -->
-  <div id="panel-movers" style="display:none">
-    <div class="movers-grid">
-      <div class="movers-col">
-        <div class="movers-hdr" style="color:var(--green)">🚀 Top 10 Tăng Mạnh Nhất (24h)</div>
-        <div id="top-gainers"></div>
-      </div>
-      <div class="movers-col">
-        <div class="movers-hdr" style="color:var(--red)">📉 Top 10 Giảm Mạnh Nhất (24h)</div>
-        <div id="top-losers"></div>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -815,10 +797,7 @@ function listRowHTML(t){
 // RENDER ALL
 // ──────────────────────────────────────
 function renderAll(){
-  document.getElementById('grid-popular').innerHTML='<div class="crypto-list">'+sortTokensByCh(POPULAR).map(listRowHTML).join('')+'</div>';
-  document.getElementById('grid-alpha').innerHTML='<div class="crypto-list">'+sortTokensByCh(ALPHA).map(listRowHTML).join('')+'</div>';
   if(CURRENT_TAB==='favorites')renderFav();
-  if(CURRENT_TAB==='movers')renderMovers();
 }
 
 let _expandedToken=null;
@@ -953,7 +932,7 @@ async function fetchBinanceKlines(symbol,interval,limit){
   ];
   const attempts=urls.map(async url=>{
     try{
-      const r=await fetchWithHardTimeout(url,2500);
+      const r=await fetchWithHardTimeout(url,700);
       if(!r.ok)return [];
       const data=await r.json();
       return Array.isArray(data)?data:[];
@@ -963,7 +942,7 @@ async function fetchBinanceKlines(symbol,interval,limit){
   });
   const settled=await Promise.race([
     Promise.all(attempts),
-    new Promise(resolve=>setTimeout(()=>resolve([]),3200))
+    new Promise(resolve=>setTimeout(()=>resolve([]),1000))
   ]);
   const first=settled.find(data=>Array.isArray(data)&&data.length);
   return first||[];
@@ -1094,37 +1073,6 @@ function blurBankSearch(){
   }
 }
 
-function renderMovers(){
-  const valid=ALL_T.filter(t=>{
-    const vol=parseFloat(t.quoteVolume||0);
-    return vol>1e6;
-  });
-  const byChange=sym=>(t)=>parseFloat(t.priceChangePercent);
-  const gainers=[...valid].sort((a,b)=>parseFloat(b.priceChangePercent)-parseFloat(a.priceChangePercent)).slice(0,10);
-  const losers=[...valid].sort((a,b)=>parseFloat(a.priceChangePercent)-parseFloat(b.priceChangePercent)).slice(0,10);
-  function mRow(t,isUp){
-    const sym=t.symbol.replace('USDT','');
-    const meta=META[sym];
-    const col=meta?meta.c:(isUp?'var(--green)':'var(--red)');
-    const bg=meta?meta.bg:(isUp?'rgba(34,197,94,.15)':'rgba(242,92,84,.15)');
-    const ch=parseFloat(t.priceChangePercent);
-    const p=parseFloat(t.lastPrice);
-    return `<div class="mover-row">
-      <div class="mv-l">
-        <div class="mv-logo" style="background:${bg};color:${col}">${sym.slice(0,4)}</div>
-        <div><div class="mv-sym">${sym}</div><div class="mv-name">${meta?meta.name:sym+'/USDT'}</div></div>
-      </div>
-      <div class="mv-r">
-        <div class="mv-price">${fP(p)}</div>
-        <div class="mv-ch" style="background:${isUp?'rgba(34,197,94,.14)':'rgba(242,92,84,.14)'};color:${isUp?'var(--green)':'var(--red)'}">${isUp?'+':''}${ch.toFixed(2)}%</div>
-      </div>
-    </div>`;
-  }
-  document.getElementById('top-gainers').innerHTML=gainers.map(t=>mRow(t,true)).join('');
-  document.getElementById('top-losers').innerHTML=losers.map(t=>mRow(t,false)).join('');
-}
-
-// ──────────────────────────────────────
 // MARKET STATS
 // ──────────────────────────────────────
 async function fetchStats(){
@@ -1259,11 +1207,8 @@ let CURRENT_TAB='favorites';
 function switchTab(tab,el){
   CURRENT_TAB=tab;
   document.querySelectorAll('.cs-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
-  document.getElementById('panel-market').style.display=tab==='market'?'':'none';
   document.getElementById('panel-favorites').style.display=tab==='favorites'?'':'none';
-  document.getElementById('panel-movers').style.display=tab==='movers'?'':'none';
   if(tab==='favorites')renderFav();
-  if(tab==='movers')renderMovers();
 }
 
 // ──────────────────────────────────────
