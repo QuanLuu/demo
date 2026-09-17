@@ -316,10 +316,6 @@ td{padding:12px 15px;white-space:nowrap;}
 .token-detail-panel{background:var(--surface2);border-top:1px dashed var(--border);padding:16px 20px;animation:fadeUp .3s forwards;}
 .td-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;}
 .td-section-title{font-size:.78rem;font-weight:700;margin-bottom:10px;color:var(--text);display:flex;align-items:center;gap:6px;}
-.td-chart-info{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
-.td-stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 11px;flex:1;min-width:72px;}
-.td-stat-lbl{font-size:.6rem;color:var(--muted);text-transform:uppercase;font-weight:700;letter-spacing:.04em;}
-.td-stat-val{font-family:'Space Mono',monospace;font-size:.82rem;font-weight:700;margin-top:2px;}
 .td-price-note{font-size:.7rem;color:var(--muted);margin-bottom:10px;}
 /* Candle table */
 .td-candle-table-wrap{width:100%;overflow-x:auto;border-radius:10px;border:1px solid var(--border);background:var(--card);-webkit-overflow-scrolling:touch;}
@@ -348,9 +344,6 @@ td{padding:12px 15px;white-space:nowrap;}
   .token-detail-panel{padding:12px 10px;}
   .td-grid{grid-template-columns:1fr;gap:14px;}
   .td-chart-section{min-width:0;}
-  .td-chart-info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;}
-  .td-stat{min-width:0;padding:7px 8px;}
-  .td-stat-val{font-size:.74rem;overflow:hidden;text-overflow:ellipsis;}
   .td-comments-list{max-height:200px;}
 }
 
@@ -848,69 +841,17 @@ function toggleTokenDetail(sym){
 async function loadTokenDetail(sym){
   const panel=document.getElementById(`detail-${sym}`);
   if(!panel)return;
-  const news=await fetchTokenNews(sym);
   if(_expandedToken!==sym)return;
-  renderTokenDetailPanel(panel,sym,news);
+  renderTokenDetailPanel(panel,sym);
 }
-async function fetchTokenNews(sym){
-  const feeds=[
-    `https://cryptopanic.com/news/${sym.toLowerCase()}/rss/`,
-    `https://cryptopanic.com/news/rss/?currencies=${sym}`,
-  ];
-  // rss2json.com: free public API, no key needed, no CORS issue
-  for(const feedUrl of feeds){
-    try{
-      const apiUrl=`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}&count=6`;
-      const r=await fetch(apiUrl,{signal:AbortSignal.timeout(7000)});
-      if(!r.ok)continue;
-      const json=await r.json();
-      if(json.status!=='ok'||!json.items?.length)continue;
-      return json.items.map(item=>({
-        title:(item.title||'').trim(),
-        source:json.feed?.title||new URL(item.link||feedUrl).hostname||'CryptoPanic',
-        url:item.link||'#',
-        created:item.pubDate?new Date(item.pubDate).getTime()/1000:Date.now()/1000
-      })).filter(n=>n.title);
-    }catch{}
-  }
-  // Fallback: CryptoCompare (may fail due to CORS but worth trying)
-  try{
-    const r=await fetch(`https://min-api.cryptocompare.com/data/v2/news/?categories=${sym}`,{signal:AbortSignal.timeout(6000)});
-    if(r.ok){
-      const d=await r.json();
-      if(d?.Data?.length)return d.Data.slice(0,6).map(n=>({title:n.title,source:n.source_info?.name||'Crypto News',url:n.url,created:n.published_on}));
-    }
-  }catch{}
-  return [];
-}
-function renderTokenDetailPanel(panel,sym,news){
-  let newsHTML='';
-  if(news.length){
-    newsHTML=news.map(n=>`<a href="${escapeHTML(n.url)}" target="_blank" rel="noopener" class="td-comment">
-      <div class="td-comment-title">${escapeHTML(n.title)}</div>
-      <div class="td-comment-meta">
-        <span>📰 ${escapeHTML(n.source)}</span>
-        <span>⏱ ${formatRelativeTime(n.created*1000)}</span>
-      </div>
-    </a>`).join('');
-  }else{
-    newsHTML=`<div style="text-align:center;padding:20px;color:var(--muted);font-size:.8rem"><div style="font-size:1.5rem;margin-bottom:8px">💬</div>Chưa có tin tức cho ${escapeHTML(sym)}</div>`;
-  }
+function renderTokenDetailPanel(panel,sym){
   const tableId=`td-table-${sym}`;
-  const statsId=`td-stats-${sym}`;
 
   panel.innerHTML=`<div class="td-grid">
     <div class="td-chart-section">
       <div class="td-section-title">B&#7843;ng gi&#225; ${escapeHTML(sym)}/USDT &middot; 8 gi&#7901; g&#7847;n nh&#7845;t</div>
-      <div class="td-chart-info" id="${statsId}">
-        <div class="td-loading" style="width:100%;padding:6px">↻ Đang tải...</div>
-      </div>
       <div class="td-price-note">D&#7919; li&#7879;u g&#7891;m 8 n&#7871;n 1 gi&#7901; g&#7847;n nh&#7845;t t&#7915; Binance Spot.</div>
       <div id="${tableId}"><div class="td-loading">↻ Đang tải bảng giá...</div></div>
-    </div>
-    <div class="td-comments-section">
-      <div class="td-section-title">📰 Tin tức thị trường</div>
-      <div class="td-comments-list">${newsHTML}</div>
     </div>
   </div>`;
 
@@ -976,9 +917,7 @@ async function loadCandleTable(sym){
   const limit=8;
   const label='8H';
   const tableId=`td-table-${sym}`;
-  const statsId=`td-stats-${sym}`;
   const tableEl=document.getElementById(tableId);
-  const statsEl=document.getElementById(statsId);
   if(!tableEl)return;
   tableEl.innerHTML=`<div class="td-loading">Dang tai 8 gio gan nhat...</div>`;
 
@@ -992,32 +931,11 @@ async function loadCandleTable(sym){
 
   if(!klines.length){
     if(tableEl)tableEl.innerHTML=`<div style="padding:14px;color:var(--red);font-size:.78rem;text-align:center">Khong co du lieu gia cho ${escapeHTML(sym)}</div>`;
-    if(statsEl)statsEl.innerHTML='';
     return;
   }
 
-  const closes=klines.map(k=>parseFloat(k[4]));
-  const highs=klines.map(k=>parseFloat(k[2]));
-  const lows=klines.map(k=>parseFloat(k[3]));
-  const vols=klines.map(k=>parseFloat(k[5]));
-  const last=closes[closes.length-1];
-  const first=closes[0];
-  const pct=first?((last-first)/first)*100:0;
-  const isUp=pct>=0;
-  const lineColor=isUp?'var(--green)':'var(--red)';
-  const high=Math.max(...highs);
-  const low=Math.min(...lows);
-  const vol=vols.reduce((a,b)=>a+b,0);
   const fmtVol=v=>v>=1e6?(v/1e6).toFixed(2)+'M':v>=1e3?(v/1e3).toFixed(1)+'K':v.toFixed(0);
-
-  if(statsEl)statsEl.innerHTML=`
-    <div class="td-stat"><div class="td-stat-lbl">Gia</div><div class="td-stat-val">${fP(last)}</div></div>
-    <div class="td-stat"><div class="td-stat-lbl">Thay doi</div><div class="td-stat-val" style="color:${lineColor}">${isUp?'+':''}${pct.toFixed(2)}%</div></div>
-    <div class="td-stat"><div class="td-stat-lbl">Cao (${label})</div><div class="td-stat-val td-up">${fP(high)}</div></div>
-    <div class="td-stat"><div class="td-stat-lbl">Thap (${label})</div><div class="td-stat-val td-dn">${fP(low)}</div></div>
-    <div class="td-stat"><div class="td-stat-lbl">Khoi luong</div><div class="td-stat-val">${fmtVol(vol)}</div></div>
-  `;
-
+  const vols=klines.map(k=>parseFloat(k[5])||0);
   const maxVol=Math.max(...vols)||1;
   const rows=[...klines].reverse().map(k=>{
     const ts=new Date(k[0]);
