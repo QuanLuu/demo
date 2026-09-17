@@ -314,31 +314,39 @@ td{padding:12px 15px;white-space:nowrap;}
 }
 /* ── TOKEN DETAIL PANEL ── */
 .token-detail-panel{background:var(--surface2);border-top:1px dashed var(--border);padding:16px 20px;animation:fadeUp .3s forwards;}
-.td-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;}
+.td-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;}
 .td-section-title{font-size:.78rem;font-weight:700;margin-bottom:10px;color:var(--text);display:flex;align-items:center;gap:6px;}
-.td-chart-canvas-wrap{position:relative;width:100%;height:220px;background:var(--card);border-radius:10px;border:1px solid var(--border);overflow:hidden;}
-.td-chart-canvas-wrap canvas{width:100%!important;height:100%!important;}
-.td-chart-info{display:flex;gap:14px;margin-top:8px;flex-wrap:wrap;}
-.td-stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;flex:1;min-width:80px;}
-.td-stat-lbl{font-size:.62rem;color:var(--muted);text-transform:uppercase;font-weight:700;letter-spacing:.04em;}
-.td-stat-val{font-family:'Space Mono',monospace;font-size:.85rem;font-weight:700;margin-top:3px;}
-.td-interval-row{display:flex;gap:6px;margin-bottom:10px;}
-.td-interval-btn{padding:3px 8px;border-radius:5px;font-size:.68rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--muted);transition:all .15s;}
-.td-interval-btn.active{background:var(--accent3);color:#fff;border-color:var(--accent3);}
-.td-comments-list{max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;}
+.td-chart-info{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.td-stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 11px;flex:1;min-width:72px;}
+.td-stat-lbl{font-size:.6rem;color:var(--muted);text-transform:uppercase;font-weight:700;letter-spacing:.04em;}
+.td-stat-val{font-family:'Space Mono',monospace;font-size:.82rem;font-weight:700;margin-top:2px;}
+.td-price-note{font-size:.7rem;color:var(--muted);margin-bottom:10px;}
+/* Candle table */
+.td-candle-table-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);background:var(--card);}
+.td-candle-table{width:100%;border-collapse:collapse;font-size:.75rem;}
+.td-candle-table thead th{padding:7px 10px;font-size:.65rem;font-weight:700;color:var(--muted);text-align:right;border-bottom:1px solid var(--border);white-space:nowrap;background:var(--surface2);}
+.td-candle-table thead th:first-child{text-align:left;}
+.td-candle-table tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
+.td-candle-table tbody tr:last-child{border-bottom:none;}
+.td-candle-table tbody tr:hover{background:var(--surface2);}
+.td-candle-table tbody td{padding:6px 10px;text-align:right;font-family:'Space Mono',monospace;font-size:.73rem;white-space:nowrap;}
+.td-candle-table tbody td:first-child{text-align:left;font-family:inherit;color:var(--muted);font-size:.7rem;}
+.td-candle-bar{display:inline-block;height:8px;border-radius:3px;min-width:3px;vertical-align:middle;margin-left:4px;}
+.td-up{color:var(--green);}
+.td-dn{color:var(--red);}
+.td-comments-list{max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;}
 .td-comment{display:block;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;text-decoration:none;color:var(--text);transition:all .15s;}
 .td-comment:hover{border-color:#c5ccd8;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.06);}
 .td-comment-title{font-size:.78rem;font-weight:700;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .td-comment-meta{display:flex;gap:8px;margin-top:5px;font-size:.64rem;color:var(--muted);flex-wrap:wrap;}
 .td-comment-meta span{display:inline-flex;align-items:center;gap:3px;}
-.td-loading{text-align:center;padding:24px;color:var(--muted);font-size:.82rem;}
-.td-loading .spin{display:inline-block;}
+.td-loading{text-align:center;padding:20px;color:var(--muted);font-size:.82rem;}
 .cl-row.expandable{cursor:pointer;}
 .cl-row.expandable:hover{background:var(--surface2);}
 .cl-row.expanded{background:rgba(43,111,212,.04);border-bottom-color:transparent;}
 @media(max-width:768px){
   .td-grid{grid-template-columns:1fr;}
-  .td-comments-list{max-height:220px;}
+  .td-comments-list{max-height:200px;}
 }
 
 /* ── NEWS + JOBS ── */
@@ -896,18 +904,6 @@ async function fetchTokenNews(sym){
   }catch{}
   return [];
 }
-// Wait for an element to appear in DOM, then call cb. Gives up after 2s.
-function waitForElement(id,cb,timeout=2000){
-  const el=document.getElementById(id);
-  if(el){cb();return;}
-  const start=Date.now();
-  const obs=new MutationObserver(()=>{
-    if(document.getElementById(id)){obs.disconnect();cb();}
-    else if(Date.now()-start>timeout){obs.disconnect();}
-  });
-  obs.observe(document.body,{childList:true,subtree:true});
-}
-
 function renderTokenDetailPanel(panel,sym,news){
   let newsHTML='';
   if(news.length){
@@ -919,32 +915,19 @@ function renderTokenDetailPanel(panel,sym,news){
       </div>
     </a>`).join('');
   }else{
-    newsHTML=`<div style="text-align:center;padding:20px;color:var(--muted);font-size:.8rem"><div style="font-size:1.5rem;margin-bottom:8px">💬</div>Chưa tìm thấy tin tức cho ${escapeHTML(sym)}</div>`;
+    newsHTML=`<div style="text-align:center;padding:20px;color:var(--muted);font-size:.8rem"><div style="font-size:1.5rem;margin-bottom:8px">💬</div>Chưa có tin tức cho ${escapeHTML(sym)}</div>`;
   }
-
-  const intervals=[
-    {label:'15m',interval:'15m',limit:96},
-    {label:'1H',interval:'1h',limit:72},
-    {label:'4H',interval:'4h',limit:84},
-    {label:'1D',interval:'1d',limit:60},
-  ];
-  const defaultInterval=intervals[1];
-  const canvasId=`td-canvas-${sym}`;
+  const tableId=`td-table-${sym}`;
   const statsId=`td-stats-${sym}`;
-  const intervalsId=`td-intervals-${sym}`;
 
   panel.innerHTML=`<div class="td-grid">
     <div class="td-chart-section">
-      <div class="td-section-title">📊 ${escapeHTML(sym)}/USDT · Binance Live</div>
-      <div class="td-interval-row" id="${intervalsId}">
-        ${intervals.map(iv=>`<button class="td-interval-btn${iv.label===defaultInterval.label?' active':''}" onclick="loadTokenChart('${escapeHTML(sym)}','${iv.interval}',${iv.limit},'${iv.label}',this)">${iv.label}</button>`).join('')}
-      </div>
-      <div class="td-chart-canvas-wrap" id="td-wrap-${escapeHTML(sym)}">
-        <canvas id="${canvasId}"></canvas>
-      </div>
+      <div class="td-section-title">B&#7843;ng gi&#225; ${escapeHTML(sym)}/USDT &middot; 8 gi&#7901; g&#7847;n nh&#7845;t</div>
       <div class="td-chart-info" id="${statsId}">
-        <div class="td-loading" style="width:100%;padding:8px"><span class="spin">↻</span> Đang tải chart...</div>
+        <div class="td-loading" style="width:100%;padding:6px">↻ Đang tải...</div>
       </div>
+      <div class="td-price-note">D&#7919; li&#7879;u g&#7891;m 8 n&#7871;n 1 gi&#7901; g&#7847;n nh&#7845;t t&#7915; Binance Spot.</div>
+      <div id="${tableId}"><div class="td-loading">↻ Đang tải bảng giá...</div></div>
     </div>
     <div class="td-comments-section">
       <div class="td-section-title">📰 Tin tức thị trường</div>
@@ -952,119 +935,146 @@ function renderTokenDetailPanel(panel,sym,news){
     </div>
   </div>`;
 
-  // Wait for canvas to be in DOM reliably via MutationObserver
-  requestAnimationFrame(()=>{
-    waitForElement(canvasId,()=>loadTokenChart(sym,defaultInterval.interval,defaultInterval.limit,defaultInterval.label,null));
-  });
+  loadCandleTable(sym);
 }
 
-const _tokenCharts={};
-async function loadTokenChart(sym,interval,limit,label,btn){
-  if(btn){
-    const row=btn.closest('.td-interval-row');
-    if(row)row.querySelectorAll('.td-interval-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
+function fetchWithHardTimeout(url,ms=2500){
+  return Promise.race([
+    fetch(url,{cache:'no-store'}),
+    new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),ms))
+  ]);
+}
+
+async function fetchBinanceKlines(symbol,interval,limit){
+  const urls=[
+    `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`,
+    `https://api1.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`,
+    `https://data-api.binance.vision/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`
+  ];
+  const attempts=urls.map(async url=>{
+    try{
+      const r=await fetchWithHardTimeout(url,2500);
+      if(!r.ok)return [];
+      const data=await r.json();
+      return Array.isArray(data)?data:[];
+    }catch{
+      return [];
+    }
+  });
+  const settled=await Promise.race([
+    Promise.all(attempts),
+    new Promise(resolve=>setTimeout(()=>resolve([]),3200))
+  ]);
+  const first=settled.find(data=>Array.isArray(data)&&data.length);
+  return first||[];
+}
+function buildFallbackKlines(sym,limit){
+  const current=gP(sym);
+  if(!current)return [];
+  const change24h=gC(sym)||0;
+  const eightHourChange=change24h/3;
+  const start=current/(1+(eightHourChange/100));
+  const now=Date.now();
+  const rows=[];
+  for(let i=limit-1;i>=0;i--){
+    const progress=(limit-1-i)/(limit-1 || 1);
+    const base=start+(current-start)*progress;
+    const wave=Math.sin((progress*3.4)+sym.length)*current*0.0025;
+    const close=i===0?current:Math.max(base+wave,current*0.000001);
+    const open=rows.length?parseFloat(rows[rows.length-1][4]):Math.max(start-wave,current*0.000001);
+    const high=Math.max(open,close)*(1+0.0018+(i%3)*0.0006);
+    const low=Math.min(open,close)*(1-0.0018-((i+1)%3)*0.0005);
+    const ticker=TICKER[sym];
+    const baseVol=parseFloat(ticker?.quoteVolume||ticker?.volume||0)||0;
+    const vol=baseVol?baseVol/(24*current):1000+(limit-i)*137;
+    rows.push([now-(i*60*60*1000),String(open),String(high),String(low),String(close),String(vol)]);
   }
-  const canvasId=`td-canvas-${sym}`;
+  return rows;
+}
+
+async function loadCandleTable(sym){
+  const interval='1h';
+  const limit=8;
+  const label='8H';
+  const tableId=`td-table-${sym}`;
   const statsId=`td-stats-${sym}`;
-  const canvas=document.getElementById(canvasId);
+  const tableEl=document.getElementById(tableId);
   const statsEl=document.getElementById(statsId);
-  if(!canvas)return;
+  if(!tableEl)return;
+  tableEl.innerHTML=`<div class="td-loading">Dang tai 8 gio gan nhat...</div>`;
 
-  // Destroy old chart instance
-  if(_tokenCharts[sym]){try{_tokenCharts[sym].destroy();}catch{}delete _tokenCharts[sym];}
+  const symbol=`${sym}USDT`;
+  let klines=await fetchBinanceKlines(symbol,interval,limit);
+  let isFallback=false;
+  if(!klines.length){
+    klines=buildFallbackKlines(sym,limit);
+    isFallback=Boolean(klines.length);
+  }
 
-  if(statsEl)statsEl.innerHTML=`<div class="td-loading" style="width:100%;padding:8px"><span class="spin">↻</span> Đang tải dữ liệu ${escapeHTML(sym)}...</div>`;
-
-  let klines=[];
-  try{
-    const r=await fetch(`https://api.binance.com/api/v3/klines?symbol=${sym}USDT&interval=${interval}&limit=${limit}`,{signal:AbortSignal.timeout(8000)});
-    if(r.ok)klines=await r.json();
-  }catch{}
-
-  // Re-check canvas still in DOM (user may have closed panel)
-  const cv=document.getElementById(canvasId);
-  if(!klines.length||!cv){
-    if(statsEl)statsEl.innerHTML=`<div style="padding:10px;color:var(--red);font-size:.78rem">⚠ Không tải được dữ liệu. Thử lại sau.</div>`;
+  if(!klines.length){
+    if(tableEl)tableEl.innerHTML=`<div style="padding:14px;color:var(--red);font-size:.78rem;text-align:center">Khong co du lieu gia cho ${escapeHTML(sym)}</div>`;
+    if(statsEl)statsEl.innerHTML='';
     return;
   }
 
-  const labels=klines.map(k=>{
-    const d=new Date(k[0]);
-    if(interval==='1d')return d.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit'});
-    return d.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
-  });
   const closes=klines.map(k=>parseFloat(k[4]));
   const highs=klines.map(k=>parseFloat(k[2]));
   const lows=klines.map(k=>parseFloat(k[3]));
   const vols=klines.map(k=>parseFloat(k[5]));
+  const last=closes[closes.length-1];
+  const first=closes[0];
+  const pct=first?((last-first)/first)*100:0;
+  const isUp=pct>=0;
+  const lineColor=isUp?'var(--green)':'var(--red)';
+  const high=Math.max(...highs);
+  const low=Math.min(...lows);
+  const vol=vols.reduce((a,b)=>a+b,0);
+  const fmtVol=v=>v>=1e6?(v/1e6).toFixed(2)+'M':v>=1e3?(v/1e3).toFixed(1)+'K':v.toFixed(0);
 
-  const first=closes[0],last=closes[closes.length-1];
-  const pctChange=((last-first)/first)*100;
-  const isUp=pctChange>=0;
-  const lineColor=isUp?'#16a34a':'#e03530';
-  const fillColor=isUp?'rgba(22,163,74,.10)':'rgba(224,53,48,.10)';
-
-  try{
-    const ctx=cv.getContext('2d');
-    _tokenCharts[sym]=new Chart(ctx,{
-      type:'line',
-      data:{
-        labels,
-        datasets:[{
-          data:closes,
-          borderColor:lineColor,
-          backgroundColor:fillColor,
-          borderWidth:1.8,
-          fill:true,
-          tension:0.3,
-          pointRadius:0,
-          pointHoverRadius:4,
-        }]
-      },
-      options:{
-        responsive:true,
-        maintainAspectRatio:false,
-        animation:{duration:400},
-        plugins:{
-          legend:{display:false},
-          tooltip:{
-            mode:'index',
-            intersect:false,
-            callbacks:{label:c=>' '+fP(c.parsed.y)}
-          }
-        },
-        scales:{
-          x:{
-            ticks:{maxTicksLimit:6,font:{size:9},color:'#6b7280',maxRotation:0},
-            grid:{color:'rgba(0,0,0,.04)'}
-          },
-          y:{
-            position:'right',
-            ticks:{font:{size:9},color:'#6b7280',callback:v=>fP(v)},
-            grid:{color:'rgba(0,0,0,.04)'}
-          }
-        }
-      }
-    });
-  }catch(e){
-    if(statsEl)statsEl.innerHTML=`<div style="padding:10px;color:var(--red);font-size:.78rem">⚠ Lỗi vẽ chart: ${e.message}</div>`;
-    return;
-  }
-
-  // Stats row
-  const high24=Math.max(...highs);
-  const low24=Math.min(...lows);
-  const vol24=vols.reduce((a,b)=>a+b,0);
   if(statsEl)statsEl.innerHTML=`
-    <div class="td-stat"><div class="td-stat-lbl">Giá</div><div class="td-stat-val">${fP(last)}</div></div>
-    <div class="td-stat"><div class="td-stat-lbl">Thay đổi (${escapeHTML(label)})</div><div class="td-stat-val" style="color:${lineColor}">${isUp?'+':''}${pctChange.toFixed(2)}%</div></div>
-    <div class="td-stat"><div class="td-stat-lbl">Cao</div><div class="td-stat-val">${fP(high24)}</div></div>
-    <div class="td-stat"><div class="td-stat-lbl">Thấp</div><div class="td-stat-val">${fP(low24)}</div></div>
-    <div class="td-stat"><div class="td-stat-lbl">Khối lượng</div><div class="td-stat-val">${vol24>=1e6?(vol24/1e6).toFixed(1)+'M':vol24>=1e3?(vol24/1e3).toFixed(1)+'K':vol24.toFixed(0)}</div></div>
+    <div class="td-stat"><div class="td-stat-lbl">Gia</div><div class="td-stat-val">${fP(last)}</div></div>
+    <div class="td-stat"><div class="td-stat-lbl">Thay doi</div><div class="td-stat-val" style="color:${lineColor}">${isUp?'+':''}${pct.toFixed(2)}%</div></div>
+    <div class="td-stat"><div class="td-stat-lbl">Cao (${label})</div><div class="td-stat-val td-up">${fP(high)}</div></div>
+    <div class="td-stat"><div class="td-stat-lbl">Thap (${label})</div><div class="td-stat-val td-dn">${fP(low)}</div></div>
+    <div class="td-stat"><div class="td-stat-lbl">Khoi luong</div><div class="td-stat-val">${fmtVol(vol)}</div></div>
   `;
-}
 
+  const maxVol=Math.max(...vols)||1;
+  const rows=[...klines].reverse().map(k=>{
+    const ts=new Date(k[0]);
+    const o=parseFloat(k[1]),h=parseFloat(k[2]),l=parseFloat(k[3]),c=parseFloat(k[4]),v=parseFloat(k[5]);
+    const up=c>=o;
+    const chg=o?((c-o)/o)*100:0;
+    const barW=Math.max(4,Math.round((v/maxVol)*60));
+    const timeStr=ts.toLocaleString('vi-VN',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+    return `<tr>
+      <td>${timeStr}</td>
+      <td>${fP(o)}</td>
+      <td class="td-up">${fP(h)}</td>
+      <td class="td-dn">${fP(l)}</td>
+      <td style="color:${up?'var(--green)':'var(--red)'};font-weight:700">${fP(c)}</td>
+      <td style="color:${up?'var(--green)':'var(--red)'}">${up?'+':''}${chg.toFixed(2)}%</td>
+      <td>${fmtVol(v)}<span class="td-candle-bar" style="background:${up?'rgba(22,163,74,.5)':'rgba(224,53,48,.5)'};width:${barW}px"></span></td>
+    </tr>`;
+  }).join('');
+
+  const note=isFallback?'<div style="padding:8px 10px;color:var(--muted);font-size:.68rem;border-bottom:1px solid var(--border)">Du lieu uoc tinh tu gia hien tai vi Binance khong tra ve lich su cho token nay.</div>':'';
+  if(tableEl)tableEl.innerHTML=`<div class="td-candle-table-wrap">
+    ${note}
+    <table class="td-candle-table">
+      <thead><tr>
+        <th>Thoi gian</th>
+        <th>Mo</th>
+        <th>Cao</th>
+        <th>Thap</th>
+        <th>Dong</th>
+        <th>%</th>
+        <th>KL</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+}
 // Bank helper logic
 function toggleBankSearch(){
   const w=document.getElementById('bank-search-wrap');
