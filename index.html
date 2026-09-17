@@ -316,7 +316,6 @@ td{padding:12px 15px;white-space:nowrap;}
 .token-detail-panel{background:var(--surface2);border-top:1px dashed var(--border);padding:16px 20px;animation:fadeUp .3s forwards;}
 .td-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;}
 .td-section-title{font-size:.78rem;font-weight:700;margin-bottom:10px;color:var(--text);display:flex;align-items:center;gap:6px;}
-.td-price-note{font-size:.7rem;color:var(--muted);margin-bottom:10px;}
 /* Candle table */
 .td-candle-table-wrap{width:100%;overflow-x:auto;border-radius:10px;border:1px solid var(--border);background:var(--card);-webkit-overflow-scrolling:touch;}
 .td-candle-table{width:100%;min-width:620px;border-collapse:collapse;font-size:.75rem;}
@@ -830,13 +829,13 @@ function renderFav(){
   }));
   el.innerHTML=`<div class="sub-h"><h3>⭐ Token Yêu Thích</h3><div class="sub-line"></div><span class="sub-tag">${tokens.length} token · Bấm để xem chi tiết</span></div>
     <div class="crypto-list">${tokens.map(favRowHTML).join('')}</div>`;
-  if(_expandedToken&&FAV.has(_expandedToken))loadTokenDetail(_expandedToken);
 }
 
 // TOKEN DETAIL PANEL JS
 function toggleTokenDetail(sym){
   if(_expandedToken===sym){_expandedToken=null;}else{_expandedToken=sym;}
   renderFav();
+  if(_expandedToken===sym)loadTokenDetail(sym);
 }
 async function loadTokenDetail(sym){
   const panel=document.getElementById(`detail-${sym}`);
@@ -850,7 +849,6 @@ function renderTokenDetailPanel(panel,sym){
   panel.innerHTML=`<div class="td-grid">
     <div class="td-chart-section">
       <div class="td-section-title">B&#7843;ng gi&#225; ${escapeHTML(sym)}/USDT &middot; 8 gi&#7901; g&#7847;n nh&#7845;t</div>
-      <div class="td-price-note">D&#7919; li&#7879;u g&#7891;m 8 n&#7871;n 1 gi&#7901; g&#7847;n nh&#7845;t t&#7915; Binance Spot.</div>
       <div id="${tableId}"><div class="td-loading">↻ Đang tải bảng giá...</div></div>
     </div>
   </div>`;
@@ -912,6 +910,19 @@ function buildFallbackKlines(sym,limit){
   return rows;
 }
 
+function renderCandleChart(sym,klines,isFallback,tableEl){
+  const data=klines.map(k=>({time:k[0],open:+k[1],high:+k[2],low:+k[3],close:+k[4],volume:+k[5]})).filter(d=>[d.open,d.high,d.low,d.close,d.volume].every(Number.isFinite));
+  if(!data.length){tableEl.innerHTML='<div class="td-loading">Khong co du lieu gia.</div>';return;}
+  const width=760,height=350,left=68,right=58,top=30,bottom=48,priceBottom=height-bottom-62;
+  const highest=Math.max(...data.map(d=>d.high)),lowest=Math.min(...data.map(d=>d.low)),span=highest-lowest||Math.max(highest*.01,1),chartTop=highest+span*.12,chartBottom=lowest-span*.12,maxVolume=Math.max(...data.map(d=>d.volume))||1;
+  const x=i=>left+(i/(data.length-1||1))*(width-left-right),y=v=>priceBottom-((v-chartBottom)/(chartTop-chartBottom))*(priceBottom-top),volumeY=v=>height-bottom-8-(v/maxVolume)*46,candleWidth=Math.max(12,Math.min(34,(width-left-right)/data.length*.48));
+  const grid=[0,1,2,3].map(i=>{const value=chartTop-(chartTop-chartBottom)*i/3,yy=y(value).toFixed(1);return '<line class="td-chart-grid" x1="'+left+'" x2="'+(width-right)+'" y1="'+yy+'" y2="'+yy+'"/><text class="td-chart-axis" x="'+(left-8)+'" y="'+(parseFloat(yy)+4)+'" text-anchor="end">'+fP(value)+'</text>';}).join('');
+  const volumeBars=data.map((d,i)=>{const cx=x(i),h=(d.volume/maxVolume)*46;return '<rect class="td-volume-bar" x="'+(cx-candleWidth/2).toFixed(1)+'" y="'+volumeY(d.volume).toFixed(1)+'" width="'+candleWidth.toFixed(1)+'" height="'+h.toFixed(1)+'" fill="'+(d.close>=d.open?'var(--green)':'var(--red)')+'"><title>Khoi luong: '+d.volume.toFixed(2)+'</title></rect>';}).join('');
+  const volumeAxis='<text class="td-volume-axis" x="'+(width-right+8)+'" y="'+(volumeY(maxVolume)+4)+'">KL</text><text class="td-chart-axis" x="'+(width-right+8)+'" y="'+(volumeY(maxVolume)+16)+'">'+(maxVolume>=1e6?(maxVolume/1e6).toFixed(1)+'M':maxVolume>=1e3?(maxVolume/1e3).toFixed(1)+'K':maxVolume.toFixed(0))+'</text><text class="td-chart-axis" x="'+(width-right+8)+'" y="'+(height-bottom-4)+'">0</text>';
+  const candles=data.map((d,i)=>{const up=d.close>=d.open,color=up?'var(--green)':'var(--red)',cx=x(i),bodyTop=y(Math.max(d.open,d.close)),bodyBottom=y(Math.min(d.open,d.close)),bodyHeight=Math.max(2,bodyBottom-bodyTop),highLabel='<text class="td-candle-label" x="'+cx.toFixed(1)+'" y="'+Math.max(12,y(d.high)-7).toFixed(1)+'" text-anchor="middle">'+fP(d.high)+'</text>',lowLabel='<text class="td-candle-label" x="'+cx.toFixed(1)+'" y="'+Math.min(priceBottom-2,y(d.low)+17).toFixed(1)+'" text-anchor="middle">'+fP(d.low)+'</text>',title='<title>Mo: '+fP(d.open)+' | Cao: '+fP(d.high)+' | Thap: '+fP(d.low)+' | Dong: '+fP(d.close)+'</title>';return '<g class="td-candle" style="color:'+color+'">'+title+'<line x1="'+cx.toFixed(1)+'" x2="'+cx.toFixed(1)+'" y1="'+y(d.high).toFixed(1)+'" y2="'+y(d.low).toFixed(1)+'" stroke="currentColor" stroke-width="2"/><rect x="'+(cx-candleWidth/2).toFixed(1)+'" y="'+bodyTop.toFixed(1)+'" width="'+candleWidth.toFixed(1)+'" height="'+bodyHeight.toFixed(1)+'" fill="'+color+'" rx="2"/>'+highLabel+lowLabel+'</g>';}).join('');
+  const labels=data.map((d,i)=>{const date=new Date(d.time);return '<text class="td-chart-axis" x="'+x(i).toFixed(1)+'" y="'+(height-14)+'" text-anchor="middle">'+date.toLocaleString('vi-VN',{hour:'2-digit',minute:'2-digit'})+'</text>';}).join('');
+  tableEl.innerHTML='<div class="td-candle-chart"><svg viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Bieu do nen gia va khoi luong trong 8 gio gan nhat">'+grid+'<line class="td-chart-axis-line" x1="'+left+'" x2="'+(width-right)+'" y1="'+priceBottom+'" y2="'+priceBottom+'"/>'+volumeBars+volumeAxis+candles+labels+'</svg></div>';
+}
 async function loadCandleTable(sym){
   const interval='1h';
   const limit=8;
@@ -935,6 +946,9 @@ async function loadCandleTable(sym){
   }
 
   const fmtVol=v=>v>=1e6?(v/1e6).toFixed(2)+'M':v>=1e3?(v/1e3).toFixed(1)+'K':v.toFixed(0);
+  renderCandleChart(sym,klines,isFallback,tableEl);
+  return;
+
   const vols=klines.map(k=>parseFloat(k[5])||0);
   const maxVol=Math.max(...vols)||1;
   const rows=[...klines].reverse().map(k=>{
