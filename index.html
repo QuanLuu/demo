@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#f0f2f5">
 <title>Bảng Tin Tài Chính Việt Nam</title>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root{--bg:#f0f2f5;--surface:#ffffff;--surface2:#f5f7fa;--border:#dde2ea;--accent:#d4920a;--accent2:#00a882;--accent3:#2b6fd4;--red:#e03530;--green:#16a34a;--text:#111827;--muted:#6b7280;--card:#ffffff;--sticky-top:58px;}
@@ -71,7 +71,7 @@ main{
 .icon-calendar{background:linear-gradient(135deg,#ede9fe,#f5f3ff);border:1px solid #c4b5fd;}
 .section-title{font-size:1.15rem;font-weight:800;letter-spacing:-.02em;}
 .section-subtitle{font-size:.78rem;color:var(--muted);margin-top:2px;}
-.update-time{margin-left:auto;font-family:'Space Mono',monospace;font-size:.68rem;color:var(--muted);background:var(--surface2);padding:6px 10px;border-radius:6px;border:1px solid var(--border);white-space:nowrap;flex-shrink:0;}
+.update-time{margin-left:auto;font-family:'Be Vietnam Pro',sans-serif;font-size:.68rem;color:var(--muted);background:var(--surface2);padding:6px 10px;border-radius:6px;border:1px solid var(--border);white-space:nowrap;flex-shrink:0;}
 
 /* ── CRYPTO ── */
 .crypto-search-row{display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap;}
@@ -86,11 +86,11 @@ main{
 .sri:last-child{border-bottom:none;}
 .sri:hover{background:var(--surface2);}
 .sri-l{display:flex;align-items:center;gap:10px;}
-.sri-logo{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:800;font-family:'Space Mono',monospace;}
+.sri-logo{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:800;font-family:'Be Vietnam Pro',sans-serif;}
 .sri-sym{font-weight:700;font-size:.84rem;}
 .sri-name{font-size:.68rem;color:var(--muted);}
 .sri-r{display:flex;align-items:center;gap:8px;}
-.sri-price{font-family:'Space Mono',monospace;font-size:.8rem;font-weight:600;}
+.sri-price{font-family:'Be Vietnam Pro',sans-serif;font-size:.8rem;font-weight:600;}
 .sri-ch{font-size:.7rem;font-weight:700;padding:2px 7px;border-radius:5px;}
 .fav-toggle{background:none;border:none;cursor:pointer;font-size:1rem;transition:transform .2s;padding:2px;}
 .fav-toggle:hover{transform:scale(1.25);}
@@ -98,7 +98,7 @@ main{
 .market-overview{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
 .mo-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;}
 .mo-label{font-size:.68rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
-.mo-val{font-family:'Space Mono',monospace;font-size:1rem;font-weight:700;margin-top:5px;}
+.mo-val{font-family:'Be Vietnam Pro',sans-serif;font-size:1rem;font-weight:700;margin-top:5px;}
 .mo-sub{font-size:.7rem;color:var(--muted);margin-top:3px;}
 
 .cs-tabs-row{display:flex;flex-direction:column;align-items:flex-start;gap:0;margin-bottom:18px;}
@@ -127,17 +127,17 @@ main{
 .cl-row:hover{background:var(--surface2);}
 .cl-row.is-fav{background:rgba(212,146,10,.06);}
 .cl-l{display:flex;align-items:center;gap:16px;min-width:0;flex:1;}
-.cl-logo{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.75rem;font-family:'Space Mono',monospace;flex-shrink:0;}
+.cl-logo{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.75rem;font-family:'Be Vietnam Pro',sans-serif;flex-shrink:0;}
 .cl-meta{min-width:0;}
 .cl-symline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .cl-sym{font-weight:800;font-size:1rem;letter-spacing:-.02em;}
 .cl-pair{font-size:.78rem;color:var(--muted);font-weight:600;}
 .cl-name{display:none;}
 .cl-mid{text-align:right;flex-shrink:0;}
-.cl-price{font-family:'Space Mono',monospace;font-size:1rem;font-weight:700;}
+.cl-price{font-family:'Be Vietnam Pro',sans-serif;font-size:1rem;font-weight:700;}
 .cl-vnd{display:none;}
 .cl-r{display:flex;align-items:center;gap:14px;flex-shrink:0;}
-.cl-ch{font-size:.82rem;font-weight:700;padding:4px 10px;border-radius:8px;font-family:'Space Mono',monospace;}
+.cl-ch{font-size:.82rem;font-weight:700;padding:4px 10px;border-radius:8px;font-family:'Be Vietnam Pro',sans-serif;}
 .cl-row .alpha-badge{margin:0;font-size:.55rem;padding:2px 6px;vertical-align:middle;}
 .cl-row .spot-lbl{margin:0;font-size:.55rem;}
 .cc{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:16px;cursor:default;transition:all .2s;position:relative;overflow:hidden;}
@@ -146,17 +146,17 @@ main{
 .cc:hover::before{opacity:1;}
 .cc.is-fav{border-color:#fbbf24;}
 .cc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.cc-logo{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.68rem;font-family:'Space Mono',monospace;}
+.cc-logo{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.68rem;font-family:'Be Vietnam Pro',sans-serif;}
 .cc-tr{display:flex;align-items:center;gap:6px;}
-.cc-ch{font-size:.68rem;font-weight:700;padding:3px 7px;border-radius:5px;font-family:'Space Mono',monospace;}
+.cc-ch{font-size:.68rem;font-weight:700;padding:3px 7px;border-radius:5px;font-family:'Be Vietnam Pro',sans-serif;}
 .up{background:rgba(34,197,94,.14);color:var(--green);}
 .dn{background:rgba(242,92,84,.14);color:var(--red);}
 .fav-btn{background:none;border:none;cursor:pointer;font-size:1.05rem;opacity:.4;transition:all .2s;padding:8px;min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;touch-action:manipulation;}
 .fav-btn:hover,.fav-btn.on{opacity:1;}
 .fav-btn:hover{transform:scale(1.3);}
 .cc-sym{font-size:.7rem;color:var(--muted);font-weight:600;margin-bottom:3px;}
-.cc-price{font-size:1.18rem;font-weight:700;font-family:'Space Mono',monospace;letter-spacing:-.02em;}
-.cc-vnd{font-size:.7rem;color:var(--muted);margin-top:2px;font-family:'Space Mono',monospace;}
+.cc-price{font-size:1.18rem;font-weight:700;font-family:'Be Vietnam Pro',sans-serif;letter-spacing:-.02em;}
+.cc-vnd{font-size:.7rem;color:var(--muted);margin-top:2px;font-family:'Be Vietnam Pro',sans-serif;}
 .alpha-badge{display:inline-block;font-size:.6rem;background:linear-gradient(90deg,#8b5cf6,#ec4899);color:#fff;padding:2px 6px;border-radius:4px;font-weight:700;margin-top:5px;}
 .spot-lbl{color:var(--accent3);font-size:.6rem;font-weight:700;margin-top:5px;display:block;}
 
@@ -167,11 +167,11 @@ main{
 .mover-row:last-child{border-bottom:none;}
 .mover-row:hover{background:var(--surface2);}
 .mv-l{display:flex;align-items:center;gap:9px;}
-.mv-logo{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:800;font-family:'Space Mono',monospace;}
+.mv-logo{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:800;font-family:'Be Vietnam Pro',sans-serif;}
 .mv-sym{font-weight:700;font-size:.82rem;}
 .mv-name{font-size:.67rem;color:var(--muted);}
 .mv-r{text-align:right;}
-.mv-price{font-family:'Space Mono',monospace;font-size:.8rem;font-weight:600;}
+.mv-price{font-family:'Be Vietnam Pro',sans-serif;font-size:.8rem;font-weight:600;}
 .mv-ch{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:5px;margin-top:2px;display:inline-block;}
 
 .fav-empty{text-align:center;padding:48px 20px;color:var(--muted);}
@@ -201,14 +201,14 @@ td{padding:12px 15px;white-space:nowrap;}
 .bnc{display:flex;align-items:center;gap:9px;}
 .bav{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;flex-shrink:0;}
 .bnf{font-size:.68rem;color:var(--muted);}
-.rate-cell{font-family:'Space Mono',monospace;font-weight:600;}
+.rate-cell{font-family:'Be Vietnam Pro',sans-serif;font-weight:600;}
 .rh{color:var(--green)}.rm{color:var(--accent)}.rl{color:var(--muted)}
 .rbar{display:block;height:3px;border-radius:2px;margin-top:4px;background:linear-gradient(90deg,var(--accent2),var(--accent3));}
 .tb{font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:4px;}
 .ts{background:rgba(79,142,247,.15);color:var(--accent3);}
 .tp{background:rgba(0,212,170,.15);color:var(--accent2);}
 .tf{background:rgba(240,180,41,.15);color:var(--accent);}
-.loan-col{color:var(--red);font-family:'Space Mono',monospace;font-weight:600;}
+.loan-col{color:var(--red);font-family:'Be Vietnam Pro',sans-serif;font-weight:600;}
 
 /* ── GOLD ── */
 .gold-layout{display:grid;grid-template-columns:1fr 1.65fr;gap:18px;}
@@ -222,13 +222,13 @@ td{padding:12px 15px;white-space:nowrap;}
 .gc-brand{font-size:.67rem;color:var(--muted);margin-top:2px;}
 .gc-unit{font-size:.62rem;color:var(--accent3);margin-top:3px;}
 .gc-buy{font-size:.7rem;color:var(--muted);}
-.gc-sell{font-family:'Space Mono',monospace;font-size:1rem;font-weight:700;color:var(--accent);}
+.gc-sell{font-family:'Be Vietnam Pro',sans-serif;font-size:1rem;font-weight:700;color:var(--accent);}
 .gc-ch{font-size:.7rem;margin-top:2px;}
 .wgr{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:18px;}
 @media(max-width:600px){.wgr{grid-template-columns:repeat(3,1fr);gap:6px;}}
 .wgc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px;text-align:center;}
 .wg-lbl{font-size:.68rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
-.wg-val{font-family:'Space Mono',monospace;font-size:1.05rem;font-weight:700;margin-top:4px;}
+.wg-val{font-family:'Be Vietnam Pro',sans-serif;font-size:1.05rem;font-weight:700;margin-top:4px;}
 .wg-ch{font-size:.7rem;margin-top:4px;}
 .chart-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:18px;min-width:0;width:100%;}
 .chart-wrapper{position:relative;width:100%;height:230px;}
@@ -315,7 +315,7 @@ td{padding:12px 15px;white-space:nowrap;}
 /* ── TOKEN DETAIL PANEL ── */
 .token-detail-panel{background:var(--surface2);border-top:1px dashed var(--border);padding:16px 20px;animation:fadeUp .3s forwards;}
 .td-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;}
-.td-section-title{font-size:.78rem;font-weight:700;margin-bottom:10px;color:var(--text);display:flex;align-items:center;gap:6px;}
+.td-section-title{font-size:.78rem;font-weight:700;margin-bottom:10px;color:var(--text);display:flex;align-items:center;gap:6px;}.td-candle-chart{width:100%;border:1px solid var(--border);border-radius:12px;background:var(--card);padding:10px;overflow:hidden;} .td-candle-chart svg{display:block;width:100%;height:auto;} .td-chart-axis{font-size:10px;fill:var(--muted);font-family:inherit;} .td-chart-grid{stroke:var(--border);stroke-width:1;} .td-chart-axis-line{stroke:var(--border);stroke-width:1;} .td-selected-label{display:none;font-size:8px;fill:var(--muted);font-family:Be Vietnam Pro,sans-serif;} .td-candle.selected .td-selected-label{display:block;} .td-volume-bar{opacity:.45;} .td-volume-axis{font-size:9px;fill:var(--muted);font-family:inherit;} .td-candle{cursor:pointer;}
 /* Candle table */
 .td-candle-table-wrap{width:100%;overflow-x:auto;border-radius:10px;border:1px solid var(--border);background:var(--card);-webkit-overflow-scrolling:touch;}
 .td-candle-table{width:100%;min-width:620px;border-collapse:collapse;font-size:.75rem;}
@@ -324,7 +324,7 @@ td{padding:12px 15px;white-space:nowrap;}
 .td-candle-table tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
 .td-candle-table tbody tr:last-child{border-bottom:none;}
 .td-candle-table tbody tr:hover{background:var(--surface2);}
-.td-candle-table tbody td{padding:6px 10px;text-align:right;font-family:'Space Mono',monospace;font-size:.73rem;white-space:nowrap;}
+.td-candle-table tbody td{padding:6px 10px;text-align:right;font-family:'Be Vietnam Pro',sans-serif;font-size:.73rem;white-space:nowrap;}
 .td-candle-table tbody td:first-child{text-align:left;font-family:inherit;color:var(--muted);font-size:.7rem;}
 .td-candle-bar{display:inline-block;height:8px;border-radius:3px;min-width:3px;vertical-align:middle;margin-left:4px;}
 .td-up{color:var(--green);}
@@ -672,6 +672,8 @@ async function fetchAlphaBinance(){
         ch,
         alphaId:String(x.alphaId||''),
         chainName:String(x.chainName||''),
+        chainId:String(x.chainId||'') ,
+        contractAddress:String(x.contractAddress||''),
         vol
       };
     }).filter(x=>x.sym&&x.alphaId);
@@ -848,7 +850,7 @@ function renderTokenDetailPanel(panel,sym){
 
   panel.innerHTML=`<div class="td-grid">
     <div class="td-chart-section">
-      <div class="td-section-title">B&#7843;ng gi&#225; ${escapeHTML(sym)}/USDT &middot; 8 gi&#7901; g&#7847;n nh&#7845;t</div>
+      <div class="td-section-title">B&#7843;ng gi&#225; ${escapeHTML(sym)}/USDT &middot; 24 gi&#7901; g&#7847;n nh&#7845;t</div>
       <div id="${tableId}"><div class="td-loading">↻ Đang tải bảng giá...</div></div>
     </div>
   </div>`;
@@ -886,6 +888,21 @@ async function fetchBinanceKlines(symbol,interval,limit){
   const first=settled.find(data=>Array.isArray(data)&&data.length);
   return first||[];
 }
+async function fetchAlphaKlines(sym,interval,limit){
+  const meta=ALPHA_BY_SYM.get(sym);
+  if(!meta||!meta.chainId||!meta.contractAddress)return [];
+  const url='https://www.binance.com/bapi/defi/v1/public/wallet-direct/buw/wallet/dex/market/token/kline/ai?chainId='+encodeURIComponent(meta.chainId)+'&contractAddress='+encodeURIComponent(meta.contractAddress)+'&interval='+encodeURIComponent(interval)+'&limit='+limit;
+  try{
+    const r=await fetchWithHardTimeout(url,1800);
+    if(!r.ok)return [];
+    const json=await r.json();
+    const rows=json?.data?.klineInfos;
+    if(!Array.isArray(rows))return [];
+    return rows.map(k=>[k[0],k[1],k[2],k[3],k[4],k[5]||0]).filter(k=>k[0]&&[1,2,3,4].every(i=>Number.isFinite(parseFloat(k[i]))));
+  }catch{
+    return [];
+  }
+}
 function buildFallbackKlines(sym,limit){
   const current=gP(sym);
   if(!current)return [];
@@ -919,26 +936,24 @@ function renderCandleChart(sym,klines,isFallback,tableEl){
   const grid=[0,1,2,3].map(i=>{const value=chartTop-(chartTop-chartBottom)*i/3,yy=y(value).toFixed(1);return '<line class="td-chart-grid" x1="'+left+'" x2="'+(width-right)+'" y1="'+yy+'" y2="'+yy+'"/><text class="td-chart-axis" x="'+(left-8)+'" y="'+(parseFloat(yy)+4)+'" text-anchor="end">'+fP(value)+'</text>';}).join('');
   const volumeBars=data.map((d,i)=>{const cx=x(i),h=(d.volume/maxVolume)*46;return '<rect class="td-volume-bar" x="'+(cx-candleWidth/2).toFixed(1)+'" y="'+volumeY(d.volume).toFixed(1)+'" width="'+candleWidth.toFixed(1)+'" height="'+h.toFixed(1)+'" fill="'+(d.close>=d.open?'var(--green)':'var(--red)')+'"><title>Khoi luong: '+d.volume.toFixed(2)+'</title></rect>';}).join('');
   const volumeAxis='<text class="td-volume-axis" x="'+(width-right+8)+'" y="'+(volumeY(maxVolume)+4)+'">KL</text><text class="td-chart-axis" x="'+(width-right+8)+'" y="'+(volumeY(maxVolume)+16)+'">'+(maxVolume>=1e6?(maxVolume/1e6).toFixed(1)+'M':maxVolume>=1e3?(maxVolume/1e3).toFixed(1)+'K':maxVolume.toFixed(0))+'</text><text class="td-chart-axis" x="'+(width-right+8)+'" y="'+(height-bottom-4)+'">0</text>';
-  const candles=data.map((d,i)=>{const up=d.close>=d.open,color=up?'var(--green)':'var(--red)',cx=x(i),bodyTop=y(Math.max(d.open,d.close)),bodyBottom=y(Math.min(d.open,d.close)),bodyHeight=Math.max(2,bodyBottom-bodyTop),highLabel='<text class="td-candle-label" x="'+cx.toFixed(1)+'" y="'+Math.max(12,y(d.high)-7).toFixed(1)+'" text-anchor="middle">'+fP(d.high)+'</text>',lowLabel='<text class="td-candle-label" x="'+cx.toFixed(1)+'" y="'+Math.min(priceBottom-2,y(d.low)+17).toFixed(1)+'" text-anchor="middle">'+fP(d.low)+'</text>',title='<title>Mo: '+fP(d.open)+' | Cao: '+fP(d.high)+' | Thap: '+fP(d.low)+' | Dong: '+fP(d.close)+'</title>';return '<g class="td-candle" style="color:'+color+'">'+title+'<line x1="'+cx.toFixed(1)+'" x2="'+cx.toFixed(1)+'" y1="'+y(d.high).toFixed(1)+'" y2="'+y(d.low).toFixed(1)+'" stroke="currentColor" stroke-width="2"/><rect x="'+(cx-candleWidth/2).toFixed(1)+'" y="'+bodyTop.toFixed(1)+'" width="'+candleWidth.toFixed(1)+'" height="'+bodyHeight.toFixed(1)+'" fill="'+color+'" rx="2"/>'+highLabel+lowLabel+'</g>';}).join('');
-  const labels=data.map((d,i)=>{const date=new Date(d.time);return '<text class="td-chart-axis" x="'+x(i).toFixed(1)+'" y="'+(height-14)+'" text-anchor="middle">'+date.toLocaleString('vi-VN',{hour:'2-digit',minute:'2-digit'})+'</text>';}).join('');
-  tableEl.innerHTML='<div class="td-candle-chart"><svg viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Bieu do nen gia va khoi luong trong 8 gio gan nhat">'+grid+'<line class="td-chart-axis-line" x1="'+left+'" x2="'+(width-right)+'" y1="'+priceBottom+'" y2="'+priceBottom+'"/>'+volumeBars+volumeAxis+candles+labels+'</svg></div>';
+  const candles=data.map((d,i)=>{const up=d.close>=d.open,color=up?'var(--green)':'var(--red)',cx=x(i),bodyTop=y(Math.max(d.open,d.close)),bodyBottom=y(Math.min(d.open,d.close)),bodyHeight=Math.max(2,bodyBottom-bodyTop),highLabel='<text class="td-selected-label" x="'+cx.toFixed(1)+'" y="'+Math.max(12,y(d.high)-7).toFixed(1)+'" text-anchor="middle">'+fP(d.high)+'</text>',lowLabel='<text class="td-selected-label" x="'+cx.toFixed(1)+'" y="'+Math.min(priceBottom-2,y(d.low)+17).toFixed(1)+'" text-anchor="middle">'+fP(d.low)+'</text>',title='<title>Mo: '+fP(d.open)+' | Cao: '+fP(d.high)+' | Thap: '+fP(d.low)+' | Dong: '+fP(d.close)+'</title>';return '<g class="td-candle" style="color:'+color+'">'+title+'<line x1="'+cx.toFixed(1)+'" x2="'+cx.toFixed(1)+'" y1="'+y(d.high).toFixed(1)+'" y2="'+y(d.low).toFixed(1)+'" stroke="currentColor" stroke-width="2"/><rect x="'+(cx-candleWidth/2).toFixed(1)+'" y="'+bodyTop.toFixed(1)+'" width="'+candleWidth.toFixed(1)+'" height="'+bodyHeight.toFixed(1)+'" fill="'+color+'" rx="2"/>'+highLabel+lowLabel+'</g>';}).join('');
+  const labels=data.map((d,i)=>{if(i%3!==0&&i!==data.length-1)return '';const date=new Date(d.time);return '<text class="td-chart-axis" x="'+x(i).toFixed(1)+'" y="'+(height-14)+'" text-anchor="middle">'+date.toLocaleString('vi-VN',{hour:'2-digit',minute:'2-digit'})+'</text>';}).join('');
+  tableEl.innerHTML='<div class="td-candle-chart"><svg viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Bieu do nen gia va khoi luong trong 24 gio gan nhat">'+grid+'<line class="td-chart-axis-line" x1="'+left+'" x2="'+(width-right)+'" y1="'+priceBottom+'" y2="'+priceBottom+'"/>'+volumeBars+volumeAxis+candles+labels+'</svg></div>';
+  const svg=tableEl.querySelector('svg');
+  if(svg)svg.addEventListener('click',event=>{const candle=event.target.closest('.td-candle');if(!candle)return;svg.querySelectorAll('.td-candle.selected').forEach(item=>item.classList.remove('selected'));candle.classList.add('selected');});
 }
 async function loadCandleTable(sym){
   const interval='1h';
-  const limit=8;
-  const label='8H';
+  const limit=24;
+  const label='24H';
   const tableId=`td-table-${sym}`;
   const tableEl=document.getElementById(tableId);
   if(!tableEl)return;
-  tableEl.innerHTML=`<div class="td-loading">Dang tai 8 gio gan nhat...</div>`;
+  tableEl.innerHTML=`<div class="td-loading">Dang tai 24 gio gan nhat...</div>`;
 
   const symbol=`${sym}USDT`;
   let klines=await fetchBinanceKlines(symbol,interval,limit);
-  let isFallback=false;
-  if(!klines.length){
-    klines=buildFallbackKlines(sym,limit);
-    isFallback=Boolean(klines.length);
-  }
+  if(!klines.length)klines=await fetchAlphaKlines(sym,interval,limit);
 
   if(!klines.length){
     if(tableEl)tableEl.innerHTML=`<div style="padding:14px;color:var(--red);font-size:.78rem;text-align:center">Khong co du lieu gia cho ${escapeHTML(sym)}</div>`;
@@ -946,7 +961,7 @@ async function loadCandleTable(sym){
   }
 
   const fmtVol=v=>v>=1e6?(v/1e6).toFixed(2)+'M':v>=1e3?(v/1e3).toFixed(1)+'K':v.toFixed(0);
-  renderCandleChart(sym,klines,isFallback,tableEl);
+  renderCandleChart(sym,klines,false,tableEl);
   return;
 
   const vols=klines.map(k=>parseFloat(k[5])||0);
