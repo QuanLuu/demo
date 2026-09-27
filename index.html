@@ -102,7 +102,7 @@ main{
 .mo-sub{font-size:.7rem;color:var(--muted);margin-top:3px;}
 
 .cs-tabs-row{display:flex;flex-direction:column;align-items:flex-start;gap:0;margin-bottom:18px;}
-.cs-tabs{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;}
+.cs-tabs{display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap;} .crypto-fav-heading{display:flex;align-items:center;gap:8px;margin-left:2px;white-space:nowrap;} .crypto-fav-heading h3{font-size:.87rem;font-weight:800;} #panel-favorites .sub-h{display:none;}
 .search-toggle-btn{background:var(--surface2);border:1px solid var(--border);border-radius:8px;width:36px;height:36px;font-size:1rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;min-height:36px;}
 .search-toggle-btn:hover,.search-toggle-btn.on{border-color:var(--accent3);}
 .search-box-drop{display:none;width:100%;margin-top:10px;}
@@ -122,21 +122,21 @@ main{
 
 .crypto-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(198px,1fr));gap:12px;margin-bottom:24px;}
 .crypto-list{background:var(--card);border:1px solid var(--border);border-radius:13px;overflow:hidden;margin-bottom:24px;}
-.cl-row{display:flex;align-items:center;justify-content:space-between;padding:3px 14px;border-bottom:1px solid var(--border);transition:background .15s;gap:16px;flex-wrap:nowrap;}
+.cl-row{display:flex;align-items:center;justify-content:flex-start;padding:3px 10px;border-bottom:1px solid var(--border);transition:background .15s;gap:8px;flex-wrap:nowrap;}
 .cl-row:last-child{border-bottom:none;}
-.cl-row:hover{background:var(--surface2);}
+.cl-row:hover{background:var(--surface2);}.cl-row .cl-logo,.cl-row .fav-btn{display:none;}
 .cl-row.is-fav{background:rgba(212,146,10,.06);}
-.cl-l{display:flex;align-items:center;gap:10px;min-width:0;flex:1;}
+.cl-l{display:flex;align-items:center;gap:0;min-width:0;flex:0 1 auto;}
 .cl-logo{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.75rem;font-family:'Be Vietnam Pro',sans-serif;flex-shrink:0;}
 .cl-meta{min-width:0;}
 .cl-symline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .cl-sym{font-weight:800;font-size:.67rem;letter-spacing:-.02em;}
 .cl-pair{font-size:.52rem;color:var(--muted);font-weight:600;}
 .cl-name{display:none;}
-.cl-mid{text-align:right;flex-shrink:0;}
+.cl-mid{text-align:right;flex-shrink:0;margin-left:auto;}
 .cl-price{font-family:'Be Vietnam Pro',sans-serif;font-size:.67rem;font-weight:700;}
 .cl-vnd{display:none;}
-.cl-r{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.cl-r{display:flex;align-items:center;gap:0;flex-shrink:0;}
 .cl-ch{font-size:.55rem;font-weight:700;padding:4px 10px;border-radius:8px;font-family:'Be Vietnam Pro',sans-serif;}
 .cl-row .alpha-badge{margin:0;font-size:.55rem;padding:2px 6px;vertical-align:middle;}
 .cl-row .spot-lbl{margin:0;font-size:.55rem;}
@@ -394,7 +394,7 @@ td{padding:12px 15px;white-space:nowrap;}
   .search-box-drop .crypto-search-wrap{max-width:100%;}
   .movers-grid{grid-template-columns:1fr;}
   .crypto-grid{grid-template-columns:repeat(2,1fr);}
-  .cl-row{padding:5px 8px;gap:5px;}
+  .cl-row{padding:5px 8px;gap:6px;}
   .cl-sym{font-size:.56rem;}
   .cl-price{font-size:.57rem;}
   .cl-ch{font-size:.49rem;padding:3px 7px;}
@@ -416,11 +416,11 @@ td{padding:12px 15px;white-space:nowrap;}
   :root{--sticky-top:54px;}
   main{padding:12px max(8px,env(safe-area-inset-left)) 48px max(8px,env(safe-area-inset-right));}
   .cl-row{display:flex;flex-wrap:nowrap;align-items:center;padding:6px 8px;gap:5px;}
-  .cl-l{flex:1;min-width:0;gap:6px;}
+  .cl-l{flex:0 1 auto;min-width:0;gap:0;}
   .cl-logo{width:28px;height:28px;font-size:.58rem;}
   .cl-sym{font-size:.63rem;}
-  .cl-mid{text-align:right;border:none;padding:0;width:auto;display:block;}
-  .cl-r{flex-direction:row;align-self:center;margin-left:auto;gap:6px;}
+  .cl-mid{text-align:right;border:none;padding:0;width:auto;display:block;margin-left:auto;}
+  .cl-r{flex-direction:row;align-self:center;margin-left:0;gap:0;}
   .cl-vnd{width:auto;}
   .cl-ch{font-size:.5rem;padding:4px 7px;}
   .cl-price{font-size:.6rem;}
@@ -477,10 +477,9 @@ td{padding:12px 15px;white-space:nowrap;}
   <!-- Tabs + Search cùng hàng -->
   <div class="cs-tabs-row" id="search-wrap">
     <div class="cs-tabs">
-      <div class="cs-tab active" onclick="switchTab('favorites',this)">⭐ <span class="cnt-badge" id="fav-cnt">0</span></div>
       
       
-      <button class="search-toggle-btn" id="search-toggle" onclick="toggleSearch()" title="Tìm kiếm">🔍</button>
+      <button class="search-toggle-btn" id="search-toggle" onclick="toggleSearch()" title="Tìm kiếm">🔍</button><div class="crypto-fav-heading"><h3>Token Yeu Thich</h3><span class="sub-tag" id="fav-summary">0 token</span></div>
     </div>
     <!-- Search dropdown bên dưới -->
     <div class="search-box-drop" id="search-box-drop">
@@ -612,7 +611,7 @@ function toggleFav(sym,e){
   const q=document.getElementById('crypto-search').value;
   if(q)onSearch(q);
 }
-function updateFavCnt(){document.getElementById('fav-cnt').textContent=FAV.size;}
+function updateFavCnt(){const el=document.getElementById('fav-cnt');if(el)el.textContent=FAV.size;const summary=document.getElementById('fav-summary');if(summary)summary.textContent=FAV.size+' token';}
 updateFavCnt();
 
 // ──────────────────────────────────────
