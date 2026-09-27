@@ -115,7 +115,24 @@ main{
 .cs-tab.active{background:var(--accent);color:#000;border-color:var(--accent);}
 .cnt-badge{font-size:.65rem;background:rgba(0,0,0,.12);padding:1px 6px;border-radius:8px;margin-left:4px;}
 
-.sub-h{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.sub-h{display:flex;align-items:center;gap:8px;margin-bottom:12px;}.crypto-calendar-summary{margin-top:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;color:var(--text);}
+.ccs-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.ccs-kicker,.ccs-label{font-size:.62rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+.ccs-date{font-size:1.45rem;font-weight:800;line-height:1.1;margin-top:3px;}
+.ccs-weekday{font-size:.68rem;color:var(--muted);margin-top:2px;}
+.ccs-lunar{font-size:.72rem;color:var(--accent3);font-weight:700;margin-top:6px;}
+.ccs-verdict{font-size:.68rem;font-weight:700;border-radius:7px;padding:5px 8px;white-space:nowrap;}
+.ccs-verdict.good{background:rgba(22,163,74,.1);color:var(--green);}
+.ccs-verdict.bad{background:rgba(224,53,48,.1);color:var(--red);}
+.ccs-verdict.neutral{background:var(--surface2);color:var(--muted);}
+.ccs-columns,.ccs-hours{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;}
+.ccs-list,.ccs-hour-grid{display:grid;gap:4px;margin-top:5px;}
+.ccs-good,.ccs-bad,.ccs-hour{font-size:.66rem;line-height:1.35;}
+.ccs-good{color:var(--green);}.ccs-bad{color:var(--red);}
+.ccs-hour{padding:4px 6px;border-radius:6px;}
+.ccs-hour.good{background:rgba(22,163,74,.08);color:var(--green);}
+.ccs-hour.bad{background:rgba(224,53,48,.08);color:var(--red);}
+@media(max-width:560px){.crypto-calendar-summary{padding:10px 8px;}.ccs-date{font-size:1.2rem;}.ccs-columns,.ccs-hours{gap:8px;}.ccs-good,.ccs-bad,.ccs-hour{font-size:.6rem;}}
 .sub-h h3{font-size:.87rem;font-weight:800;}
 .sub-line{flex:1;height:1px;background:var(--border);}
 .sub-tag{font-size:.66rem;background:var(--surface2);border:1px solid var(--border);padding:2px 8px;border-radius:10px;color:var(--muted);}
@@ -819,11 +836,26 @@ function favRowHTML(t){
   </div>${isExp?`<div class="token-detail-panel" id="detail-${t.sym}"><div class="td-loading"><span class="spin">↻</span> Đang tải chi tiết cho ${t.sym}...</div></div>`:''}`;
 }
 
+function renderCryptoCalendarSummary(){
+  const now=getVietnamNow(),dd=now.getDate(),mm=now.getMonth()+1,yy=now.getFullYear();
+  const lunar=convertSolar2Lunar(dd,mm,yy,7),dayQ=getDayQuality(dd,mm,yy,lunar[0]),hours=getGioDepGioXau(dd,mm,yy);
+  const solar=String(dd).padStart(2,'0')+'/'+String(mm).padStart(2,'0')+'/'+yy;
+  const lunarText=String(lunar[0]).padStart(2,'0')+'/'+String(lunar[1]).padStart(2,'0')+'/'+lunar[2];
+  const weekday=capitalizeFirst(now.toLocaleDateString('vi-VN',{weekday:'long'}));
+  const good=dayQ.goodActivities.slice(0,3).map(x=>'<span class="ccs-good">✓ '+x+'</span>').join('');
+  const bad=dayQ.badActivities.slice(0,3).map(x=>'<span class="ccs-bad">✕ '+x+'</span>').join('');
+  const goodHours=hours.good.slice(0,6).map(x=>'<span class="ccs-hour good">✓ '+x+'</span>').join('');
+  const badHours=hours.bad.slice(0,6).map(x=>'<span class="ccs-hour bad">✕ '+x+'</span>').join('');
+  const verdict=dayQ.dayType==='good'?'Ngày tốt (Hoàng đạo)':dayQ.dayType==='bad'?'Ngày xấu (Hắc đạo)':'Ngày bình thường';
+  const verdictClass=dayQ.dayType==='good'?'good':dayQ.dayType==='bad'?'bad':'neutral';
+  return '<div class="crypto-calendar-summary"><div class="ccs-head"><div><div class="ccs-kicker">Hôm nay</div><div class="ccs-date">'+solar+'</div><div class="ccs-weekday">'+weekday+'</div><div class="ccs-lunar">Âm lịch: '+lunarText+'</div></div><div class="ccs-verdict '+verdictClass+'">'+verdict+'</div></div><div class="ccs-columns"><div><div class="ccs-label">Nên làm</div><div class="ccs-list">'+good+'</div></div><div><div class="ccs-label">Không nên</div><div class="ccs-list">'+bad+'</div></div></div><div class="ccs-hours"><div><div class="ccs-label">Giờ hoàng đạo</div><div class="ccs-hour-grid">'+goodHours+'</div></div><div><div class="ccs-label">Giờ hắc đạo</div><div class="ccs-hour-grid">'+badHours+'</div></div></div></div>';
+}
 function renderFav(){
   const el=document.getElementById('fav-body');
   if(!FAV.size){
     _expandedToken=null;
     el.innerHTML=`<div class="fav-empty"><div class="em-ico">⭐</div><p>Chưa có token yêu thích</p><small>Dùng ô tìm kiếm hoặc ☆ trên danh sách để thêm</small></div>`;
+    el.insertAdjacentHTML('beforeend',renderCryptoCalendarSummary());
     return;
   }
   const tokens=sortTokensByCh([...FAV].map(sym=>{
@@ -832,6 +864,7 @@ function renderFav(){
   }));
   el.innerHTML=`<div class="sub-h"><h3>⭐ Token Yêu Thích</h3><div class="sub-line"></div><span class="sub-tag">${tokens.length} token · Bấm để xem chi tiết</span></div>
     <div class="crypto-list">${tokens.map(favRowHTML).join('')}</div>`;
+  el.insertAdjacentHTML('beforeend',renderCryptoCalendarSummary());
 }
 
 // TOKEN DETAIL PANEL JS
