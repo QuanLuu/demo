@@ -496,7 +496,7 @@ td{padding:12px 15px;white-space:nowrap;}
     <div class="cs-tabs">
       
       
-      <button class="search-toggle-btn" id="search-toggle" onclick="toggleSearch()" title="Tìm kiếm">🔍</button><div class="crypto-fav-heading"><h3>Token Yeu Thich</h3><span class="sub-tag" id="fav-summary">0 token</span></div>
+      <button class="search-toggle-btn" id="search-toggle" onclick="toggleSearch()" title="Tìm kiếm">🔍</button><div class="crypto-fav-heading"><h3> </h3><span class="sub-tag" id="fav-summary">0 tk</span></div>
     </div>
     <!-- Search dropdown bên dưới -->
     <div class="search-box-drop" id="search-box-drop">
@@ -628,7 +628,7 @@ function toggleFav(sym,e){
   const q=document.getElementById('crypto-search').value;
   if(q)onSearch(q);
 }
-function updateFavCnt(){const el=document.getElementById('fav-cnt');if(el)el.textContent=FAV.size;const summary=document.getElementById('fav-summary');if(summary)summary.textContent=FAV.size+' token';}
+function updateFavCnt(){const el=document.getElementById('fav-cnt');if(el)el.textContent=FAV.size;const summary=document.getElementById('fav-summary');if(summary)summary.textContent=FAV.size+' tk';}
 updateFavCnt();
 
 // ──────────────────────────────────────
